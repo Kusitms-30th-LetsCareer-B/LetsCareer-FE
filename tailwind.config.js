@@ -6,8 +6,51 @@ export default {
   ],
   theme: {
     extend: {
-      borderRadius: {
+      fontSize: {
+        'xxlarge': '36px',  // Xxlarge
+        'xlarge': '32px',   // Xlarge
+        'large': '26px',    // Large
+        'medium': '24px',   // Medium
+        'small': '20px',    // Small
+        'xsmall': '14px',
+        'xxsmall': '12px',  // Xxsmall
+      },
+      letterSpacing: {
+        '-2.8': '-0.028em', // -2.8% letter spacing
+        '-2.6': '-0.026em', // -2.6%
+        '-2.5': '-0.025em', // -2.5%
+        '-2.4': '-0.024em', // -2.4%
+        '-2.2': '-0.022em', // -2.2%
+        '-2.0': '-0.020em', // -2.0%
+        '-1.6': '-0.016em', // -1.6%
+        '-1.5': '-0.015em', // -1.5%
+        '-1.2': '-0.012em', // -1.2%
+        '-0.9': '-0.009em', // -0.9%
+        '-0.6': '-0.006em', // -0.6%
+      },
+      fontWeight: {
+        semibold: '600',
+        medium: '500',
+        light: '300',
+        bold: '700',
+      },
+      lineHeight: {
+        '48': '48px',
+        '42': '42px',
+        '38': '38px',
+        '34': '34px',
+        '32': '32px',
+        '30': '30px',
+        '28': '28px',
+        '26': '26px',
+        '24': '24px',
+        '22': '22px',
+        '20': '20px',
+        '18': '18px',
+      },
+      rounded: {
         'xxs': '4px',
+        's': '8px',
       },
       colors:{
         static: {

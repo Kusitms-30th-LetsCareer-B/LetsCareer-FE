@@ -2,3 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Xxlarge */
+.text-xxlarge-semibold {
+    @apply text-xxlarge font-semibold tracking-[-2.8] leading-[48px];
+  }
+  
+  .text-xxlarge-medium {
+    @apply text-xxlarge font-medium tracking-[-2.6] leading-[42px];
+  }
+  
+  /* Xlarge */
+  .text-xlarge-bold {
+    @apply text-xlarge font-bold tracking-[-2.5] leading-[38px];
+  }
+  
+  .text-xlarge-semibold {
+    @apply text-xlarge font-semibold tracking-[-2.5] leading-[38px];
+  }
+  
+  .text-xlarge-medium {
+    @apply text-xlarge font-medium tracking-[-2.5] leading-[38px];
+  }
+  
+  /* Large */
+  .text-large-semibold {
+    @apply text-large font-semibold tracking-[-2.4] leading-[34px];
+  }
+  
+  .text-large-medium {
+    @apply text-large font-medium tracking-[-2.4] leading-[34px];
+  }
+  
+  .text-large-light {
+    @apply text-large font-light tracking-[-2.4] leading-[34px];
+  }
+  
+  /* Medium */
+  .text-medium-bold {
+    @apply text-medium font-bold tracking-[-2.4] leading-[32px];
+  }
+  
+  .text-medium-semibold {
+    @apply text-medium font-semibold tracking-[-2.4] leading-[32px];
+  }
+  
+  .text-medium-light {
+    @apply text-medium font-light tracking-[-2.4] leading-[32px];
+  }
+  
+  /* Small */
+  .text-small-bold {
+    @apply text-small font-bold tracking-[-2.0] leading-[28px];
+  }
+  
+  .text-small-semibold {
+    @apply text-small font-semibold tracking-[-2.0] leading-[28px];
+  }
+  
+  .text-small-medium {
+    @apply text-small font-medium tracking-[-2.0] leading-[28px];
+  }
+  
+  /* Xsmall */
+  .text-xsmall-bold {
+    @apply text-xsmall font-bold tracking-[-0.6] leading-[24px];
+  }
+  
+  .text-xsmall-semibold {
+    @apply text-xsmall font-semibold tracking-[-0.6] leading-[24px];
+  }
+  
+  .text-xsmall-medium {
+    @apply text-xsmall font-medium tracking-[-0.6] leading-[24px];
+  }
+  
+  /* Xxsmall */
+  .text-xxsmall-bold {
+    @apply text-xxsmall font-bold tracking-[-2.4] leading-[18px];
+  }
+  
+  .text-xxsmall-semibold {
+    @apply text-xxsmall font-semibold tracking-[-2.4] leading-[18px];
+  }
+  
+  .text-xxsmall-medium {
+    @apply text-xxsmall font-medium tracking-[-2.4] leading-[18px];
+  }
