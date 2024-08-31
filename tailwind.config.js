@@ -48,7 +48,7 @@ export default {
         '20': '20px',
         '18': '18px',
       },
-      rounded: {
+      borderRadius: {
         'xxs': '4px',
         's': '8px',
       },
@@ -84,22 +84,23 @@ export default {
           0:  '#FFFFFF',
         },
         
-        tertiary: {
-          normal: '#CB81F2',
+        teritory: {
+          'light': '#FBF2FF',
+          'normal': '#CB81F2',
         },
         
         fourth: {
-          normal: '#FFC700',
+          'normal': '#FFC700',
         },
         
         point: {
-          normal: '#DAFF7C',
+          'normal': '#DAFF7C',
         },
         
         system: {
-          positive_green: '#1BC47D',
-          positive_blue: '#5177FF',
-          error: '#F64E39',
+          'positive_green': '#1BC47D',
+          'positive_blue': '#5177FF',
+          'error': '#F64E39',
         },
         
         neutral: {
