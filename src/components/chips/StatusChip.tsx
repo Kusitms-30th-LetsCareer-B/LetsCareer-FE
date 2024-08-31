@@ -1,5 +1,3 @@
-
-
 export const PrepareDocumentwChip = () => {
     return (
         <div className="inline-flex items-center justify-center h-[36px] px-[12px] py-[8px] rounded-lg bg-secondary-10">
