@@ -13,6 +13,7 @@ function Header() {
                     <a className="text-1.125-medium text-neutral-60 hidden cursor-pointer md:block" href="/about">렛츠커리어 스토리</a>
                     <a className="text-1.125-medium text-neutral-60 hidden cursor-pointer md:block" href="/program">프로그램</a>
                     <a className="text-1.125-medium text-neutral-60 hidden cursor-pointer md:block" href="/blog/list">블로그</a>
+                    <a className="text-1.125 font-bold text-neutral-0 hidden cursor-pointer md:block" href="/blog/planner">커리어 플래너</a>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="hidden items-center gap-2 sm:flex">
