@@ -2,11 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-.text-0.875-medium {
-    @apply text-0.875 font-medium;
-  }
-  
-.text-0.75-medium {
-    @apply text-0.75 font-medium;
-}
-

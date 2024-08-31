@@ -6,14 +6,13 @@ export default {
   ],
   theme: {
     extend: {
-      fontSize: {
-        '0.875': '0.875rem',
-        '0.75': '0.75rem',
-      },
-      fontWeight: {
-        medium: '500',
+      borderRadius: {
+        'xxs': '4px',
       },
       colors:{
+        static: {
+          100: '#FFFFFF',
+        },
         primary: {
           100: '#4D55F5',
           90: '#6269F6',
