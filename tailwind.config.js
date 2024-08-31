@@ -6,7 +6,13 @@ export default {
   ],
   theme: {
     extend: {
+      borderRadius: {
+        'xxs': '4px',
+      },
       colors:{
+        static: {
+          100: '#FFFFFF',
+        },
         primary: {
           100: '#4D55F5',
           90: '#6269F6',
@@ -71,7 +77,7 @@ export default {
           95: '#F9F9F8',
           100: '#FAFAFA',
         },
-      },
+      }
     },
   },
   plugins: [],

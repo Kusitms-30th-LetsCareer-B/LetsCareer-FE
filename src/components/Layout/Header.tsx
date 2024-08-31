@@ -16,8 +16,8 @@ function Header() {
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="hidden items-center gap-2 sm:flex">
-                        <a className="text-0.75 rounded-xxs bg-primary px-3 py-1 text-static-100" href="/login">로그인</a>
-                        <a className="text-0.75 text-primary" href="/signup">회원가입</a>
+                        <a className="text-0.75 rounded-xxs bg-primary-100 px-3 py-1 text-static-100" href="/login">로그인</a>
+                        <a className="text-0.75 text-primary-100" href="/signup">회원가입</a>
                     </div>
                     <button type="button">
                         <img src={navIcon} alt="네비게이션 아이콘" />
