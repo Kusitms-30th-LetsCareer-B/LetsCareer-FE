@@ -12,6 +12,7 @@ export default {
         'large': '26px',    // Large
         'medium': '24px',   // Medium
         'small': '20px',    // Small
+        'xmall18': '18px',
         'xsmall16': '16px',
         'xsmall': '14px',
         'xxsmall': '12px',  // Xxsmall
