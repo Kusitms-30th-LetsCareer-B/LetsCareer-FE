@@ -11,7 +11,7 @@ function PlannerSideBar({ children }: PlannerSideBarProps) {
   return (
     <div className="min-h-screen w-full">
       <div className="flex">
-        <div className="h-[900px] w-[216px] gap-[12px] border-r border-r-neutral-80 bg-static-100 px-[20px] py-[28px]">
+        <div className="w-[216px] gap-[12px] border-r border-r-neutral-80 bg-static-100 px-[20px] py-[28px]">
           <div className={getPath("/home")} onClick={() => navigateTo("/home")}>
             <img
               className="h-[20px] w-[20px]"

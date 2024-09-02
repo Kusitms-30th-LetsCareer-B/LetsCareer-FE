@@ -7,6 +7,7 @@ import MainPage from "./pages/Main/MainPage";
 import CalendarPage from "./pages/Calendar/CalendarPage";
 import StatusPage from "./pages/Status/StatusPage";
 import CareerPage from "./pages/Career/CareerPage";
+import SelfIntroducePage from "./pages/Status/SelfIntroducePage";
 
 function App() {
   return (
@@ -18,6 +19,10 @@ function App() {
           <Route path="/home" element={<MainPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/status" element={<StatusPage />} />
+          <Route
+            path="/status/self-introduce"
+            element={<SelfIntroducePage />}
+          />
           <Route path="/setting" element={<CareerPage />} />
         </Routes>
       </PlannerSideBar>

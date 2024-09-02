@@ -9,19 +9,19 @@ function Footer() {
         <div className="flex flex-col gap-[3.25rem] lg:flex-row-reverse lg:justify-between">
           <div className="flex flex-col gap-[3.25rem] lg:flex-row lg:items-start lg:gap-[6.25rem]">
             <div className="flex flex-col gap-3">
-              <a className="text-xsmall14 font-medium w-fit" href="/about">
+              <a className="w-fit text-xsmall14 font-medium" href="/about">
                 렛츠커리어 스토리
               </a>
-              <a className="text-xsmall14 font-medium w-fit" href="/program">
+              <a className="w-fit text-xsmall14 font-medium" href="/program">
                 프로그램
               </a>
-              <a className="text-xsmall14 font-medium w-fit" href="/blog/list">
+              <a className="w-fit text-xsmall14 font-medium" href="/blog/list">
                 블로그
               </a>
             </div>
             <div className="flex flex-col gap-3">
               <a
-                className="text-xsmall14 font-medium notice_cta w-fit"
+                className="notice_cta w-fit text-xsmall14 font-medium"
                 rel="noopener noreferrer"
                 href="https://letscareer.oopy.io"
                 target="_blank"
@@ -29,7 +29,7 @@ function Footer() {
                 공지사항
               </a>
               <a
-                className="text-xsmall14 font-medium inquiry_cta w-fit"
+                className="inquiry_cta w-fit text-xsmall14 font-medium"
                 rel="noopener noreferrer"
                 href="https://docs.google.com/forms/d/e/1FAIpQLSeHM_d3yd0cOiH2aSqhprtSFmidIYFziyIxf5-9j7rgZCobvA/viewform"
                 target="_blank"
@@ -37,14 +37,14 @@ function Footer() {
                 광고/제휴 문의
               </a>
               <a
-                className="text-xsmall14 font-medium q&amp;a_cta w-fit"
+                className="q&amp;a_cta w-fit text-xsmall14 font-medium"
                 rel="noopener noreferrer"
                 href="https://letscareer.oopy.io"
                 target="_blank"
               >
                 자주 묻는 질문
               </a>
-              <div className="text-xsmall14 w-80">
+              <div className="w-80 text-xsmall14">
                 <span className="text-neutral-0">고객센터</span>
                 <p className="mt-2 flex flex-col text-neutral-0/65">
                   <span>1:1 채팅 상담: 우측 하단 [문의하기] 클릭</span>
@@ -55,11 +55,11 @@ function Footer() {
               </div>
             </div>
           </div>
-          <div className="text-xxsmall12 font-medium flex flex-col gap-5 text-neutral-45">
+          <div className="flex flex-col gap-5 text-xxsmall12 font-medium text-neutral-45">
             <a className="w-[7.5rem]" href="/">
               <img className="h-auto w-full" src={logo} alt="Logo"></img>
             </a>
-            <div className="text-xxsmall12 font-medium flex flex-col gap-2 text-neutral-45">
+            <div className="flex flex-col gap-2 text-xxsmall12 font-medium text-neutral-45">
               <span>아이엔지 사업자 정보</span>
               <span>대표자: 송다예 | 사업자 등록번호: 871-11-02629</span>
               <span>통신판매업신고번호 제 2024-서울마포-2221호 |</span>
@@ -97,7 +97,7 @@ function Footer() {
           </div>
           <div className="flex items-center gap-6 text-neutral-0/[.65]">
             <a
-              className="text-xxsmall12 font-medium lg:text-0.875-medium"
+              className="lg:text-0.875-medium text-xxsmall12 font-medium"
               rel="noopener noreferrer"
               href="https://letscareer.oopy.io/a121a038-f72f-42d7-bde7-47624ecc0943"
               target="_blank"
@@ -105,7 +105,7 @@ function Footer() {
               서비스 이용약관
             </a>
             <a
-              className="text-xxsmall12 font-medium lg:text-0.875-medium"
+              className="lg:text-0.875-medium text-xxsmall12 font-medium"
               rel="noopener noreferrer"
               href="https://letscareer.oopy.io/c3af485b-fced-49ab-9601-f2d7bf07657d"
               target="_blank"

@@ -11,25 +11,25 @@ function Header() {
             <img className="h-full w-auto" src={logo} alt="렛츠커리어 로고" />
           </a>
           <a
-            className="text-small18 font-medium hidden cursor-pointer text-neutral-60 md:block"
+            className="hidden cursor-pointer text-small18 font-medium text-neutral-60 md:block"
             href="/about"
           >
             렛츠커리어 스토리
           </a>
           <a
-            className="text-small18 font-medium hidden cursor-pointer text-neutral-60 md:block"
+            className="hidden cursor-pointer text-small18 font-medium text-neutral-60 md:block"
             href="/program"
           >
             프로그램
           </a>
           <a
-            className="text-small18 font-medium hidden cursor-pointer text-neutral-60 md:block"
+            className="hidden cursor-pointer text-small18 font-medium text-neutral-60 md:block"
             href="/blog/list"
           >
             블로그
           </a>
           <a
-            className="text-small18 font-bold hidden cursor-pointer text-neutral-0 md:block"
+            className="hidden cursor-pointer text-small18 font-bold text-neutral-0 md:block"
             href="/blog/planner"
           >
             커리어 플래너
@@ -38,7 +38,7 @@ function Header() {
         <div className="flex items-center gap-4">
           <div className="hidden items-center gap-2 sm:flex">
             <a
-              className="text-xxsmall12 bg-primary rounded-xxs px-3 py-1 text-static-100"
+              className="rounded-xxs bg-primary px-3 py-1 text-xxsmall12 text-static-100"
               href="/login"
             >
               로그인

@@ -12,7 +12,7 @@ export const usePlannerSideBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isActive = (path: string): boolean => location.pathname === path;
+  const isActive = (path: string): boolean => location.pathname.startsWith(path);
 
   const getPath = (path: string): string => {
     return `flex items-center border-separate rounded-sm cursor-pointer py-[12px] px-[18px] gap-[16px]
