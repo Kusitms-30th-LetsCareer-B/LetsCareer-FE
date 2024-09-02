@@ -1,5 +1,3 @@
-import axios from 'axios';
+import axios from "axios";
 
-const RECRUIT_URL = {
-    
-};
+const RECRUIT_URL = {};
