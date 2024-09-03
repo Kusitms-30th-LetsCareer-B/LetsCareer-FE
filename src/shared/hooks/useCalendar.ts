@@ -25,6 +25,7 @@ interface UseCalendarEventsReturnType {
     events: Event[];
     customTypes: CustomType[];
     selectedDate: Date | null;
+    hoveredDate: Date | null;
     
     institution: string;
     selectedType: string;
@@ -36,6 +37,7 @@ interface UseCalendarEventsReturnType {
     removeCustomType: (type: string) => void;
     setCustomTypeColor: (type: string, color: string) => void;
     setSelectedDate: (date: Date) => void;
+    setHoveredDate: (date: Date) => void;
     
     setInstitution: (institution: string) => void;
     setSelectedType: (type: string) => void;
@@ -48,7 +50,9 @@ interface UseCalendarEventsReturnType {
 ///////////////////////////////////////////////////////////////////////
 const useCalendar = (): UseCalendarEventsReturnType => {
     /* 상태 관리 변수 */
-    const selectedDate = new Date();
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 클릭된 날짜 상태
+    const [hoveredDate, setHoveredDate] = useState<Date | null>(null); // 호버된 날짜 상태
+
     const [events, setEvents] = useState<Event[]>([]);
     const [customTypes, setCustomTypes] = useState<CustomType[]>([]);
 
@@ -60,12 +64,6 @@ const useCalendar = (): UseCalendarEventsReturnType => {
 
 
     /* 상태 관리 함수 */
-    // 단일 날짜 선택 함수
-    const setSelectedDate = (date: Date) => {
-        setSelectedDate(date);
-    };
-
-    
     // 일정 추가 함수
     const addEvent = (date: Date, type: string, institution: string) => {
         const eventExists = events.filter(event => event.date.toDateString() === date.toDateString());
@@ -107,6 +105,7 @@ const useCalendar = (): UseCalendarEventsReturnType => {
         events,
         customTypes,
         selectedDate,
+        hoveredDate,
 
         institution,
         selectedType,
@@ -119,6 +118,7 @@ const useCalendar = (): UseCalendarEventsReturnType => {
         setCustomTypeColor,
         
         setSelectedDate,
+        setHoveredDate,
         setInstitution,
         setSelectedType,
         setNewType,
