@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SubTodoList from "./components/SubTodoList";
 import TodoList from "./components/TodoList";
 
 import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
@@ -31,6 +32,7 @@ function MainPage() {
   return (
     <>
       <h1>메인 페이지</h1>
+      <SubTodoList />
       {/* TodoList 컴포 테스트 */}
       <TodoList selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       <br/>
