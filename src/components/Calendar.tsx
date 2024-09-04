@@ -4,6 +4,10 @@ import nextButtonIcon from "../shared/assets/calendar-next.png"
 import filterButtonIcon from "../shared/assets/filter.png"
 import addButtonIcon from "../shared/assets/add.png"
 
+// 커스텀 훅 임포트
+import useCalendar from '../shared/hooks/useCalendar';
+
+// 칩스
 import { DefaultDocumentChip, HoveredDocumentChip, ClickedDocumentChip,
   DefaultInterviewChip, HoveredInterviewChip, ClickedInterviewChip,
   DefaultOtherChip, HoveredOtherChip, ClickedOtherChip,
@@ -12,112 +16,46 @@ import { DefaultDocumentChip, HoveredDocumentChip, ClickedDocumentChip,
 
 // 캘린더 컴포넌트
 const CustomCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 선택된 날짜
-  const [hoveredDate, setHoveredDate] = useState<Date | null>(null); // 호버된 날짜
+  // 커스텀 캘린더 훅에서 상태와 핸들러 가져오기
+  const {
+    currentDate,
+    selectedDate,
+    hoveredDate,
+    getDates,
+    handlePrevMonth,
+    handleNextMonth,
+    handleDateClick,
+    handleDateMouseOver,
+    handleDateMouseOut,
+    handleAllSchedule,
+    handleNewSchedule
+  } = useCalendar();
 
-  // 월 이름과 요일 이름 배열
-  const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
+  // 달력 헤더에 표시할 컬럼명 배열 선언
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-  // 해당 월의 첫 번째 날과 마지막 날 가져오기
-  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-  // 이전 달의 마지막 날 가져오기
-  const lastDayOfPrevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
-
   
-  // 달력에 표시할 날짜 배열 생성
-  const dates = [];
-  
-  // 첫 주를 공백으로 채우기
-  /*
-  for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
-    dates.push(null);
-  }
-  */
-  // 첫 주를 이전 달의 마지막 날짜로 채우기
-  for (let i = firstDayOfMonth.getDay() - 1; i >= 0; i--) {
-    dates.push(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, lastDayOfPrevMonth.getDate() - i));
-  }
-  
-  // 현재 월의 날짜 채우기
-  for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const month = new Date(currentYear, currentMonth, i);
-    dates.push(month);
-  }
-
-  // 다음 달의 날짜를 채워서 달력을 완성
-  const totalCells = 42; // 7x6 그리드(6주는 항상 표시)
-  const remainingCells = totalCells - dates.length;
-  for (let i = 1; i <= remainingCells; i++) {
-    const nextMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, i);
-    dates.push(nextMonthDate);
-  }
-
-  // 이전 달로 이동하는 함수
-  const handlePrevMonth = () => {
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const prevMonth = new Date(currentYear, currentMonth - 1, 1);
-    setCurrentDate(prevMonth);
-  };
-
-  // 다음 달로 이동하는 함수
-  const handleNextMonth = () => {
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const nextMonth = new Date(currentYear, currentMonth + 1, 1);
-    setCurrentDate(nextMonth);
-  };
-
-  // 날짜 클릭 핸들러
-  const handleDateClick = (date: Date | null) => {
-    if (date) {
-      setSelectedDate(date);
-    }
-  };
-
-  const handleDateMouseOver = (date: Date | null) => {
-    setHoveredDate(date);
-  };
-
-  const handleDateMouseOut = () => {
-    setHoveredDate(null);
-  };
-
-  /** 전체 일정 보기 이벤트 */
-  const handleAllSchedule = () => {
-
-  }
-
-  /** 새 채용 일정 추가하기 이벤트 */
-  const handleNewSchedule = () => {
-
-  }
-
+  // 달력에 표시할 날짜 배열 가져오기
+  const dates = getDates();
 
 
   return (
     /* 캘린더 전체 윤곽 컨테이너 스타일 */
     <div className="p-4 font-sans bg-neutral-100 shadow-none">
+
+      {/* 달력 헤더 파트 */}
       <div className="flex items-center mb-4">
 
-        {/* 달력 헤더: 월 이동 */}
-        <button onClick={handlePrevMonth} className="px-4 text-gray-600 hover:bg-gray-200">
+        {/* 월 이동 버튼 */}
+        <button onClick={handlePrevMonth} className="px-4">
           <img src={prevButtonIcon} alt='이전 달'/>
         </button>
-        <h2 className="text-lg font-bold">
+        <h2 className="text-small20 font-bold">
           {currentDate.getFullYear()}년 {currentDate.getMonth()+1}월 {/**영문: {monthNames[currentDate.getMonth()]}*/}
         </h2>
         <button onClick={handleNextMonth} className="px-4">
           <img src={nextButtonIcon} alt='다음 달'/>
         </button>
+
 
         {/* 네모 박스 */}
         <div className="flex items-center justify-center w-[16px] h-[16px] bg-secondary-100 rounded-xxs text-secondary-0 text-xxsmall11 font-regular mr-[1px]"/>
@@ -133,6 +71,7 @@ const CustomCalendar = () => {
           직무/인적성 1건
         </div>
 
+
         {/* 전체 일정 보기 버튼 */}
         <button onClick={handleAllSchedule} className="flex items-center justify-start text-xxsmall12 rounded-xs font-xxsmall12 text-neutral-45 bg-static-100 border border-neutral-80 w-36 h-9 px-2">
           전체 일정 보기
@@ -140,7 +79,8 @@ const CustomCalendar = () => {
         </button>
         
         <p className='px-1.5'/>
-        
+
+
         {/* 새 채용 일정 추가하기 버튼 */}
         <button onClick={handleNewSchedule} className="flex items-center justify-start text-xxsmall12 rounded-xs font-xxsmall12 text-static-100 bg-primary-100 w-52 h-9">
         <img className="px-3" src={addButtonIcon} alt='새 채용일정 추가하기'/>
@@ -150,10 +90,12 @@ const CustomCalendar = () => {
 
 
 
-      <div className="grid grid-cols-7 gap-0"> {/* gap-0 to remove gaps between cells */}
+      {/* 달력 파트 */}
+      <div className="grid grid-cols-7 gap-0">
+
         {/**요일 컬럼*/}
         {daysOfWeek.map((day) => (
-          <div key={day} className="text-center font-medium text-xs uppercase text-neutral-45 bg-transparent p-2">
+          <div key={day} className="text-center text-xsmall14 uppercase text-neutral-45 bg-transparent p-2">
             {day}
           </div>
         ))}
@@ -165,53 +107,65 @@ const CustomCalendar = () => {
           const isSelected = date && selectedDate && date.toDateString() === selectedDate.toDateString();
           const isHovered = date && hoveredDate && date.toDateString() === hoveredDate.toDateString();
           const isCurrentMonth = date && date.getMonth() === currentDate.getMonth();
-          //const isSunday = date && date.getDay() === 0;
-          const isSunday = date && date.getDay() === 0 && date.getMonth() === currentDate.getMonth(); // 이번 달이 아닌 일요일은 빨간색으로 색칠X
+          //const isSunday = date && date.getDay() === 0;   // 모든 일요일 가져오기
+          const isSunday = date && date.getDay() === 0 && date.getMonth() === currentDate.getMonth(); // 이번 달 일요일만 가져오기
           const isNextMonth = date && date.getMonth() > currentDate.getMonth();
           const isFifteenth = date && date.getDate() === 15; // 15일인지 확인
-          
 
-          {/** 날짜 셀 각각 꾸미기 */}
-          {/*오늘 셀:  ${isToday ? 'bg-blue-200' : ''} 
+
+          {/** 특정 날짜 셀 UI */}
+          {/*오늘 셀:    ${isToday ? 'bg-blue-200' : ''} 
             *다음 달 셀: ${isNextMonth ? 'text-gray-400' : ''}
-            *선택된 셀: ${isSelected ? 'bg-blue-500 text-white' : ''}
-            *호버된 셀: ${isHovered ? 'bg-blue-100' : ''}
-            *현재달과 다음달 셀 다르게:  
-                ${isCurrentMonth ? 'bg-white text-gray-600 hover:bg-gray-200' : 'bg-white text-gray-300'}
+            *선택된 셀:  ${isSelected ? 'bg-blue-500 text-white' : ''}
+            *호버된 셀:  ${isHovered ? 'bg-blue-100' : ''}
+            *현재달과 다음달 셀 다르게:  ${isCurrentMonth ? 'bg-white text-gray-600 hover:bg-gray-200' : 'bg-white text-gray-300'}
             */}
-            const calendarCellClassName = `
-            justify-start items-end text-left border-r border-b border-neutral-80 cursor-pointer h-36 p-2
-            ${isSunday ? 'text-red-500' : ''}
-            ${isNextMonth ? 'text-neutral-80' : ''}
-            ${isCurrentMonth ? 'bg-white' : 'bg-white text-neutral-80'}
+          const calendarCellClassName = 
+          // 기본
+          // 일요일
+          // 다음달
+          // 현재달
+          // 이전달
+          `
+            justify-start items-end text-left border-r border-b border-neutral-80 cursor-pointer bg-white h-36 p-2
+            ${isSunday ? 'text-system-error' : ''}
+            ${isNextMonth ? 'text-neutral-70' : ''}
+            ${isCurrentMonth ? 'text-neutral-45' : 'text-neutral-70'}
           `;
-      
           
-          {/** 15일이면 칩 추가 */}
-          {/** 기본 상태면 일자만 표시 */}
-          {/** 호버 상태면 동그라미도 표시 */}
-          {/** 일자(날짜) 출력 */}
+          {/** 특정 날짜 셀 데이터 */}
           const dateContent = date ? ((
+              /* 호버 상태인 셀에 동그라미 표시 */
               <span
-                className={`flex items-center justify-center w-5 h-5 
+                className={`flex items-center text-xsmall16 justify-center w-5 h-5 
                   ${isHovered ? 'rounded-full bg-primary-100 border-5 border-primary-100 text-white' : ''}`}
               >
+                {/* 날짜 셀에 들어갈 데이터 */}
                 {date.getDate()}
               </span>
             )
           ) : null;
 
+
+          {/** 일정 추가:  API 연동 부분 */}
+          {/** 일단 임시로 15일이면 칩 추가함. */}
           const companySchedules = isFifteenth ? (
+            /* 선택 상태 */
             isSelected ? (
               <ClickedDocumentChip companyName="네이버" />
+
+            /* 호버 상태 */
             ):isHovered ? (
               <HoveredDocumentChip companyName="네이버" />
+
+            /* 기본 상태 */
             ): (
               <DefaultDocumentChip companyName="네이버" />
             )
           ) : null;
 
-          {/** 이벤트 */}
+
+          {/** 달력 셀에 출력 내용 + 이벤트 */}
           return (
             <div
               key={index}
