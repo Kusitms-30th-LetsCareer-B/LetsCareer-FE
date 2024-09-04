@@ -1,6 +1,9 @@
 import { useState } from "react";
 
-const usePagination = (totalPages: number, maxVisiblePages: number = 5) => {
+const useSelfIntroductionPagination = (
+  totalPages: number,
+  maxVisiblePages: number = 5,
+) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const getPageNumbers = () => {
@@ -35,4 +38,4 @@ const usePagination = (totalPages: number, maxVisiblePages: number = 5) => {
   };
 };
 
-export default usePagination;
+export default useSelfIntroductionPagination;
