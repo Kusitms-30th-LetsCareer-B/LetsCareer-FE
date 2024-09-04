@@ -1,6 +1,5 @@
 import save from "../../shared/assets/save.png";
 import { useGoBack } from "../../shared/hooks/useGoBack";
-import goBackIcon from "../../shared/assets/goBack.png";
 
 interface ButtonProps {
   text: string;
@@ -31,12 +30,26 @@ export const GoBackButton = ({ text }: ButtonProps) => {
   const goBack = useGoBack();
 
   return (
-    <div className="mb-[40px] flex h-[32px] w-[460px] items-start">
+    <div className="mb-[40px] flex items-start">
       <button
-        className="mr-[12px] flex items-center justify-center py-[4px]"
+        className="my-[4px] mr-[12px] flex items-center justify-center"
         onClick={goBack}
       >
-        <img className="h-[24px] w-[24px]" src={goBackIcon} alt="뒤로 가기" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <path
+            d="M15 18L9 12L15 6"
+            stroke="#2A2D34"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </button>
       <span className="text-medium24 font-bold tracking-[-0.576px] text-neutral-0">
         {text}

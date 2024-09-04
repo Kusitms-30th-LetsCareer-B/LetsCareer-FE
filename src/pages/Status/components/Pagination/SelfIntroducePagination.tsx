@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import usePagination from "../../../../shared/hooks/usePagination";
+import { useState } from "react";
+import useSelfIntroductionPagination from "../../../../shared/hooks/useSelfIntoductionPagination";
 
 type PaginationProps = {
   initialTotalPages: number;
@@ -9,7 +9,8 @@ export const Pagination: React.FC<PaginationProps> = ({
   initialTotalPages,
 }) => {
   const [totalPages, setTotalPages] = useState(initialTotalPages);
-  const { pages, currentPage, changePage } = usePagination(totalPages);
+  const { pages, currentPage, changePage } =
+    useSelfIntroductionPagination(totalPages);
 
   const addPage = () => {
     if (totalPages < 15) {

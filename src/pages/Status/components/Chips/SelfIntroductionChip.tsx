@@ -13,7 +13,17 @@ interface ExperienceProps {
 export const DepartmentChip = ({ department }: DepartmentChipProps) => {
   return (
     <div className="inline-flex h-[28px] items-center justify-center rounded-sm bg-primary-10 px-[12px] py-[4px]">
-      <div className="leading-20 text-center text-xsmall14 font-medium tracking-[-0.21px] text-primary">
+      <div className="text-center text-xsmall14 font-medium tracking-[-0.21px] text-primary">
+        {department}
+      </div>
+    </div>
+  );
+};
+
+export const Departmenth32Chip = ({ department }: DepartmentChipProps) => {
+  return (
+    <div className="flex h-[32px] items-center justify-center rounded-sm bg-primary-10 px-[12px] py-[4px]">
+      <div className="text-center text-xsmall16 font-medium tracking-[-0.096px] text-primary">
         {department}
       </div>
     </div>

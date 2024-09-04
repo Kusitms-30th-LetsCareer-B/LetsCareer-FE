@@ -8,6 +8,8 @@ import CalendarPage from "./pages/Calendar/CalendarPage";
 import StatusPage from "./pages/Status/StatusPage";
 import CareerPage from "./pages/Career/CareerPage";
 import SelfIntroducePage from "./pages/Status/SelfIntroducePage";
+import DetailStatusPage from "./pages/Status/DetailStatusPage";
+import RecurringNotePage from "./pages/Status/RecurringNotePage";
 
 function App() {
   return (
@@ -19,9 +21,14 @@ function App() {
           <Route path="/home" element={<MainPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/status" element={<StatusPage />} />
+          <Route path="/status/:companyId" element={<DetailStatusPage />} />
           <Route
-            path="/status/self-introduce"
+            path="/status/:companyId/self-introduce"
             element={<SelfIntroducePage />}
+          />
+          <Route
+            path="/status/:companyId/recurring-note"
+            element={<RecurringNotePage />}
           />
           <Route path="/setting" element={<CareerPage />} />
         </Routes>
