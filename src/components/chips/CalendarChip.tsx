@@ -226,7 +226,7 @@ export const DefaultPersonalChip = ({personalSchedule}: PersonalChipProps) => {
   return (
     <div className="inline-flex min-w-[84px] h-[24px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px] ">
       {/* 동그라미 박스 */}
-      <div className="flex items-center justify-start w-[8px] h-[8px] bg-secondary-light rounded-full mr-[4px]"/>
+      <div className="flex items-center justify-start w-[8px] h-[8px] bg-neutral-45 rounded-full mr-[4px]"/>
 
       {/* 개인일정 내용 */}
       <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45 mr-[12px]">
@@ -244,7 +244,7 @@ export const HoveredPersonalChip = ({personalSchedule}: PersonalChipProps) => {
     /* border 추가 */
     <div className="inline-flex min-w-[84px] h-[24px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px] border-2 border-neutral-45">
       {/* 동그라미 박스 */}
-      <div className="flex items-center justify-start w-[8px] h-[8px] bg-secondary-light rounded-full mr-[4px]"/>
+      <div className="flex items-center justify-start w-[8px] h-[8px] bg-neutral-45 rounded-full mr-[4px]"/>
 
       {/* 개인일정 내용 */}
       <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45 mr-[12px]">
@@ -260,7 +260,7 @@ export const ClickedPersonalChip = ({personalSchedule}: PersonalChipProps) => {
   return (
     <div className="inline-flex min-w-[84px] h-[24px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px] ">
       {/* 동그라미 박스 */}
-      <div className="flex items-center justify-start w-[8px] h-[8px] bg-secondary-light rounded-full mr-[4px]"/>
+      <div className="flex items-center justify-start w-[8px] h-[8px] bg-static-100 rounded-full mr-[4px]"/>
 
       {/* 개인일정 내용 */}
       <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-static-100 mr-[12px]">

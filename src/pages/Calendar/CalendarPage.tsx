@@ -24,12 +24,15 @@ function CalendarPage() {
   return (
     <>
       <h1>캘린더 페이지 테스트</h1>
+      {/* 캘린더 컴포 테스트 */}
       <Calender/>
       <br/>
+      {/* 데이터피커 컴포 테스트 */}
       <DatePicker onCancel={handleCloseDatePicker} onSelect={handleDateSelected} message={'서류 시작일을 선택해주세요.'}/>
       {/* 선택된 날짜 표시 */}
       {selectedDate && <div>선택된 날짜: {selectedDate.toDateString()}</div>}
       <br/>
+      {/* Chips 테스트 */}
       <DefaultDocumentChip companyName={companyName}/>
       <HoveredDocumentChip companyName={companyName}/>
       <ClickedDocumentChip companyName={companyName}/><br/>

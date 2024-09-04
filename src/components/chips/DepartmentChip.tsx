@@ -4,7 +4,7 @@ interface DepartmentChipProps {
 
 export const DepartmentMediumChip = ({ department }: DepartmentChipProps) => {
   return (
-    <div className="inline-flex h-[32px] items-center justify-center rounded-sm bg-primary-10 px-[12px] py-[4px]">
+    <div className="inline-flex h-[28px] items-center justify-center rounded-sm bg-primary-10 px-[12px] py-[4px]">
       <div className="text-center text-xsmall14 font-medium tracking-[-0.21px] text-primary">
         {department}
       </div>

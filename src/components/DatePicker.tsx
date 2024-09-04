@@ -15,7 +15,7 @@ interface DatePickerProps {
 }
 
 // 캘린더 컴포넌트
-const CustomCalendar = ({onCancel, onSelect, message}: DatePickerProps) => {
+const DatePicker = ({onCancel, onSelect, message}: DatePickerProps) => {
 
   // 커스텀 캘린더 훅에서 상태와 핸들러 가져오기
   const {
@@ -72,7 +72,7 @@ const CustomCalendar = ({onCancel, onSelect, message}: DatePickerProps) => {
 
       {/* 두 번째 헤더 파트 */}
       <div className='flex justify-between items-center '> {/* 아이템을 한 줄로 하되 하나는 우측정렬, 하나는 좌측정렬 */}
-        {/* 좌측정렬 아이템 */}
+        {/* 좌측에 정렬할 아이템 */}
         <div className='flex justify-center items-center'> {/* 아이템을 한 줄로 정렬 */}
           {/* 이번 년도/달 출력 */}
           <div className="font-medium text-xsmall14 text-neutral-30 px-5">
@@ -85,7 +85,7 @@ const CustomCalendar = ({onCancel, onSelect, message}: DatePickerProps) => {
           </div>
         </div>
 
-        {/* 우측정렬 아이템 */}
+        {/* 우측에 정렬할 아이템 */}
         <div>
           {/* 월 이동 버튼 */}
           <button onClick={handlePrevMonth} className="px-4">
@@ -174,4 +174,4 @@ const CustomCalendar = ({onCancel, onSelect, message}: DatePickerProps) => {
   );
 };
 
-export default CustomCalendar;
+export default DatePicker;

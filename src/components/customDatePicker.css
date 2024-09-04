@@ -1,0 +1,77 @@
+.custom-datepicker {
+  border-radius: 12px;
+  background: white;
+  padding: 16px;
+}
+
+.custom-datepicker .react-datepicker__header {
+  background: white;
+  border-bottom: none;
+}
+
+.custom-datepicker .react-datepicker__current-month,
+.custom-datepicker__header {
+  font-weight: bold;
+  font-size: 24px;
+  color: #000;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.custom-datepicker .react-datepicker__day-name,
+.custom-datepicker__day {
+  font-weight: normal;
+  font-size: 14px;
+  color: #333;
+}
+
+.custom-datepicker .react-datepicker__day--selected {
+  background-color: #4d55f5;
+  color: white;
+  border-radius: 50%;
+}
+
+.custom-datepicker .react-datepicker__day--keyboard-selected {
+  background-color: #4d55f5;
+  color: white;
+  border-radius: 50%;
+}
+
+.custom-datepicker .react-datepicker__day--outside-month {
+  color: #ccc;
+}
+
+.custom-datepicker .react-datepicker__navigation--previous,
+.custom-datepicker .react-datepicker__navigation--next {
+  top: 20px;
+}
+
+.custom-datepicker .react-datepicker__navigation--previous {
+  left: 10px;
+}
+
+.custom-datepicker .react-datepicker__navigation--next {
+  right: 10px;
+}
+
+.custom-datepicker .react-datepicker__day-name {
+  font-weight: normal;
+}
+
+.custom-datepicker .react-datepicker__month-container {
+  padding-top: 8px;
+}
+
+.custom-datepicker .react-datepicker__footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.custom-datepicker .react-datepicker__footer button {
+  border: none;
+  background-color: transparent;
+  font-size: 14px;
+  color: #4d55f5;
+  cursor: pointer;
+}
