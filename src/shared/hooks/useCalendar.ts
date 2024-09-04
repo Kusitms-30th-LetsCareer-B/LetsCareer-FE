@@ -1,171 +1,127 @@
+// src/hooks/useCalendar.tsx
 import { useState } from 'react';
 
+const useCalendar = () => {
+  const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 선택된 날짜
+  const [hoveredDate, setHoveredDate] = useState<Date | null>(null); // 호버된 날짜
 
-///////////////////////////////////////////////////////////////////////
-// Calendar Event 형식 인터페이스 정의
-export interface Event {
-    date: Date;
-    type: string;
-    institution: string;
-    color: string;
-}
+
+  // 달력에 표시할 날짜 배열 생성 함수
+  // 현재 달력에 이전/다음 달 날짜 채움
+  const getDates = () => {
+    const dates = [];
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const lastDayOfPrevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+
+    // 첫 주를 이전 달의 마지막 날짜로 채우기
+    for (let i = firstDayOfMonth.getDay() - 1; i >= 0; i--) {
+      dates.push(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, lastDayOfPrevMonth.getDate() - i));
+    }
+
+    // 현재 월의 날짜 채우기
+    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      dates.push(new Date(currentYear, currentMonth, i));
+    }
+    
+    // 다음 달의 날짜를 채워서 달력을 완성
+    const totalCells = 42; // 7x6 그리드(일단 6주로 채우기)
+    const remainingCells = totalCells - dates.length;
+
+    for (let i = 1; i <= remainingCells; i++) {
+        const nextMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, i);
+        // 추가할 날짜가 다음 달 일요일이면 그만
+        // 다음 달 한 주가 쓸데없이 추가됨.
+        if(nextMonthDate.getDay() == 0)
+            break;
+        dates.push(nextMonthDate);
+    }
+    
+    return dates;
+  };
   
-// Custom Event 인터페이스 정의
-// Event 중에서 type과 color만 사용자가 임의로 지정 가능
-export interface CustomType {
-    type: string;
-    color: string;
-}
+  
+  // 달력에 표시할 현재 달 날짜 배열 생성 함수
+  // 현재 달력에 이전/다음 달 날짜 안 채움
+  const getCurrentDates = () => {
+    const dates = [];
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+    // 첫 주를 공백으로 채우기
+    for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
+        dates.push(null);
+    }
+
+    // 현재 월의 날짜 채우기
+    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      dates.push(new Date(currentYear, currentMonth, i));
+    }
+
+    return dates;
+  };
 
 
-///////////////////////////////////////////////////////////////////////
-// 타입 안정성 제공 용도
-// 객체의 구조를 정의하여 객체의 타입을 강력하게 제한
-interface UseCalendarEventsReturnType {
-    events: Event[];
-    customTypes: CustomType[];
-    selectedDate: Date | null;
-    hoveredDate: Date | null;
-    
-    institution: string;
-    selectedType: string;
-    newType: string;
-    newColor: string;
-    
-    addEvent: (date: Date, type: string, institution: string) => void;
-    addCustomType: (type: string, color: string) => void;
-    removeCustomType: (type: string) => void;
-    setCustomTypeColor: (type: string, color: string) => void;
-    setSelectedDate: (date: Date) => void;
-    setHoveredDate: (date: Date) => void;
-    
-    setInstitution: (institution: string) => void;
-    setSelectedType: (type: string) => void;
-    setNewType: (type: string) => void;
-    setNewColor: (color: string) => void;
-}
+  // 이전 달로 이동하는 함수
+  const handlePrevMonth = () => {
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
+  };
 
+  // 다음 달로 이동하는 함수
+  const handleNextMonth = () => {
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
+  };
 
+  // 날짜 클릭 핸들러
+  const handleDateClick = (date: Date | null) => {
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
 
-///////////////////////////////////////////////////////////////////////
-const useCalendar = (): UseCalendarEventsReturnType => {
-    /* 상태 관리 변수 */
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 클릭된 날짜 상태
-    const [hoveredDate, setHoveredDate] = useState<Date | null>(null); // 호버된 날짜 상태
+  // 날짜 마우스 오버 핸들러
+  const handleDateMouseOver = (date: Date | null) => {
+    setHoveredDate(date);
+  };
 
-    const [events, setEvents] = useState<Event[]>([]);
-    const [customTypes, setCustomTypes] = useState<CustomType[]>([]);
+  // 날짜 마우스 아웃 핸들러
+  const handleDateMouseOut = () => {
+    setHoveredDate(null);
+  };
 
-    const [institution, setInstitution] = useState<string>('');
-    const [selectedType, setSelectedType] = useState<string>('');
-    const [newType, setNewType] = useState<string>('');
-    const [newColor, setNewColor] = useState<string>('#000000');
-    
+  // 전체 일정 보기 이벤트 핸들러
+  const handleAllSchedule = () => {
+    // 전체 일정 보기 로직 추가
+  };
 
+  // 새 채용 일정 추가하기 이벤트 핸들러
+  const handleNewSchedule = () => {
+    // 새 일정 추가 로직 추가
+  };
 
-    /* 상태 관리 함수 */
-    // 일정 추가 함수
-    const addEvent = (date: Date, type: string, institution: string) => {
-        const eventExists = events.filter(event => event.date.toDateString() === date.toDateString());
-
-        // 하루에 최대 3개의 일정만 허용
-        if (eventExists.length >= 3) {
-        alert('하루에 최대 3개의 일정만 등록할 수 있습니다.');
-        return;
-        }
-
-        const typeObj = customTypes.find((customType) => customType.type === type);
-        if (!typeObj) {
-        alert('유효하지 않은 타입입니다. 먼저 타입을 추가하세요.');
-        return;
-        }
-
-        const newEvent: Event = { date, type, institution, color: typeObj.color };
-        setEvents(prevEvents => [...prevEvents, newEvent]);
-    };
-
-    // 사용자 정의 타입 추가 함수
-    const addCustomType = (type: string, color: string) => {
-        setCustomTypes(prevTypes => [...prevTypes, { type, color }]);
-    };
-
-    // 사용자 정의 타입 제거 함수
-    const removeCustomType = (type: string) => {
-        setCustomTypes(prevTypes => prevTypes.filter(t => t.type !== type));
-    };
-
-    // 사용자 정의 타입 색상 설정 함수
-    const setCustomTypeColor = (type: string, color: string) => {
-        setCustomTypes(prevTypes =>
-        prevTypes.map(t => (t.type === type ? { ...t, color } : t))
-        );
-    };
-
-    return {
-        events,
-        customTypes,
-        selectedDate,
-        hoveredDate,
-
-        institution,
-        selectedType,
-        newType,
-        newColor,
-        
-        addEvent,
-        addCustomType,
-        removeCustomType,
-        setCustomTypeColor,
-        
-        setSelectedDate,
-        setHoveredDate,
-        setInstitution,
-        setSelectedType,
-        setNewType,
-        setNewColor,
-    };
+  return {
+    currentDate,
+    selectedDate,
+    hoveredDate,
+    getDates,
+    getCurrentDates,
+    handlePrevMonth,
+    handleNextMonth,
+    handleDateClick,
+    handleDateMouseOver,
+    handleDateMouseOut,
+    handleAllSchedule,
+    handleNewSchedule,
+  };
 };
 
 export default useCalendar;
-
-
-
-
-
-
-
-
-
-    {/*
-    const [isPeriodOn, setIsPeriodOn] = useState(false);
-    const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(defaultDate);
-    const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
-    const [isCalendarOpened, setIsCalendarOpened] = useState(true);
-
-    const handlePeriodToggle = () => {
-        setIsPeriodOn((prevState) => !prevState);
-
-        ```
-        if (isPeriodOn === true) {
-            setSelectedEndDate(null);
-        }
-        setIsPeriodOn((prev) => !prev);
-        ```
-    };
-
-    const handlePeriodEnd = () => {
-        setIsPeriodOn(false);
-    };
-
-    const handleOpenCalendar = () => {
-        setIsCalendarOpened(true);
-    };
-
-    const handleStartDateInput = (date: Date | null) => {
-        setSelectedStartDate(date);
-    };
-
-    const handleEndDateInput = (date: Date | null) => {
-        setSelectedEndDate(date);
-    };
-    */}

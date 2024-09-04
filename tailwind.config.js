@@ -107,6 +107,12 @@ export default {
           95: "#F9F9F8",
           100: "#FAFAFA",
         },
+        schemes: {
+          outline_variant: "#CAC4D0",
+        },
+        system: {
+          error: "#F65E39",
+        }
       },
     },
   },
