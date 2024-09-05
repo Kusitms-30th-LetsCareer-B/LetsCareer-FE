@@ -1,4 +1,4 @@
-import { Ddayh32Chip } from "../../../../components/Chips/DdayChip";
+import { Ddayh32Chip } from "../../../../components/chips/DdayChip";
 import { useScrap } from "../../../../shared/hooks/useScrap";
 import { useStatusTab } from "../../../../shared/hooks/useStatusTab";
 import { DeleteIcon } from "../Buttons/StatusButton";

@@ -3,9 +3,10 @@ import { useState } from "react";
 import { WhiteButton } from "../../../../components/Buttons/Button";
 import {
   Ddayh32Chip,
-  Finishh32Chip,
-} from "../../../../components/Chips/DdayChip";
+  Finishh32Chip
+} from "../../../../components/chips/DdayChip";
 import { useScrap } from "../../../../shared/hooks/useScrap";
+import { NameProps } from "./StatusHelper";
 import {
   RoutineDropdown,
   TodoDropdown,

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import SubTodoList from "./components/SubTodoList";
 import TodoList from "./components/TodoList";
+import CareerStatusBoard from "./components/CareerStatusBoard";
+import CareerStatus from "./components/CareerStatus";
 
 import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
   InterviewScheduleChip, OtherScheduleChip, PersonalScheduleChip, }  from "../../components/chips/TodoListChip";
+
 
 /* API 연동 부분: 개인 스케줄 */
 interface PersonalSchedule {
@@ -32,6 +35,7 @@ function MainPage() {
   return (
     <>
       <h1>메인 페이지</h1>
+      {/* SubTodoList 컴포 테스트 */}
       <SubTodoList />
       {/* TodoList 컴포 테스트 */}
       <TodoList selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
@@ -45,6 +49,14 @@ function MainPage() {
       {schedules.map((schedule) => (
         <PersonalScheduleChip contents={schedule.contents} onDelete={() => handlePersonalDeleteSchedule(schedule.id)}/>
       ))}
+
+      <br/>
+      <br/>
+      {/* CareerStatusBoard 테스트 */}
+      <CareerStatusBoard total={10} preparing={4} pass={3} fail={2} />
+
+      {/* CareerStatus 테스트 */}
+      <CareerStatus statusPageLink="" />
     </>
   );
 }
