@@ -26,7 +26,7 @@ const CareerStatusBoard = ({total, preparing, pass, fail}: TableRowProps) => {
                 <div>준비 중</div>
 
                 {/* prob 표시 */}
-                <div className="text-lg font-bold text-primary-100">
+                <div className="text-lg font-bold text-neutral-30">
                     {preparing}건
                 </div>
             </div>
@@ -35,7 +35,7 @@ const CareerStatusBoard = ({total, preparing, pass, fail}: TableRowProps) => {
                 <div>합격</div>
 
                 {/* prob 표시 */}
-                <div className="text-lg font-bold text-primary-100">
+                <div className="text-lg font-bold text-neutral-30">
                     {pass}건
                 </div>
             </div>
@@ -44,7 +44,7 @@ const CareerStatusBoard = ({total, preparing, pass, fail}: TableRowProps) => {
                 <div>불합격</div>
 
                 {/* prob 표시 */}
-                <div className="text-lg font-bold text-primary-100">
+                <div className="text-lg font-bold text-neutral-30">
                     {fail}건
                 </div>
             </div>

@@ -3,6 +3,7 @@ import SubTodoList from "./components/SubTodoList";
 import TodoList from "./components/TodoList";
 import CareerStatusBoard from "./components/CareerStatusBoard";
 import CareerStatus from "./components/CareerStatus";
+import MainCalendar from "../../components/Calendar";
 
 import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
   InterviewScheduleChip, OtherScheduleChip, PersonalScheduleChip, }  from "../../components/chips/TodoListChip";
@@ -14,14 +15,18 @@ interface PersonalSchedule {
   contents: string;
 }
 
-function MainPage() {
+/* 로그인 정보 받기 */
+interface userInfo {
+  userName: string;
+}
+
+function MainPage({userName} : userInfo) {
 
   // TodoList에 현재 날짜 임시로 넣기
   // 원래는 캘린더와 연동해서 넣어야 함.
   const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // 기본
   const companyName = "네이버";
   const companyContents = "인적성검사"
-  const contents = "개인 일정"
   const [schedules, setSchedules] = useState<PersonalSchedule[]>([
     { id: 1, contents: "개인 일정 1" },
     { id: 2, contents: "개인 일정 2" },
@@ -34,29 +39,31 @@ function MainPage() {
 
   return (
     <>
-      <h1>메인 페이지</h1>
-      {/* SubTodoList 컴포 테스트 */}
-      <SubTodoList />
-      {/* TodoList 컴포 테스트 */}
-      <TodoList selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-      <br/>
-      {/* Chips 테스트 */}
-      <CompanyNameChip companyName={companyName}/>
-      <CompanyNameSelectionChip/><br/>
-      <DocumentScheduleChip companyName={companyName} status="시작"/>
-      <InterviewScheduleChip companyName={companyName}/>
-      <OtherScheduleChip companyName={companyName} contents={companyContents}/><br/>
-      {schedules.map((schedule) => (
-        <PersonalScheduleChip contents={schedule.contents} onDelete={() => handlePersonalDeleteSchedule(schedule.id)}/>
-      ))}
+      {/** 타이틀 */}
+      <div className="font-bold text-medium24 text-neutral-0 py-10">
+        {userName}님, 오늘도 커리어를 향해 함께 같이 달려봐요!
+      </div>
+      <div className="font-semibold text-small20 text-neutral-10 mb-5">
+        내 캘린더
+      </div>
 
-      <br/>
-      <br/>
-      {/* CareerStatusBoard 테스트 */}
-      <CareerStatusBoard total={10} preparing={4} pass={3} fail={2} />
+      <div className="flex justify-between gap-8">
+        <div>
+          
+          {/** 달력 */}
+          <MainCalendar/>
+          
+          {/** 일정 상태 */}
+          <CareerStatusBoard total={10} preparing={4} pass={3} fail={2} />
+          <CareerStatus statusPageLink="../Status/StatusPage" />
+        </div>
 
-      {/* CareerStatus 테스트 */}
-      <CareerStatus statusPageLink="" />
+        <div>
+          {/** 투두 리스트 */}
+          <SubTodoList />
+          <TodoList selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+        </div>
+      </div>
     </>
   );
 }
