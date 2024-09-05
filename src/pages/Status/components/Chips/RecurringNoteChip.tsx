@@ -8,6 +8,8 @@ interface RecurringNoteChipProps {
 
 interface RecurringNoteChip2Props {
     text: string;
+    isSelected: boolean;
+    onClick: () => void;
 }   
 
 export const RecurringNoteChip = ({text, isSelected, onClick }: RecurringNoteChipProps) => {
@@ -24,34 +26,38 @@ export const RecurringNoteChip = ({text, isSelected, onClick }: RecurringNoteChi
     );
 };
 
-export const RecurringNoteChipGroup = () => {
-    const [selected, setSelected] = useState<string | null>(null); // 선택된 버튼 관리
-
-    const handleSelect = (text: string) => {
-        setSelected(text); // 클릭된 버튼을 선택된 상태로 설정
-    };
-
+export const RecurringNoteChipGroup = ({
+    selected, 
+    setSelected,
+  }: {
+    selected: string | null;
+    setSelected: (satisfaction: string | null) => void;
+  }) => {
     return (
-        <div className="flex gap-[10px]">
-            <RecurringNoteChip text="만족" isSelected={selected === '만족'} onClick={() => handleSelect('만족')} />
-            <RecurringNoteChip text="보통" isSelected={selected === '보통'} onClick={() => handleSelect('보통')} />
-            <RecurringNoteChip text="불만족" isSelected={selected === '불만족'} onClick={() => handleSelect('불만족')} />
-        </div>
+      <div className="flex gap-[10px]">
+        <RecurringNoteChip
+          text="만족"
+          isSelected={selected === "만족"}
+          onClick={() => setSelected("만족")}
+        />
+        <RecurringNoteChip
+          text="보통"
+          isSelected={selected === "보통"}
+          onClick={() => setSelected("보통")}
+        />
+        <RecurringNoteChip
+          text="불만족"
+          isSelected={selected === "불만족"}
+          onClick={() => setSelected("불만족")}
+        />
+      </div>
     );
-};
+  };
 
-
-
-export const RecurringNoteChip2 = ({text}: RecurringNoteChip2Props) => {
-    const [isSelected, setIsSelected] = useState(false);
-
-    const handleClick = () => {
-        setIsSelected(!isSelected);
-    };
-    
+export const RecurringNoteChip2 = ({ text, isSelected, onClick }: RecurringNoteChip2Props) => {
     return(
         <button 
-            onClick={handleClick} 
+            onClick={onClick} 
             className={`bg-neutral-90 w-[97px] flex justify-center items-center rounded-sm px-[12px] py-[8px]
             ${isSelected ? 'bg-primary-10 text-primary' : 'bg-neutral-90 text-neutral-45'}`}
         >

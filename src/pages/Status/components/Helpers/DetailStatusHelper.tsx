@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { WhiteButton } from "../../../../components/Buttons/Button";
 import {
   Ddayh32Chip,
@@ -15,6 +15,8 @@ import {
 import { Departmenth32Chip } from "../Chips/SelfIntroductionChip";
 import { FailedChip, ProgressChip, SuccessChip } from "../Chips/StatusChip";
 import DatePicker from "../../../../components/DatePicker";
+import axios from "axios";
+import { ArchiveButton } from "../Buttons/DetailStatusButton";
 
 interface DetailStatusProps {
     day: number;
@@ -402,51 +404,158 @@ export const DetailOnGoingStatus = ({
     );
   };
   
-  export const NoExistArchiving = () => {
-    const navigate = useNavigate();
-  
-    const handleClick = () => {
-      navigate("/status/self-introduce");
-    };
-  
+  export const NoExistArchiving = () => {  
     return (
-      <div className="">
-        <div className="mb-[12px] flex items-center self-stretch rounded-sm bg-primary-10">
-          <div
-            className="flex cursor-pointer justify-between px-[16px] py-[12px]"
-            onClick={handleClick}
-          >
-            <div className="w-[534px] flex-shrink-0 flex-grow basis-0">
-              <span className="text-xsmall16 font-medium tracking-[-0.096px] text-primary-100">
-                자기소개서 작성하기
-              </span>
-            </div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-            >
-              <path
-                d="M7 16L13 10L7 4"
-                stroke="#4D55F5"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        </div>
-        <div className="flex h-[314px] flex-col justify-center self-stretch">
-          <span className="text-center text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-45">
-            취업을 위한 자료와 정보들을 업로드해보세요
-          </span>
-        </div>
+      <div className="flex h-[314px] flex-col justify-center self-stretch">
+        <span className="text-center text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-45">
+          취업을 위한 자료와 정보들을 업로드해보세요
+        </span>
       </div>
     );
   };
-  
+
+interface ArchiveItem {
+  id: number;
+  title: string;
+}
+
+export const ExistArchiving = () => {
+  const navigate = useNavigate();
+  const { recruitmentId } = useParams<{ recruitmentId: string }>();
+
+  const [archives, setArchives] = useState<ArchiveItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
+
+  const fetchArchives = async (page: number) => {
+    try {
+      const response = await axios.get(
+        `http://43.203.124.122:8080/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page-1}&size=5`
+      );
+      console.log("API response:", response.data); // 응답 데이터 출력
+      const archiveData = response.data.data
+      setArchives(archiveData); // API로 받은 데이터를 저장
+      setTotalPages(Math.max(1, (Math.ceil(response.data.totalCount / 5) + 1))); // 페이지 수 계산
+      console.log(totalPages);
+    } catch (error) {
+      console.error("Error fetching archives:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (recruitmentId) {
+      fetchArchives(currentPage); // 컴포넌트 마운트 시 현재 페이지에 맞는 데이터를 가져옴
+    }
+  }, [recruitmentId, currentPage]); // recruitmentId 또는 currentPage가 변경될 때 데이터 가져옴
+
+  const handleDelete = (id: number) => {
+    setArchives((prevArchives) =>
+      prevArchives.filter((archive) => archive.id !== id)
+    );
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleClick = () => {
+    navigate(`/status/${recruitmentId}/self-introduce`);
+  };
+
+  // 안전하게 처리 - archives가 undefined일 때 기본적으로 빈 배열 처리
+  return (
+    <div className="flex flex-col items-starat self-stretch">
+      <div className="flex items-center self-stretch rounded-sm bg-primary-10">
+        <div
+          className="flex cursor-pointer justify-between px-[16px] py-[12px]"
+          onClick={handleClick}
+        >
+          <div className="w-[534px] flex-shrink-0 flex-grow basis-0">
+            <span className="text-xsmall16 font-medium tracking-[-0.096px] text-primary-100">
+              자기소개서 작성하기
+            </span>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M7 16L13 10L7 4"
+              stroke="#4D55F5"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+      {archives.length > 0 ? (
+        <>
+          {/* 아카이빙 리스트 */}
+          {archives.map((archive) => (
+            <ArchiveButton
+              key={archive.id}
+              title={archive.title}
+              onDelete={() => handleDelete(archive.id)}
+              archiveLink={`/status/${recruitmentId}/archive/${archive.id}`}
+            />
+          ))}
+
+          {/* 페이지네이션 버튼 */}
+          <div className="flex justify-center mt-4">
+            {totalPages > 1 ? (
+              Array.from({ length: totalPages }, (_, idx) => (
+                <button
+                  key={idx}
+                  className="mx-1 flex items-center"
+                  onClick={() => setCurrentPage(idx + 1)}
+                >
+                  {currentPage === idx + 1 ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="8"
+                      height="8"
+                      viewBox="0 0 8 8"
+                      fill="none"
+                    >
+                      <circle cx="4" cy="4" r="4" fill="#757BFF" />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="8"
+                      height="8"
+                      viewBox="0 0 8 8"
+                      fill="none"
+                    >
+                      <circle cx="4" cy="4" r="4" fill="#E7E7E7" />
+                    </svg>
+                  )}
+                </button>
+              ))
+            ) : (
+              <div className="h-4"></div> // 페이지가 하나뿐일 경우 패딩 처리
+            )}
+          </div>
+        </>
+      ) : (
+        <NoExistArchiving />
+      )}
+    </div>
+  );
+};
+
   interface TodoCheckboxProps {
     checked: boolean;
     onChange: () => void;
@@ -1006,14 +1115,6 @@ export const DetailOnGoingStatus = ({
           </button>
         </div>
       </div>
-    );
-  };
-  
-  export const ExistArchiving = () => {
-    return (
-      <span className="text-center text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-45">
-        취업을 위한 자료와 정보들을 업로드해보세요
-      </span>
     );
   };
   

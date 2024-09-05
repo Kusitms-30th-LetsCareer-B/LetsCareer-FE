@@ -1,10 +1,64 @@
+import { useEffect, useState } from "react";
 import { GoBackButton } from "../../components/Buttons/Button";
-import { AddCard, CreateTodo, DetailOnGoingStatus, NoExistArchiving, ProgressCard } from "./components/Helpers/DetailStatusHelper";
+import { AddCard, CreateTodo, DetailOnGoingStatus, ExistArchiving, ProgressCard } from "./components/Helpers/DetailStatusHelper";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 
 function DetailStatusPage() {
-  const company = "하이브아이엠";
-  const today = "24. 08. 27";
+  const { recruitmentId } = useParams<{ recruitmentId: string }>();
+
+  const [company, setCompany] = useState<string>("");
+  const [task, setTask] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+
+  const [today, setToday] = useState(new Date());
+
+  useEffect(() => {
+    const fetchRecruitmentDetails = async () => {
+        try {
+            const response = await axios.get(
+                `${BASE_URL}/${recruitmentId}`
+            );
+            const { companyName, task } = response.data.data;
+            setCompany(companyName);
+            setTask(task);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching recruitment details:", error);
+            setLoading(false);
+        }
+    };
+
+    if (recruitmentId) {
+        fetchRecruitmentDetails(); // recruitmentId가 있을 때만 데이터 fetch
+    }
+}, [recruitmentId]);
+
+const formatDate = (date: Date) => {
+  return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+};
+
+// 날짜를 하루 이전으로
+const handlePrevDay = () => {
+  const prevDay = new Date(today);
+  prevDay.setDate(today.getDate() - 1);
+  setToday(prevDay);
+};
+
+// 날짜를 하루 이후로
+const handleNextDay = () => {
+  const nextDay = new Date(today);
+  nextDay.setDate(today.getDate() + 1);
+  setToday(nextDay);
+};
+
+if (loading) {
+  return <div>Loading...</div>; // 데이터 로딩 중 상태
+}
+
 
   return (
     <div className="mb-[100px] px-[48px] pt-[40px]">
@@ -19,9 +73,9 @@ function DetailStatusPage() {
       <div className="flex">
         <DetailOnGoingStatus
           name="서류"
-          day={7}
+          day={1}
           company={company}
-          department="마케팅 직무"
+          department={task}
         />
       </div>
       <div className="mb-[20px] items-center rounded-md bg-neutral-100">
@@ -48,7 +102,7 @@ function DetailStatusPage() {
               </span>
             </div>
             <div className="flex items-center gap-[8px]">
-              <button className="">
+              <button onClick={handlePrevDay}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -67,7 +121,7 @@ function DetailStatusPage() {
               </button>
               <div className="flex items-center gap-[4px]">
                 <span className="text-small18 font-semibold tracking-[-0.096px] text-neutral-35">
-                  {today}
+                {formatDate(today)}
                 </span>
                 <button className="">
                   <svg
@@ -84,7 +138,7 @@ function DetailStatusPage() {
                   </svg>
                 </button>
               </div>
-              <button className="">
+              <button onClick={handleNextDay}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -128,8 +182,8 @@ function DetailStatusPage() {
               </svg>
             </button>
           </div>
-          <div className="">
-            <NoExistArchiving />
+          <div className="h-full">
+            <ExistArchiving />
           </div>
         </div>
       </div>

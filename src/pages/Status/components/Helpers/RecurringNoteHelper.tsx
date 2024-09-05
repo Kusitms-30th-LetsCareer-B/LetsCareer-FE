@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DepartmentChip } from "../Chips/SelfIntroductionChip";
 import { FailedChip } from "../Chips/StatusChip";
 import { RecurringNoteChip, RecurringNoteChip2, RecurringNoteChipGroup } from "../Chips/RecurringNoteChip";
@@ -7,11 +7,10 @@ import { SelfIntroductionQuestions } from "../Pagination/RecurringNotePagination
 
 interface RecurringNoteProps {
     company: string;
-    department: string;
+    task: string;
 }
 
-
-export const RecurringNoteHeader = ({company, department}: RecurringNoteProps) => {
+export const RecurringNoteHeader = ({company, task}: RecurringNoteProps) => {
     
     return (
         <div className="flex flex-col w-full items-start gap-[8px]">
@@ -21,7 +20,7 @@ export const RecurringNoteHeader = ({company, department}: RecurringNoteProps) =
                 </span>
                 <div className="flex items-center gap-[6px]">
                     <FailedChip />
-                    <DepartmentChip department={department}/>
+                    <DepartmentChip department={task}/>
                 </div>
             </div>
             <span className="w-full text-xsmall16 font-medium tracking-[-0.096px] text-neutral-50">
@@ -31,44 +30,91 @@ export const RecurringNoteHeader = ({company, department}: RecurringNoteProps) =
     );
 }
 
-export const RecurringNoteTab = () => {
+export const RecurringNoteTab = ({ onSave }: { onSave: () => void }) => {
     const [activeTab, setActiveTab] = useState("document");
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case "document":
-        return <div>서류 관련 정보</div>;
-      case "interview":
-        return <div>면접 관련 정보</div>;
-      case "etc":
-        return <div>기타 관련 정보</div>;
-      default:
-        return null;
-    }
-  };
-
-    return(
-        <div className="flex w-full justify-between items-center">
-            <div className="flex items-center">
-                <button className={`px-[12px] py-[6px] rounded-sm text-small18 font-semibold tracking-[-0.022px] ${activeTab === "document" ? "bg-primary-10 text-primary" : "text-neutral-45"}
-                `} onClick={() => setActiveTab("document")}>서류</button>
-                <button className={`px-[12px] py-[6px] rounded-sm text-small18 font-semibold tracking-[-0.022px] ${activeTab === "interview" ? "bg-primary-10 text-primary" : "text-neutral-45"}
-                `} onClick={() => setActiveTab("interview")}>면접</button>
-                <button className={`px-[12px] py-[6px] rounded-sm text-small18 font-semibold tracking-[-0.022px] ${activeTab === "etc" ? "bg-primary-10 text-primary" : "text-neutral-45"}
-                `} onClick={() => setActiveTab("etc")}>기타</button>
-            </div>
-            <button className="flex px-[28px] py-[10px] justify-center gap-[10px] flex-shrink-0 bg-primary rounded-sm">
-                <span className="text-xsmall16 font-medium tracking-[-0.096px] text-static-100">
-                    저장하기
-                </span>
-            </button>
+  
+    const renderContent = () => {
+      switch (activeTab) {
+        case "document":
+          return <div>서류 관련 정보</div>;
+        case "interview":
+          return <div>면접 관련 정보</div>;
+        case "etc":
+          return <div>기타 관련 정보</div>;
+        default:
+          return null;
+      }
+    };
+  
+    return (
+      <div className="flex w-full justify-between items-center">
+        <div className="flex items-center">
+          <button
+            className={`px-[12px] py-[6px] rounded-sm text-small18 font-semibold tracking-[-0.022px] ${
+              activeTab === "document" ? "bg-primary-10 text-primary" : "text-neutral-45"
+            }`}
+            onClick={() => setActiveTab("document")}
+          >
+            서류
+          </button>
+          <button
+            className={`px-[12px] py-[6px] rounded-sm text-small18 font-semibold tracking-[-0.022px] ${
+              activeTab === "interview" ? "bg-primary-10 text-primary" : "text-neutral-45"
+            }`}
+            onClick={() => setActiveTab("interview")}
+          >
+            면접
+          </button>
+          <button
+            className={`px-[12px] py-[6px] rounded-sm text-small18 font-semibold tracking-[-0.022px] ${
+              activeTab === "etc" ? "bg-primary-10 text-primary" : "text-neutral-45"
+            }`}
+            onClick={() => setActiveTab("etc")}
+          >
+            기타
+          </button>
         </div>
+        <button
+          className="flex px-[28px] py-[10px] justify-center gap-[10px] flex-shrink-0 bg-primary rounded-sm"
+          onClick={onSave}
+        >
+          <span className="text-xsmall16 font-medium tracking-[-0.096px] text-static-100">
+            저장하기
+          </span>
+        </button>
+      </div>
     );
-};
+  };
+  
 
-export const DocumentRecurringNoteLeftPart = () => {
+interface ReviewNote {
+    id: number;
+    satisfaction: string;
+    wellDonePoints: string[];
+    shortcomingPoints: string[];
+    wellDoneMemo: string;
+    shortcomingMemo: string;
+  }
+
+interface DocumentRecurringNoteLeftPartProps {
+    documentData?: ReviewNote;
+    setDocumentData: React.Dispatch<React.SetStateAction<ReviewNote>>;
+}
+
+export const DocumentRecurringNoteLeftPart = ({
+    documentData = {id: 0, satisfaction: "", wellDonePoints: [], shortcomingPoints: [], wellDoneMemo: '', shortcomingMemo: '' }, 
+    setDocumentData,
+}: DocumentRecurringNoteLeftPartProps) => {
     const [isFocused, setIsFocused] = useState(false);
+    const [wellDonePoints, setWellDonePoints] = useState<string[]>(documentData.wellDonePoints);
+    const [shortcomingPoints, setShortcomingPoints] = useState<string[]>(documentData.shortcomingPoints);
+  
+    useEffect(() => {
+        setWellDonePoints(documentData.wellDonePoints);
+        setShortcomingPoints(documentData.shortcomingPoints);
+      }, [documentData.wellDonePoints, documentData.shortcomingPoints]);
 
+      
     const handleFocus = () => {
         setIsFocused(true);
     };
@@ -77,6 +123,32 @@ export const DocumentRecurringNoteLeftPart = () => {
         setIsFocused(false);
     };
 
+    const toggleWellDonePoint = (point: string) => {
+        const updatedPoints = wellDonePoints.includes(point)
+          ? wellDonePoints.filter((p) => p !== point) // 선택 해제
+          : [...wellDonePoints, point]; // 선택된 경우 추가
+    
+        setWellDonePoints(updatedPoints);
+    
+        setDocumentData((prev) => ({
+          ...prev,
+          wellDonePoints: updatedPoints,
+        }));
+      };
+    
+      const toggleShortcomingPoint = (point: string) => {
+        const updatedPoints = shortcomingPoints.includes(point)
+          ? shortcomingPoints.filter((p) => p !== point) // 선택 해제
+          : [...shortcomingPoints, point]; // 선택된 경우 추가
+    
+        setShortcomingPoints(updatedPoints);
+    
+        // Update the documentData state with the new points
+        setDocumentData((prev) => ({
+          ...prev,
+          shortcomingPoints: updatedPoints,
+        }));
+      };
 
     return(
         <div className="w-1/2 h-full flex px-[24px] py-[20px] flex-col gap-[20px] border border-neutral-80 rounded-md">
@@ -85,38 +157,33 @@ export const DocumentRecurringNoteLeftPart = () => {
                     간편 복기
                 </span>
             </div>
-            <div className="flex items-center gap-[50px] w-full">
+            <div className="flex items-center gap-[50px]">
                 <span className="text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
                     만족도
                 </span>
                 <div className="flex gap-[10px]">
-                    <RecurringNoteChipGroup />
+                <RecurringNoteChipGroup
+                        selected={documentData.satisfaction}
+                        setSelected={(satisfaction) => setDocumentData((prev) => ({ ...prev, satisfaction: satisfaction || "" }))}
+                        />                
                 </div>
             </div>
-            <div className="flex gap-[47px]">
-                <span className="w-full text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
+            <div className="flex w-full">
+                <span className="w-1/5 text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
                     잘한 점 
                 </span>
                 <div className="flex flex-col items-start justify-center gap-[16px] w-full">
                     <div className="flex flex-wrap gap-[10px]">
-                        <div className="flex items-center gap-[8px]">
-                            <RecurringNoteChip2 text="지원동기" />
-                            <RecurringNoteChip2 text="산업 이해도" />
-                            <RecurringNoteChip2 text="논리적 구성" />
-                            <RecurringNoteChip2 text="적극성" />
-                        </div>
-                        <div className="flex items-center gap-[8px]">
-                            <RecurringNoteChip2 text="경험 활용" />
-                            <RecurringNoteChip2 text="회사 이해도" />
-                            <RecurringNoteChip2 text="명확한 표현" />
-                            <RecurringNoteChip2 text="성장 가능성" />
-                        </div>
-                        <div className="flex items-center gap-[8px]">
-                            <RecurringNoteChip2 text="직무 적합성" />
-                            <RecurringNoteChip2 text="직무 이해도" />
-                            <RecurringNoteChip2 text="차별화" />
-                            <RecurringNoteChip2 text="열정 표현" />
-                        </div>
+                            {["지원동기", "산업 이해도", "논리적 구성", "적극성", "경험 활용", "회사 이해도", "명확한 표현", "성장 가능성", "직무 적합성", "직무 이해도", "차별화", "열정 표현"].map(
+                                (point, index) => (
+                                <RecurringNoteChip2
+                                    key={index}
+                                    text={point}
+                                    isSelected={wellDonePoints.includes(point)}
+                                    onClick={() => toggleWellDonePoint(point)}
+                                />
+                            )
+                            )}
                     </div>
 
                     <textarea
@@ -128,33 +195,27 @@ export const DocumentRecurringNoteLeftPart = () => {
                           ? "outline-primary"
                           : "border-neutral-80 text-neutral-30"
                       }`}
+                      value={documentData.wellDoneMemo}
+                      onChange={(e) => setDocumentData((prev) => ({ ...prev, wellDoneMemo: e.target.value }))}
                     ></textarea>
                 </div>
             </div>
-            <div className="flex gap-[33px]">
-                <span className="w-full text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
+            <div className="flex w-full">
+                <span className="w-1/5 text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
                     아쉬운 점 
                 </span>
                 <div className="flex flex-col items-start justify-center gap-[16px] w-full">
                     <div className="flex flex-wrap gap-[10px]">
-                        <div className="flex items-center gap-[8px]">
-                            <RecurringNoteChip2 text="지원동기" />
-                            <RecurringNoteChip2 text="산업 이해도" />
-                            <RecurringNoteChip2 text="논리적 구성" />
-                            <RecurringNoteChip2 text="적극성" />
-                        </div>
-                        <div className="flex items-center gap-[8px]">
-                            <RecurringNoteChip2 text="경험 활용" />
-                            <RecurringNoteChip2 text="회사 이해도" />
-                            <RecurringNoteChip2 text="명확한 표현" />
-                            <RecurringNoteChip2 text="성장 가능성" />
-                        </div>
-                        <div className="flex items-center gap-[8px]">
-                            <RecurringNoteChip2 text="직무 적합성" />
-                            <RecurringNoteChip2 text="직무 이해도" />
-                            <RecurringNoteChip2 text="차별화" />
-                            <RecurringNoteChip2 text="열정 표현" />
-                        </div>
+                        {["지원동기", "산업 이해도", "논리적 구성", "적극성", "경험 활용", "회사 이해도", "명확한 표현", "성장 가능성", "직무 적합성", "직무 이해도", "차별화", "열정 표현"].map(
+                            (point, index) => (
+                                <RecurringNoteChip2
+                                    key={index}
+                                    text={point}
+                                    isSelected={shortcomingPoints.includes(point)}
+                                    onClick={() => toggleShortcomingPoint(point)}
+                                />
+                            )
+                        )}
                     </div>
 
                     <textarea
@@ -166,6 +227,8 @@ export const DocumentRecurringNoteLeftPart = () => {
                           ? "outline-primary"
                           : "border-neutral-80 text-neutral-30"
                       }`}
+                      value={documentData.shortcomingMemo}
+                      onChange={(e) => setDocumentData((prev) => ({ ...prev, shortcomingMemo: e.target.value }))}
                     ></textarea>
                 </div>
             </div>

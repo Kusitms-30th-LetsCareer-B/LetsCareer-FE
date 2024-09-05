@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import prevButtonIcon from "../shared/assets/calendar-prev.png"
 import nextButtonIcon from "../shared/assets/calendar-next.png"
 import filterButtonIcon from "../shared/assets/filter.png"
@@ -30,6 +29,7 @@ const CustomCalendar = () => {
     handleAllSchedule,
     handleNewSchedule
   } = useCalendar();
+
 
   // 달력 헤더에 표시할 컬럼명 배열 선언
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -103,7 +103,7 @@ const CustomCalendar = () => {
 
         {/**날짜 셀*/}
         {dates.map((date, index) => {
-          const isToday = date && date.toDateString() === new Date().toDateString();
+          // const isToday = date && date.toDateString() === new Date().toDateString();
           const isSelected = date && selectedDate && date.toDateString() === selectedDate.toDateString();
           const isHovered = date && hoveredDate && date.toDateString() === hoveredDate.toDateString();
           const isCurrentMonth = date && date.getMonth() === currentDate.getMonth();

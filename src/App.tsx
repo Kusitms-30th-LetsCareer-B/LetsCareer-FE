@@ -20,14 +20,14 @@ function App() {
         <Routes>
           <Route path="/home" element={<MainPage userName={"오민지"} />} />
           <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/status" element={<StatusPage />} />
-          <Route path="/status/:companyId" element={<DetailStatusPage />} />
+          <Route path="/status/" element={<StatusPage />} />
+          <Route path="/status/:recruitmentId" element={<DetailStatusPage />} />
           <Route
-            path="/status/:companyId/self-introduce"
+            path="/status/:recruitmentId/self-introduce"
             element={<SelfIntroducePage />}
           />
           <Route
-            path="/status/:companyId/recurring-note"
+            path="/status/:recruitmentId/recurring-note"
             element={<RecurringNotePage />}
           />
           <Route path="/setting" element={<CareerPage />} />

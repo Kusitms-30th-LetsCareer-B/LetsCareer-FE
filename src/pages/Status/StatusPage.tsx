@@ -2,139 +2,162 @@ import { useEffect, useState } from "react";
 import { useStatusPagination } from "../../shared/hooks/useStatusPagination";
 import { UserStatusChip } from "./components/Chips/StatusChip";
 import { WelcomeMessage } from "./components/Helpers/StatusHelper";
-import { ApplyStatus, ClickStatusTab } from "./components/Layout/StatusLayout";
+import { ApplyStatus } from "./components/Layout/StatusLayout";
 import StatusPagination from "./components/Pagination/StatusPagination";
 import {
+  RecruitmentDeleteButton,
   StatusDeleteButton,
   StatusDropdown,
 } from "./components/Buttons/StatusButton";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useStatusTab } from "../../shared/hooks/useStatusTab";
+import { StatusTab } from "./components/Tabs/StatusTab";
 
-interface Company {
-  id: number;
-  name: string;
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
+
+interface Recruitment {
+  recruitmentId: number;
+  companyName: string;
+  task: string;
   status: string;
+  stageName: string;
+  isFavorite: boolean;
   endDate: string;
-  day: number;
-  department: string;
+  daysUntilEnd: number;
 }
-
-const companies: Company[] = [
-  {
-    id: 1,
-    name: "Company A",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 2,
-    name: "Company B",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 3,
-    name: "Company C",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 4,
-    name: "Company D",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 5,
-    name: "Company E",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 6,
-    name: "Company F",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 7,
-    name: "Company G",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 8,
-    name: "Company H",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 9,
-    name: "Company I",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-  {
-    id: 10,
-    name: "Company J",
-    status: "서류",
-    endDate: "2024년 9월 8일",
-    day: 12,
-    department: "마케팅 직무",
-  },
-];
 
 function StatusPage() {
   const navigate = useNavigate();
-  const totalItems = companies.length;
+  // const { userId } = useParams<{ userId: string }>(); URL에서 userId 받아오기
   const itemsPerPage = 6;
+  const [statusCounts, setStatusCounts] = useState({
+    total: 0,
+    progress: 0,
+    passed: 0,
+    failed: 0,
+  });
 
-  const { currentPage } = useStatusPagination(totalItems, itemsPerPage);
+  const { activeTab } = useStatusTab(); // useStatusTab에서 activeTab 관리
 
-  const [posts, setPosts] = useState<Company[]>([]);
+  const [recruitments, setRecruitments] = useState<Recruitment[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [deleteMode, setDeleteMode] = useState<boolean>(false);
-  const [paginatedPosts, setPaginatedPosts] = useState<Company[][]>([]);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false); // 삭제 팝업 상태
+  const [selectedStage, setSelectedStage] = useState("전체");
+  const [selectedRecruitment, setSelectedRecruitment] = useState<Recruitment | null>(null); // 삭제할 항목 저장
+
+
+  const filteredRecruitments = recruitments.filter((recruitment) => {
+    if (selectedStage === "전체") return true; // 전체 선택 시 모든 데이터
+    if (selectedStage === "서류") return recruitment.stageName === "서류";
+    if (selectedStage === "면접") return recruitment.stageName === "면접";
+    return recruitment.stageName !== "서류" && recruitment.stageName !== "면접"; // 기타인 경우
+  });
+
+  const ClickStatusTab = () => {
+    const { activeTab, tabClick } = useStatusTab();
+  
+    return (
+      <div className="flex flex-shrink-0 items-center">
+        <StatusTab
+          name="준비 현황"
+          isActive={activeTab === "prepare"}
+          onClick={() => {tabClick("prepare");
+            console.log("Prepare Tab clicked");
+          }}
+        />
+  
+        <StatusTab
+          name="지원 결과"
+          isActive={activeTab === "result"}
+          onClick={() => {
+            tabClick("result");
+            console.log("Result Tab clicked");
+          }}
+        />
+      </div>
+    );
+  };
+  
+
+  const fetchRecruitments = async (type: "progress" | "consequence") => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/recruitments/status?type=${type}&userId=1`
+      );
+      setRecruitments(response.data.data.recruitments);
+      console.log("API Response:", response.data);
+    } catch (error) {
+      console.error("Error fetching recruitments", error);
+    }
+  };
 
   useEffect(() => {
-    setPosts(companies.slice(0, totalItems));
+    console.log(`Active tab: ${activeTab}`);
+    const type = activeTab === "prepare" ? "progress" : "consequence";
+    console.log(type);
+    
+    const loadRecruitments = async () => {
+      console.log("실행1");
+      try {
+        console.log("실행2");
+        await fetchRecruitments(type);
+      } catch (error) {
+        console.error("Failed to fetch recruitments", error);
+      }
+      console.log("실행3");
+    };
+  
+    loadRecruitments();
+  }, [activeTab]);
+  
+  useEffect(() => {
+    const fetchStatusCounts = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/statuses?userId=1`);
+        const { total, progress, passed, failed } = response.data.data;
+        setStatusCounts({ total, progress, passed, failed });
+      } catch (error) {
+        console.error("Error fetching status counts", error);
+      }
+    };
 
-    const pages: Company[][] = [];
-    for (let i = 0; i < companies.length; i += itemsPerPage) {
-      const page = companies.slice(i, i + itemsPerPage);
-      pages.push(page);
-    }
+    fetchStatusCounts();
+  }, [recruitments]);
 
-    console.log(currentPage);
-    setPaginatedPosts(pages);
-
-    console.log(posts);
-    console.log(paginatedPosts);
-  }, [currentPage]);
 
   const toggleDeleteMode = () => {
     setDeleteMode(!deleteMode);
   };
 
   const handleDelete = (id: number) => {
-    setPosts(posts.filter((post) => post.id !== id));
+    setRecruitments(recruitments.filter((rec) => rec.recruitmentId !== id));
+  };
+
+  const handleDeleteClick = (recruitment: Recruitment) => {
+    setSelectedRecruitment(recruitment);
+    setIsDeletePopupOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedRecruitment) {
+      try {
+        await axios.delete(`${BASE_URL}/recruitments`, {
+          params: {
+            recruitmentId: selectedRecruitment.recruitmentId
+          }
+        });
+        setRecruitments(recruitments.filter((rec) => rec.recruitmentId !== selectedRecruitment.recruitmentId));
+        setIsDeletePopupOpen(false); // 팝업 닫기
+      } catch (error) {
+        console.error("Error deleting recruitment", error);
+      }
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeletePopupOpen(false); // 팝업 닫기
   };
 
   return (
@@ -142,37 +165,53 @@ function StatusPage() {
       <div className="inline-flex items-center justify-between gap-[186px]">
         <WelcomeMessage name="김진희" />
         <div className="flex gap-[12px]">
-          <UserStatusChip classification="전체" num={totalItems} />
-          <UserStatusChip classification="진행 중" num={10} />
-          <UserStatusChip classification="합격" num={10} />
-          <UserStatusChip classification="불합격" num={10} />
+          <UserStatusChip classification="전체" num={statusCounts.total} />
+          <UserStatusChip classification="진행 중" num={statusCounts.progress} />
+          <UserStatusChip classification="합격" num={statusCounts.passed} />
+          <UserStatusChip classification="불합격" num={statusCounts.failed} />
         </div>
       </div>
       <div className="mb-[4px] mt-[32px] flex items-center justify-between">
         <ClickStatusTab />
         <div className="flex flex-shrink-0 items-center bg-static-100">
-          <StatusDropdown />
-          <StatusDeleteButton toggleDeleteMode={toggleDeleteMode} />
+          <StatusDropdown setSelectedStage={setSelectedStage}/>
+          <StatusDeleteButton toggleDeleteMode={() => setDeleteMode(!deleteMode)} />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-[20px]">
-        {paginatedPosts[currentPage - 1]?.map((company: Company) => (
-          <div key={company.id} className="relative">
+      {filteredRecruitments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((recruitment: Recruitment) => (
+          <div key={recruitment.recruitmentId} className="relative">
             <ApplyStatus
-              company={company.name}
-              day={company.day}
-              department={company.department}
-              status={company.status}
-              endDate={company.endDate}
+              company={recruitment.companyName}
+              day={recruitment.daysUntilEnd}
+              department={recruitment.task}
+              stageName={recruitment.stageName}
+              endDate={recruitment.endDate}
               deleteMode={deleteMode}
-              onDelete={() => handleDelete(company.id)}
-              onClick={() => navigate(`/status/${company.id}`)}
+              onDelete={() => handleDeleteClick(recruitment)}
+              onClick={() => navigate(`/status/${recruitment.recruitmentId}`)}
             />
           </div>
         ))}
       </div>
+      {/* 삭제 팝업 */}
+      {isDeletePopupOpen && selectedRecruitment && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+          <RecruitmentDeleteButton
+            companyName={selectedRecruitment.companyName}
+            onDelete={handleDeleteConfirm}
+            onCancel={handleDeleteCancel}
+          />
+        </div>
+      )}
+
       <div className="mt-4 flex justify-center">
-        <StatusPagination totalItems={totalItems} itemsPerPage={itemsPerPage} />
+        {/* <StatusPagination
+          totalItems={recruitments.length}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={(page) => setCurrentPage(page)}
+        /> */}
       </div>
     </div>
   );
