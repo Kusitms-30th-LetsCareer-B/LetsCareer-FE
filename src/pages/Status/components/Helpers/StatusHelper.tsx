@@ -1,7 +1,8 @@
+import {
+  WriteRecurringNoteButton,
+} from "../Buttons/StatusButton";
 
-
-
-interface NameProps {
+export interface NameProps {
   name: string;
 }
 

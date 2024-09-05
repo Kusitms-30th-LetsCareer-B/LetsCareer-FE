@@ -1,5 +1,5 @@
 import { WhiteButton } from "../../../../components/Buttons/Button.tsx";
-import { DdayChip } from "../../../../components/Chips/DdayChip.tsx";
+import { DdayScheduleChip } from "../../../../components/chips/DdayChip.tsx";
 import { BasicTap, ColoredTap } from "../../../../components/Tabs/Tab.tsx";
 import { useScrap } from "../../../../shared/hooks/useScrap.tsx";
 import {
@@ -108,7 +108,7 @@ export const WriteSelfIntroduction = () => {
   return (
     <div className="mb-[20px] flex w-[747px] flex-col items-end rounded-md border border-neutral-80 bg-static-100 p-[24px]">
       <div className="mb-[16px] flex h-[28px] items-start items-center justify-between self-stretch">
-        <DdayChip schedule="서류 마감" day={10} />
+        <DdayScheduleChip schedule="서류 마감" day={10} />
         <div className="h-[20px] w-[20px] cursor-pointer" onClick={scrapImage}>
           {scrap}
         </div>

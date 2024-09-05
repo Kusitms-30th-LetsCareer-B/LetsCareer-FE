@@ -18,7 +18,7 @@ function App() {
       <NavBar />
       <PlannerSideBar>
         <Routes>
-          <Route path="/home" element={<MainPage />} />
+          <Route path="/home" element={<MainPage userName={"오민지"} />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/status" element={<StatusPage />} />
           <Route path="/status/:companyId" element={<DetailStatusPage />} />
