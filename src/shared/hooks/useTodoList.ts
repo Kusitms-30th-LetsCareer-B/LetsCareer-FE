@@ -82,20 +82,29 @@ export const useTodoList = ({selectedDate, setSelectedDate}: TodoListProps) => {
 
 
 
+// Company 인터페이스 정의
+export interface Company {
+  id: number; // 회사의 고유 ID
+  name: string; // 회사 이름
+  schedules: string[]; // 회사의 스케줄 목록
+  completed: boolean[]; // 각 스케줄의 완료 상태를 나타내는 불리언 배열
+}
+
 // TodoListCounting 컴포넌트
 export const useTodoCounting = () => {
-  // 커스텀 훅 정의
-    /**
-     * 특정 회사의 완료되지 않은 스케줄 개수를 반환하는 훅
-     * @param completed - 스케줄의 완료 상태를 나타내는 boolean 배열
-     * @returns 완료되지 않은 스케줄의 개수
-     */
-    const useCountIncomplete = (completed: boolean[]) => {
-      const countIncomplete = useMemo(() => {
-      return completed.filter((item) => !item).length;
-      }, [completed]);
 
-      return countIncomplete;
+  // 커스텀 훅 정의
+  /**
+   * 특정 회사의 완료되지 않은 스케줄 개수를 반환하는 훅
+   * @param completed - 스케줄의 완료 상태를 나타내는 boolean 배열
+   * @returns 완료되지 않은 스케줄의 개수
+   */
+  const useCountIncomplete = (completed: boolean[]) => {
+    const countIncomplete = useMemo(() => {
+    return completed.filter((item) => !item).length;
+    }, [completed]);
+
+    return countIncomplete;
   };
 
 
@@ -105,7 +114,7 @@ export const useTodoCounting = () => {
    * @param companies - 회사 리스트
    * @returns totalCount - 미완료 스케줄의 총합
    */
-  const useTotalIncompleteCount = (companies: Company[]) => {
+  const useTotalCountIncomplete = (companies: Company[]) => {
     // useMemo를 사용하여 companies가 변경될 때만 계산되도록 최적화
     const totalCount = useMemo(() => {
       return companies.reduce((acc, company) => {
@@ -120,7 +129,7 @@ export const useTodoCounting = () => {
 
   return {
     useCountIncomplete,
-    useTotalIncompleteCount
+    useTotalCountIncomplete
   };
 };
 

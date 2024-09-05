@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // 백엔드와 통신하기 위한 axios 임포트
 
-
-
-// 커스텀 훅 임포트
-import {useTodoCounting} from '../../../shared/hooks/useTodoList.ts';
+// 인터페이스 및 커스텀 훅 임포트
+import {Company, useTodoCounting} from '../../../shared/hooks/useTodoList.ts';
 
 // 아이콘 이미지 임포트
 import todoListIcon from "../../../shared/assets/todoList.png"
@@ -13,7 +11,7 @@ import todoListIcon from "../../../shared/assets/todoList.png"
   
 /* 리스트로 각 기업에 대한 일정 정보들을 받기:  API 연동 */
 // 샘플 기업 데이터 (API에서 받아온다고 가정)
-const sampleCompanies = [
+const sampleCompanies: Company[] = [
     { id: 1, name: "네이버", schedules: ["면접 준비", "서류 제출"], completed: [false, true] },
     { id: 2, name: "카카오", schedules: ["코딩 테스트", "최종 발표"], completed: [true, false] },
     { id: 3, name: "현대자동차", schedules: ["코딩 테스트", "최종 발표"], completed: [true, true] },
@@ -27,14 +25,14 @@ const SubTodoList = () => {
     // 커스텀 훅에서 상태와 핸들러 가져오기
     const { 
         useCountIncomplete,
-        useTotalIncompleteCount,
+        useTotalCountIncomplete,
     } = useTodoCounting();
 
     // 기업별 일정 데이터
     const [companies, setCompanies] = useState(sampleCompanies); // 기업 데이터
 
     // 모든 기업의 미완료 스케줄 수의 총합을 계산하는 훅 사용
-    const totalCount = useTotalIncompleteCount(companies);
+    const totalCount = useTotalCountIncomplete(companies);
     
     // API 연동하여 기업 리스트 가져오는 부분
     useEffect(() => {

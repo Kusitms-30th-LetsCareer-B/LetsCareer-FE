@@ -1,13 +1,14 @@
-interface DdayChipProps {
+interface DdayScheduleChipProps {
   day: number;
   schedule: string;
 }
 
-interface Ddayh32ChipProps {
+interface DdayChipProps {
   day: number;
 }
 
-export const DdayChip = ({ schedule, day }: DdayChipProps) => {
+
+export const DdayScheduleChip = ({ schedule, day }: DdayScheduleChipProps) => {
   return (
     <div className="inline-flex h-[28px] items-center justify-center gap-[10px] rounded-sm bg-primary px-[12px] py-[4px]">
       <div className="whitespace-nowrap text-center text-xsmall14 font-bold tracking-[-0.21px] text-static-100">
@@ -18,7 +19,17 @@ export const DdayChip = ({ schedule, day }: DdayChipProps) => {
   );
 };
 
-export const Ddayh32Chip = ({ day }: Ddayh32ChipProps) => {
+export const Ddayh24Chip = ({ day }: DdayChipProps) => {
+  return (
+    <div className="flex h-[24px] w-[56px] items-center justify-center rounded-sm bg-primary py-[4px]">
+      <div className="text-center text-xxsmall12 font-semibold tracking-[-0.096px] text-static-100">
+        D-{day}
+      </div>
+    </div>
+  );
+};
+
+export const Ddayh32Chip = ({ day }: DdayChipProps) => {
   return (
     <div className="flex h-[32px] items-center justify-center gap-[10px] rounded-sm bg-primary px-[12px] py-[4px]">
       <div className="text-center text-xsmall16 font-semibold tracking-[-0.096px] text-static-100">
@@ -40,7 +51,7 @@ export const FinishChip = () => {
 
 export const Finishh32Chip = () => {
   return (
-    <div className="flex items-center justify-center gap-[10px] rounded-sm bg-neutral-60 px-[12px] py-[4px]">
+    <div className="flex items-center h-[32px] justify-center gap-[10px] rounded-sm bg-neutral-60 px-[12px] py-[4px]">
       <div className="text-small16 text-center font-medium tracking-[-0.096px] text-static-100">
         종료
       </div>
