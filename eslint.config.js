@@ -23,6 +23,8 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+      "no-unused-vars": "warn", // 사용되지 않는 변수를 경고로만 처리
+      "@typescript-eslint/no-unused-vars": "warn", // TypeScript에서 사용되지 않는 변수를 경고로 처리
     },
   },
 );
