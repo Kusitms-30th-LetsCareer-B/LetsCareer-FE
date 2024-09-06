@@ -9,10 +9,6 @@ interface DeleteIconProps {
   onClick: () => void;
 }
 
-interface RecurringNoteProps {
-  text: string;
-}
-
 export const StatusDeleteButton: React.FC<StatusDeleteButtonProps> = ({
   toggleDeleteMode,
 }) => {
@@ -109,7 +105,7 @@ export const StatusDropdown = ({ setSelectedStage }: StatusDropdownProps) => {
               서류
             </a>
             <a
-               onClick={() => {
+              onClick={() => {
                 selectItem("면접");
                 setSelectedStage("면접");
               }}
@@ -118,7 +114,7 @@ export const StatusDropdown = ({ setSelectedStage }: StatusDropdownProps) => {
               면접
             </a>
             <a
-               onClick={() => {
+              onClick={() => {
                 selectItem("기타");
                 setSelectedStage("기타");
               }}
@@ -281,13 +277,18 @@ export const RoutineDropdown = () => {
   );
 };
 
-export const WriteRecurringNoteButton = ({ text }: RecurringNoteProps) => {
+interface RecurringNoteProps {
+  text: string;
+  onClick: () => void;
+}
+
+export const WriteRecurringNoteButton = ({ text, onClick }: RecurringNoteProps) => {
   return (
-    <div className="flex items-center justify-center rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[6px]">
+    <button onClick={onClick} className="flex items-center justify-center rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[6px]">
       <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
         {text}
       </span>
-    </div>
+    </button>
   );
 };
 
@@ -354,17 +355,23 @@ export const TodoCheckbox: React.FC<TodoCheckboxProps> = ({
   );
 };
 
-interface RecruitmentDeleteButtonProps{
+interface RecruitmentDeleteButtonProps {
   companyName: string;
   onDelete: () => void;
   onCancel: () => void;
 }
 
-export const RecruitmentDeleteButton = ({ companyName, onDelete, onCancel }: RecruitmentDeleteButtonProps) => {
+export const RecruitmentDeleteButton = ({
+  companyName,
+  onDelete,
+  onCancel,
+}: RecruitmentDeleteButtonProps) => {
   return (
-    <div className="flex flex-col w-[418px] h-auto rounded-lg shadow-lg bg-static-100">
-      <div className="flex items-center justify-between px-[24px] pt-[24px] pb-[16px]">
-        <span className="text-small18 font-semibold text-neutral-10 tracking-[-0.022px]">삭제 확인</span>
+    <div className="flex h-auto w-[418px] flex-col rounded-lg bg-static-100 shadow-lg">
+      <div className="flex items-center justify-between px-[24px] pb-[16px] pt-[24px]">
+        <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-10">
+          삭제 확인
+        </span>
         <button onClick={onCancel}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -384,16 +391,23 @@ export const RecruitmentDeleteButton = ({ companyName, onDelete, onCancel }: Rec
         </button>
       </div>
       <div className="px-[24px]">
-        <span className="text-xsmall14 font-regular text-neutral-45 text-xsmall14 font-regular tracking-[-0.21px]">
-          {companyName}에 대한 일정을 삭제하시겠습니까?<br />
+        <span className="font-regular font-regular text-xsmall14 tracking-[-0.21px] text-neutral-45">
+          {companyName}에 대한 일정을 삭제하시겠습니까?
+          <br />
           관련한 모든 내용이 삭제되고 한 번 삭제된 자료는 복구할 수 없습니다
         </span>
       </div>
-      <div className="flex justify-end p-[24px] gap-[16px]">
-        <button onClick={onCancel} className="flex px-[28px] py-[10px] bg-neutral-90 text-neutral-45 rounded-sm">
+      <div className="flex justify-end gap-[16px] p-[24px]">
+        <button
+          onClick={onCancel}
+          className="flex rounded-sm bg-neutral-90 px-[28px] py-[10px] text-neutral-45"
+        >
           취소
         </button>
-        <button onClick={onDelete} className="px-[28px] py-[10px] bg-system-error text-static-100 rounded-sm">
+        <button
+          onClick={onDelete}
+          className="rounded-sm bg-system-error px-[28px] py-[10px] text-static-100"
+        >
           삭제
         </button>
       </div>

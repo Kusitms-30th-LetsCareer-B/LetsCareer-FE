@@ -1,6 +1,6 @@
-import React, { useMemo, useCallback } from 'react';
-import checkedBox from "../assets/checkSquareChecked.png"
-import blankedBox from "../assets/checkSquareBlanked.png"
+import React, { useMemo, useCallback } from "react";
+import checkedBox from "../assets/checkSquareChecked.png";
+import blankedBox from "../assets/checkSquareBlanked.png";
 
 // 컴포 파라미터(props) 타입 정의
 interface TodoListProps {
@@ -9,8 +9,10 @@ interface TodoListProps {
 }
 
 // TodoList 컴포넌트
-export const useTodoList = ({selectedDate, setSelectedDate}: TodoListProps) => {
-
+export const useTodoList = ({
+  selectedDate,
+  setSelectedDate,
+}: TodoListProps) => {
   // 이전 일자로 이동하는 함수
   const handlePrevDay = () => {
     if (selectedDate) {
@@ -29,17 +31,14 @@ export const useTodoList = ({selectedDate, setSelectedDate}: TodoListProps) => {
     }
   };
 
-  
-
   // 날짜 형식을 'YYYY.MM.DD'로 포맷팅하는 함수
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}.${month}.${day}`;
   };
 
-  
   /**
    * 특정 id와 index에 따라 이미지를 반환하고 상태를 토글하는 커스텀 훅
    * @param id - 아이디
@@ -52,9 +51,8 @@ export const useTodoList = ({selectedDate, setSelectedDate}: TodoListProps) => {
     id: number,
     index: number,
     completed: boolean[],
-    setCompleted: (newCompleted: boolean[]) => void
+    setCompleted: (newCompleted: boolean[]) => void,
   ) => {
-
     // completed 상태에 따라 이미지를 선택
     const imageSrc = useMemo(() => {
       return completed[index] ? checkedBox : blankedBox;
@@ -66,21 +64,18 @@ export const useTodoList = ({selectedDate, setSelectedDate}: TodoListProps) => {
       newCompleted[index] = !newCompleted[index];
       setCompleted(newCompleted);
     }, [id, index, completed, setCompleted]);
-    
+
     // 이미지와 토글 여부를 반환
     return { imageSrc, toggleCompleted };
   };
-
 
   return {
     handlePrevDay,
     handleNextDay,
     formatDate,
-    useCompletedImage
+    useCompletedImage,
   };
 };
-
-
 
 // Company 인터페이스 정의
 export interface Company {
@@ -92,7 +87,6 @@ export interface Company {
 
 // TodoListCounting 컴포넌트
 export const useTodoCounting = () => {
-
   // 커스텀 훅 정의
   /**
    * 특정 회사의 완료되지 않은 스케줄 개수를 반환하는 훅
@@ -101,13 +95,11 @@ export const useTodoCounting = () => {
    */
   const useCountIncomplete = (completed: boolean[]) => {
     const countIncomplete = useMemo(() => {
-    return completed.filter((item) => !item).length;
+      return completed.filter((item) => !item).length;
     }, [completed]);
 
     return countIncomplete;
   };
-
-
 
   /**
    * 모든 회사의 미완료 스케줄 수의 총합을 계산하는 훅
@@ -126,10 +118,8 @@ export const useTodoCounting = () => {
     return totalCount;
   };
 
-
   return {
     useCountIncomplete,
-    useTotalCountIncomplete
+    useTotalCountIncomplete,
   };
 };
-

@@ -1,9 +1,13 @@
-import { Ddayh32Chip } from "../../../../components/chips/DdayChip";
+import { Ddayh32Chip, Finishh32Chip } from "../../../../components/chips/DdayChip";
 import { useScrap } from "../../../../shared/hooks/useScrap";
 import { useStatusTab } from "../../../../shared/hooks/useStatusTab";
 import { DeleteIcon } from "../Buttons/StatusButton";
 import { Departmenth32Chip } from "../Chips/SelfIntroductionChip";
-import { FailedStatus, OnGoingStatus, SuccessStatus } from "../Helpers/StatusHelper";
+import {
+  FailedStatus,
+  OnGoingStatus,
+  SuccessStatus,
+} from "../Helpers/StatusHelper";
 import { StatusTab } from "../Tabs/StatusTab";
 
 interface ApplyStatusProps {
@@ -17,6 +21,24 @@ interface ApplyStatusProps {
   onClick?: () => void;
 }
 
+interface ConsequenceSuccessProps {
+  company: string;
+  department: string;
+  recruitmentId: number;
+  deleteMode?: boolean;
+  onDelete?: () => void;
+  onClick?: () => void;
+}
+
+interface ConsequenceFailedProps {
+  company: string;
+  department: string;
+  stageName: string;
+  recruitmentId: number;
+  deleteMode?: boolean;
+  onDelete?: () => void;
+  onClick?: () => void;
+}
 
 export const ApplyStatus: React.FC<ApplyStatusProps> = ({
   company,
@@ -31,8 +53,7 @@ export const ApplyStatus: React.FC<ApplyStatusProps> = ({
   const { scrap, scrapImage } = useScrap();
 
   return (
-    <div
-      className="mt-[20px] flex flex-shrink-0 flex-col items-start">
+    <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
       <div className="flex flex-col items-start self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-static-100 p-[20px]">
         <div className="mb-[16px] flex w-full items-center justify-between">
           <div className="flex items-center">
@@ -50,24 +71,25 @@ export const ApplyStatus: React.FC<ApplyStatusProps> = ({
                 <DeleteIcon onClick={onDelete} />
               </div>
             )}
-
           </div>
         </div>
-        <span className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0" onClick={onClick}>
+        <span
+          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0"
+          onClick={onClick}
+        >
           {company}
         </span>
       </div>
-      <OnGoingStatus name={stageName} endDate={endDate}/>
+      <OnGoingStatus name={stageName} endDate={endDate} />
     </div>
   );
 };
 
-export const ConsequenceFailedStatus: React.FC<ApplyStatusProps> = ({
+export const ConsequenceFailedStatus: React.FC<ConsequenceFailedProps> = ({
   company,
   department,
-  day,
   stageName,
-  endDate,
+  recruitmentId,
   deleteMode = false,
   onDelete,
   onClick,
@@ -75,15 +97,14 @@ export const ConsequenceFailedStatus: React.FC<ApplyStatusProps> = ({
   const { scrap, scrapImage } = useScrap();
 
   return (
-    <button
+    <div
       className="mt-[20px] flex flex-shrink-0 flex-col items-start"
-      onClick={onClick}
     >
       <div className="flex flex-col items-start self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-static-100 p-[20px]">
         <div className="mb-[16px] flex w-full items-center justify-between">
           <div className="flex items-center">
             <div className="mr-[8px]">
-              <Ddayh32Chip day={day} />
+              <Finishh32Chip />
             </div>
             <Departmenth32Chip department={department} />
           </div>
@@ -96,24 +117,24 @@ export const ConsequenceFailedStatus: React.FC<ApplyStatusProps> = ({
                 <DeleteIcon onClick={onDelete} />
               </div>
             )}
-
           </div>
         </div>
-        <span className="text-small20 font-bold tracking-[-0.4px] text-neutral-0">
-          {company}
+        <span
+          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0"
+          onClick={onClick}
+        >
+        {company}
         </span>
       </div>
-      <FailedStatus name={stageName}/>
-    </button>
+      <FailedStatus name={stageName} recruitmentId={recruitmentId}/>
+    </div>
   );
 };
 
-export const ConsequenceSuccessStatus: React.FC<ApplyStatusProps> = ({
+export const ConsequenceSuccessStatus: React.FC<ConsequenceSuccessProps> = ({
   company,
   department,
-  day,
-  stageName,
-  endDate,
+  recruitmentId,
   deleteMode = false,
   onDelete,
   onClick,
@@ -121,15 +142,14 @@ export const ConsequenceSuccessStatus: React.FC<ApplyStatusProps> = ({
   const { scrap, scrapImage } = useScrap();
 
   return (
-    <button
+    <div
       className="mt-[20px] flex flex-shrink-0 flex-col items-start"
-      onClick={onClick}
     >
       <div className="flex flex-col items-start self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-static-100 p-[20px]">
         <div className="mb-[16px] flex w-full items-center justify-between">
           <div className="flex items-center">
             <div className="mr-[8px]">
-              <Ddayh32Chip day={day} />
+                <Finishh32Chip />
             </div>
             <Departmenth32Chip department={department} />
           </div>
@@ -142,15 +162,16 @@ export const ConsequenceSuccessStatus: React.FC<ApplyStatusProps> = ({
                 <DeleteIcon onClick={onDelete} />
               </div>
             )}
-
           </div>
         </div>
-        <span className="text-small20 font-bold tracking-[-0.4px] text-neutral-0">
+        <span
+          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0"
+          onClick={onClick}
+        >
           {company}
         </span>
       </div>
-      <SuccessStatus />
-    </button>
+      <SuccessStatus recruitmentId={recruitmentId}/>
+    </div>
   );
 };
-

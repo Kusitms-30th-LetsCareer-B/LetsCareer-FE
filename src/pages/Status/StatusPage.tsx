@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useStatusPagination } from "../../shared/hooks/useStatusPagination";
 import { UserStatusChip } from "./components/Chips/StatusChip";
 import { WelcomeMessage } from "./components/Helpers/StatusHelper";
-import { ApplyStatus } from "./components/Layout/StatusLayout";
+import { ApplyStatus, ConsequenceFailedStatus, ConsequenceSuccessStatus } from "./components/Layout/StatusLayout";
 import StatusPagination from "./components/Pagination/StatusPagination";
 import {
   RecruitmentDeleteButton,
@@ -28,6 +28,11 @@ interface Recruitment {
 }
 
 function StatusPage() {
+
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, []);
+
   const navigate = useNavigate();
   // const { userId } = useParams<{ userId: string }>(); URL에서 userId 받아오기
   const itemsPerPage = 6;
@@ -38,80 +43,41 @@ function StatusPage() {
     failed: 0,
   });
 
-  const { activeTab } = useStatusTab(); // useStatusTab에서 activeTab 관리
+  const { activeTab, tabClick } = useStatusTab();
 
   const [recruitments, setRecruitments] = useState<Recruitment[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteMode, setDeleteMode] = useState<boolean>(false);
-  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false); // 삭제 팝업 상태
   const [selectedStage, setSelectedStage] = useState("전체");
-  const [selectedRecruitment, setSelectedRecruitment] = useState<Recruitment | null>(null); // 삭제할 항목 저장
 
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [selectedRecruitment, setSelectedRecruitment] =
+    useState<Recruitment | null>(null);
 
   const filteredRecruitments = recruitments.filter((recruitment) => {
-    if (selectedStage === "전체") return true; // 전체 선택 시 모든 데이터
+    if (selectedStage === "전체") return true; 
     if (selectedStage === "서류") return recruitment.stageName === "서류";
     if (selectedStage === "면접") return recruitment.stageName === "면접";
-    return recruitment.stageName !== "서류" && recruitment.stageName !== "면접"; // 기타인 경우
+    return recruitment.stageName !== "서류" && recruitment.stageName !== "면접"; 
   });
-
-  const ClickStatusTab = () => {
-    const { activeTab, tabClick } = useStatusTab();
-  
-    return (
-      <div className="flex flex-shrink-0 items-center">
-        <StatusTab
-          name="준비 현황"
-          isActive={activeTab === "prepare"}
-          onClick={() => {tabClick("prepare");
-            console.log("Prepare Tab clicked");
-          }}
-        />
-  
-        <StatusTab
-          name="지원 결과"
-          isActive={activeTab === "result"}
-          onClick={() => {
-            tabClick("result");
-            console.log("Result Tab clicked");
-          }}
-        />
-      </div>
-    );
-  };
-  
 
   const fetchRecruitments = async (type: "progress" | "consequence") => {
     try {
       const response = await axios.get(
-        `${BASE_URL}/recruitments/status?type=${type}&userId=1`
+        `${BASE_URL}/recruitments/status?type=${type}&userId=1`,
       );
       setRecruitments(response.data.data.recruitments);
-      console.log("API Response:", response.data);
     } catch (error) {
       console.error("Error fetching recruitments", error);
     }
   };
 
   useEffect(() => {
-    console.log(`Active tab: ${activeTab}`);
     const type = activeTab === "prepare" ? "progress" : "consequence";
-    console.log(type);
-    
-    const loadRecruitments = async () => {
-      console.log("실행1");
-      try {
-        console.log("실행2");
-        await fetchRecruitments(type);
-      } catch (error) {
-        console.error("Failed to fetch recruitments", error);
-      }
-      console.log("실행3");
-    };
-  
-    loadRecruitments();
+    fetchRecruitments(type);
   }, [activeTab]);
-  
+
+
   useEffect(() => {
     const fetchStatusCounts = async () => {
       try {
@@ -126,15 +92,6 @@ function StatusPage() {
     fetchStatusCounts();
   }, [recruitments]);
 
-
-  const toggleDeleteMode = () => {
-    setDeleteMode(!deleteMode);
-  };
-
-  const handleDelete = (id: number) => {
-    setRecruitments(recruitments.filter((rec) => rec.recruitmentId !== id));
-  };
-
   const handleDeleteClick = (recruitment: Recruitment) => {
     setSelectedRecruitment(recruitment);
     setIsDeletePopupOpen(true);
@@ -145,11 +102,15 @@ function StatusPage() {
       try {
         await axios.delete(`${BASE_URL}/recruitments`, {
           params: {
-            recruitmentId: selectedRecruitment.recruitmentId
-          }
+            recruitmentId: selectedRecruitment.recruitmentId,
+          },
         });
-        setRecruitments(recruitments.filter((rec) => rec.recruitmentId !== selectedRecruitment.recruitmentId));
-        setIsDeletePopupOpen(false); // 팝업 닫기
+        setRecruitments(
+          recruitments.filter(
+            (rec) => rec.recruitmentId !== selectedRecruitment.recruitmentId,
+          ),
+        );
+        setIsDeletePopupOpen(false); 
       } catch (error) {
         console.error("Error deleting recruitment", error);
       }
@@ -157,30 +118,53 @@ function StatusPage() {
   };
 
   const handleDeleteCancel = () => {
-    setIsDeletePopupOpen(false); // 팝업 닫기
+    setIsDeletePopupOpen(false); 
   };
 
   return (
     <div className="flex flex-col p-[48px]">
       <div className="inline-flex items-center justify-between gap-[186px]">
-        <WelcomeMessage name="김진희" />
+        <WelcomeMessage name="오민지" />
         <div className="flex gap-[12px]">
           <UserStatusChip classification="전체" num={statusCounts.total} />
-          <UserStatusChip classification="진행 중" num={statusCounts.progress} />
+          <UserStatusChip
+            classification="진행 중"
+            num={statusCounts.progress}
+          />
           <UserStatusChip classification="합격" num={statusCounts.passed} />
           <UserStatusChip classification="불합격" num={statusCounts.failed} />
         </div>
       </div>
       <div className="mb-[4px] mt-[32px] flex items-center justify-between">
-        <ClickStatusTab />
-        <div className="flex flex-shrink-0 items-center bg-static-100">
-          <StatusDropdown setSelectedStage={setSelectedStage}/>
-          <StatusDeleteButton toggleDeleteMode={() => setDeleteMode(!deleteMode)} />
+        <div className="flex items-center">
+          <StatusTab
+              name="준비 현황"
+              isActive={activeTab === "prepare"}
+              onClick={() => tabClick("prepare")}
+            />
+            <StatusTab
+              name="지원 결과"
+              isActive={activeTab === "result"}
+              onClick={() => tabClick("result")}
+            />
         </div>
+        <div className="flex flex-shrink-0 items-center bg-static-100">
+            <StatusDropdown setSelectedStage={setSelectedStage} />
+            <StatusDeleteButton
+              toggleDeleteMode={() => setDeleteMode(!deleteMode)}
+            />
+          </div>
       </div>
       <div className="grid grid-cols-2 gap-[20px]">
-      {filteredRecruitments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((recruitment: Recruitment) => (
-          <div key={recruitment.recruitmentId} className="relative">
+      {filteredRecruitments
+    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    .map((recruitment: Recruitment) => {
+      let StatusComponent;
+
+      // status에 따른 컴포넌트 분기 처리
+      switch (recruitment.status) {
+        case 'PROGRESS':
+          StatusComponent = (
             <ApplyStatus
               company={recruitment.companyName}
               day={recruitment.daysUntilEnd}
@@ -191,12 +175,47 @@ function StatusPage() {
               onDelete={() => handleDeleteClick(recruitment)}
               onClick={() => navigate(`/status/${recruitment.recruitmentId}`)}
             />
-          </div>
-        ))}
+          );
+          break;
+        case 'PASSED':
+          StatusComponent = (
+            <ConsequenceSuccessStatus
+              company={recruitment.companyName}
+              department={recruitment.task}
+              recruitmentId={recruitment.recruitmentId}
+              deleteMode={deleteMode}
+              onDelete={() => handleDeleteClick(recruitment)}
+              onClick={() => navigate(`/status/${recruitment.recruitmentId}`)}
+            />
+          );
+          break;
+        case 'FAILED':
+          StatusComponent = (
+            <ConsequenceFailedStatus
+              company={recruitment.companyName}
+              department={recruitment.task}
+              stageName={recruitment.stageName}
+              recruitmentId={recruitment.recruitmentId}
+              deleteMode={deleteMode}
+              onDelete={() => handleDeleteClick(recruitment)}
+              onClick={() => navigate(`/status/${recruitment.recruitmentId}`)}
+            />
+          );
+          break;
+        default:
+          StatusComponent = null;
+      }
+
+      return (
+        <div key={recruitment.recruitmentId} className="relative">
+          {StatusComponent}
+        </div>
+      );
+    })}
       </div>
       {/* 삭제 팝업 */}
       {isDeletePopupOpen && selectedRecruitment && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
           <RecruitmentDeleteButton
             companyName={selectedRecruitment.companyName}
             onDelete={handleDeleteConfirm}

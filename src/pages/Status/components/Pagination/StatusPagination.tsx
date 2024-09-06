@@ -9,7 +9,6 @@ const StatusPagination = ({
   totalItems,
   itemsPerPage,
 }: PaginationComponentProps) => {
-
   const {
     currentPage,
     totalPages,
@@ -18,7 +17,6 @@ const StatusPagination = ({
     changePage,
     getVisiblePages,
   } = useStatusPagination(totalItems, itemsPerPage);
-
 
   return (
     <nav className="mt-[20px] inline-flex items-center gap-[32px]">

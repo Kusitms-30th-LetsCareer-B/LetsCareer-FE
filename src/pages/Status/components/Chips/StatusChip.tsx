@@ -19,9 +19,9 @@ export const UserStatusChip = ({ classification, num }: StatusProps) => {
 export const ProgressChip = () => {
   return (
     <div className="flex items-center justify-center gap-[10px] rounded-sm bg-primary px-[12px] py-[4px]">
-        <span className="text-xsmall14 font-medium tracking-[-0.21px] text-static-100">
-          진행중
-        </span>
+      <span className="text-xsmall14 font-medium tracking-[-0.21px] text-static-100">
+        진행중
+      </span>
     </div>
   );
 };

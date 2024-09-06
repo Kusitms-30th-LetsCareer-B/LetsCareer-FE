@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { GoBackButton } from "../../components/Buttons/Button";
 import {
   NewExperience,
@@ -6,6 +7,10 @@ import {
 } from "./components/Layout/SelfIntroduceLayout";
 
 function SelfIntroducePage() {
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, []);
+
   return (
     <div className="mb-[100px] px-[48px] pt-[40px]">
       <GoBackButton text="자기 소개서 작성하기" />

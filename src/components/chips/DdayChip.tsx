@@ -7,7 +7,6 @@ interface DdayChipProps {
   day: number;
 }
 
-
 export const DdayScheduleChip = ({ schedule, day }: DdayScheduleChipProps) => {
   return (
     <div className="inline-flex h-[28px] items-center justify-center gap-[10px] rounded-sm bg-primary px-[12px] py-[4px]">
@@ -51,7 +50,7 @@ export const FinishChip = () => {
 
 export const Finishh32Chip = () => {
   return (
-    <div className="flex items-center h-[32px] justify-center gap-[10px] rounded-sm bg-neutral-60 px-[12px] py-[4px]">
+    <div className="flex h-[32px] items-center justify-center gap-[10px] rounded-sm bg-neutral-60 px-[12px] py-[4px]">
       <div className="text-small16 text-center font-medium tracking-[-0.096px] text-static-100">
         종료
       </div>

@@ -1,90 +1,197 @@
 import { useEffect, useState } from "react";
 import { GoBackButton } from "../../components/Buttons/Button";
-import { AddCard, CreateTodo, DetailOnGoingStatus, ExistArchiving, ProgressCard } from "./components/Helpers/DetailStatusHelper";
+import {
+  AddCard,
+  CreateTodo,
+  DetailFailedStatus,
+  DetailOnGoingStatus,
+  DetailSuccessStatus,
+  ExistArchiving,
+  FailedCard,
+  ProgressCard,
+  SuccessCard,
+} from "./components/Helpers/DetailStatusHelper";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { RecruitmentDeleteButton } from "./components/Buttons/StatusButton";
+import { AddTypeModal } from "./components/Buttons/DetailStatusButton";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
-
 
 function DetailStatusPage() {
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
 
   const [company, setCompany] = useState<string>("");
+  const [announcementUrl, setAnnouncementUrl] = useState<string>("");
   const [task, setTask] = useState<string>("");
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [stages, setStages] = useState<any[]>([]);
+  const [today, setToday] = useState(new Date());
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 모달 상태
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const isFinalStagePresent = stages.some(stage => stage.isFinal);
+
   const [loading, setLoading] = useState(true);
 
-  const [today, setToday] = useState(new Date());
+  const handleDeleteClick = () => {
+    setIsDeletePopupOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeletePopupOpen(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setIsDeletePopupOpen(false);
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, []);
 
   useEffect(() => {
     const fetchRecruitmentDetails = async () => {
-        try {
-            const response = await axios.get(
-                `${BASE_URL}/${recruitmentId}`
-            );
-            const { companyName, task } = response.data.data;
-            setCompany(companyName);
-            setTask(task);
-            setLoading(false);
-        } catch (error) {
-            console.error("Error fetching recruitment details:", error);
-            setLoading(false);
-        }
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/recruitments/${recruitmentId}`,
+        );
+        const { companyName, task, announcementUrl, stages } =
+          response.data.data;
+        setCompany(companyName);
+        setTask(task);
+        setAnnouncementUrl(announcementUrl);
+        setStages(stages);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching recruitment details:", error);
+        setLoading(false);
+      }
     };
 
     if (recruitmentId) {
-        fetchRecruitmentDetails(); // recruitmentId가 있을 때만 데이터 fetch
+      fetchRecruitmentDetails(); // recruitmentId가 있을 때만 데이터 fetch
     }
-}, [recruitmentId]);
+  }, [recruitmentId, stages]);
 
-const formatDate = (date: Date) => {
-  return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
-};
+  const formatDate = (date: Date) => {
+    return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+  };
 
-// 날짜를 하루 이전으로
-const handlePrevDay = () => {
-  const prevDay = new Date(today);
-  prevDay.setDate(today.getDate() - 1);
-  setToday(prevDay);
-};
+  const calculateRemainingDays = (endDate: string) => {
+    const today = new Date();
+    const end = new Date(endDate);
+    const diff = end.getTime() - today.getTime();
+    const daysLeft = Math.ceil(diff / (1000 * 3600 * 24));
+    return daysLeft;
+  };
 
-// 날짜를 하루 이후로
-const handleNextDay = () => {
-  const nextDay = new Date(today);
-  nextDay.setDate(today.getDate() + 1);
-  setToday(nextDay);
-};
+  const getTopStage = () => {
+    if (stages.length === 0) return null;
+    const topStage = stages[stages.length - 1];
+    return topStage;
+  };
+  
+  const topStage = getTopStage();
 
-if (loading) {
-  return <div>Loading...</div>; // 데이터 로딩 중 상태
-}
+  // 날짜를 하루 이전으로
+  const handlePrevDay = () => {
+    const prevDay = new Date(today);
+    prevDay.setDate(today.getDate() - 1);
+    setToday(prevDay);
+  };
 
+  // 날짜를 하루 이후로
+  const handleNextDay = () => {
+    const nextDay = new Date(today);
+    nextDay.setDate(today.getDate() + 1);
+    setToday(nextDay);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>; // 데이터 로딩 중 상태
+  }
+
+  let StatusComponent;
+  if (topStage) {
+    const daysLeft = calculateRemainingDays(topStage.endDate);
+
+    switch (topStage.status) {
+      case "PROGRESS":
+        StatusComponent = (
+          <DetailOnGoingStatus
+            name={topStage.stageName}
+            day={daysLeft}
+            company={company}
+            department={task}
+            announcementUrl={announcementUrl}
+          />
+        );
+        break;
+      case "PASSED":
+        StatusComponent = (
+          <DetailSuccessStatus
+            name={topStage.stageName}
+            department={task}
+            company={company}
+            announcementUrl={announcementUrl}
+          />
+        );
+        break;
+      case "FAILED":
+        StatusComponent = (
+          <DetailFailedStatus
+            name={topStage.stageName}
+            department={task}
+            company={company}
+            announcementUrl={announcementUrl}
+          />
+        );
+        break;
+      default:
+        StatusComponent = null;
+    }
+  }
+
+  const handleAddClick = () => {
+    setIsAddModalOpen(true); // 플러스 버튼 클릭 시 모달 열림
+  };
+
+  const handleModalClose = () => {
+    setIsAddModalOpen(false); // 모달 닫기
+  };
 
   return (
     <div className="mb-[100px] px-[48px] pt-[40px]">
       <div className="flex w-[1128px] items-start justify-between">
         <GoBackButton text="기업별 진행현황" />
-        <button className="flex flex-shrink-0 items-center justify-center rounded-sm border border-neutral-80 bg-neutral-100">
+        <button
+          onClick={handleDeleteClick}
+          className="flex flex-shrink-0 items-center justify-center rounded-sm border border-neutral-80 bg-neutral-100"
+        >
           <span className="text-xsmall px-[28px] py-[10px] font-medium tracking-[-0.096px] text-neutral-45">
             삭제하기
           </span>
         </button>
       </div>
-      <div className="flex">
-        <DetailOnGoingStatus
-          name="서류"
-          day={1}
-          company={company}
-          department={task}
-        />
-      </div>
-      <div className="mb-[20px] items-center rounded-md bg-neutral-100">
+      
+      {StatusComponent && <div className="flex">{StatusComponent}</div>}
+      
+      <div className="mb-[20px] flex items-center rounded-md bg-neutral-100 overflow-x-auto">
         <div className="inline-flex items-center">
-          <ProgressCard name="서류" endDate="24. 08. 26" />
-          <AddCard />
-          <div className="absolute h-[4px] bg-primary-10">
-            <div className="bg-primary-10"></div>
-          </div>
+          {stages.map((stage) => {
+            const endDateFormatted = formatDate(new Date(stage.endDate));
+            if (stage.status === "PROGRESS") {
+              return <ProgressCard key={stage.stageId} stageId={stage.stageId} name={stage.stageName} endDate={endDateFormatted}/>;
+            } else if (stage.status === "PASSED") {
+              return <SuccessCard key={stage.stageId} stageId={stage.stageId} name={stage.stageName} endDate={endDateFormatted} />;
+            } else if (stage.status === "FAILED") {
+              return <FailedCard key={stage.stageId} stageId={stage.stageId} name={stage.stageName} endDate={endDateFormatted} />;
+            } else {
+              return null;
+            }
+          })}
+
+          {!isFinalStagePresent && <AddCard onAddClick={handleAddClick} />}
         </div>
       </div>
       <div className="flex items-center gap-[20px] self-stretch">
@@ -121,7 +228,7 @@ if (loading) {
               </button>
               <div className="flex items-center gap-[4px]">
                 <span className="text-small18 font-semibold tracking-[-0.096px] text-neutral-35">
-                {formatDate(today)}
+                  {formatDate(today)}
                 </span>
                 <button className="">
                   <svg
@@ -157,7 +264,7 @@ if (loading) {
               </button>
             </div>
           </div>
-          <CreateTodo />
+          <CreateTodo companyName={company} />
         </div>
         <div className="flex flex-col items-start rounded-md border border-neutral-80 p-[24px]">
           <div className="mb-[18px] flex items-center justify-between self-stretch">
@@ -187,6 +294,23 @@ if (loading) {
           </div>
         </div>
       </div>
+      {isDeletePopupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <RecruitmentDeleteButton
+            companyName={company}
+            onDelete={handleDeleteConfirm}
+            onCancel={handleDeleteCancel}
+          />
+        </div>
+      )}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <AddTypeModal
+            onClose={handleModalClose}
+            recruitmentId={recruitmentId!}
+          />
+        </div>
+      )}
     </div>
   );
 }
