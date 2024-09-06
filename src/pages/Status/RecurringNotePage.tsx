@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import {
   DocumentRecurringNoteLeftPart,
   DocumentRecurringNoteRightPart,
+  EtcRecurringNotePart,
+  InterviewRecurringNoteLeftPart,
+  InterviewRecurringNoteRightPart,
   NoSelfIntroduction,
   RecurringNoteHeader,
   RecurringNoteTab,
@@ -9,22 +12,34 @@ import {
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
+
 interface ReviewNote {
   id: number;
+  reviewName: string;
   satisfaction: string;
   wellDonePoints: string[];
   shortcomingPoints: string[];
   wellDoneMemo: string;
   shortcomingMemo: string;
+  difficulty: string;
 }
 
 interface SelfIntroduction {
-    introduceId: number | null;
-    question: string;
-    answer: string;
-    reactionType: string | null;
+  introduceId: number;
+  order: number;
+  question: string;
+  answer: string;
+  reactionType: string | null;
 }
-const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
+
+interface InterviewAnswer {
+  introduceId: number;
+  order: number;
+  question: string;
+  answer: string;
+  reactionType: string | null;
+}
 
 function RecurringNotePage() {
   useEffect(() => {
@@ -37,57 +52,49 @@ function RecurringNotePage() {
   const [task, setTask] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
-  const [documentData, setDocumentData] = useState<ReviewNote>({
+  const initialReviewNote: ReviewNote = {
     id: 0,
+    reviewName: "",
     satisfaction: "",
     wellDonePoints: [],
     shortcomingPoints: [],
     wellDoneMemo: "",
     shortcomingMemo: "",
-  });
-
-  const [selfIntroductions, setSelfIntroductions] = useState<SelfIntroduction[] | null>(null);
-  const [currentIntroduction, setCurrentIntroduction] = useState<SelfIntroduction | null>(null);
-  const [isSelfIntroductionFetched, setIsSelfIntroductionFetched] = useState<boolean>(false);
-  const [currentTab, setCurrentTab] = useState("document");
-
-  const handleTabChange = (tab: string) => {
-    setCurrentTab(tab);
+    difficulty: "",
   };
 
-  const fetchSelfIntroductionData = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/introduces?recruitmentId=${recruitmentId}`);
-      const introductions = response.data.data;
-      setSelfIntroductions(introductions.length > 0 ? introductions : null);
-      if (introductions.length > 0) {
-        setCurrentIntroduction(introductions[0]); 
-        setIsSelfIntroductionFetched(true); 
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching self introduction data:", error);
-      setLoading(false);
-    }
-  };
+  const [selfIntroductionData, setSelfIntroductionData] =
+    useState<SelfIntroduction>({
+      introduceId: 0,
+      order: 0,
+      question: "",
+      answer: "",
+      reactionType: null,
+    });
 
-  const handleReactionSave = async (introduceId: number | null, reactionType: string) => {
-    try {
-      await axios.put(`${BASE_URL}/introduces/${introduceId}/reaction`, {
-        reactionType,
-      });
-      alert("반응이 저장되었습니다.");
-    } catch (error) {
-      console.error("Error saving reaction:", error);
-      alert("저장에 실패했습니다.");
-    }
-  };
+  const [interviewAnswerData, setInterviewAnswerData] =
+    useState<InterviewAnswer>({
+      introduceId: 0,
+      order: 0,
+      question: "",
+      answer: "",
+      reactionType: null,
+    });
 
-  const handleQuestionClick = (index: number) => {
-    if (selfIntroductions && selfIntroductions[index]) {
-      setCurrentIntroduction(selfIntroductions[index]); 
-    }
-  };
+  const [documentData, setDocumentData] =
+    useState<ReviewNote>(initialReviewNote);
+  const [interviewData, setInterviewData] =
+    useState<ReviewNote>(initialReviewNote);
+  const [etcData, setEtcData] = useState<ReviewNote>(initialReviewNote);
+
+  const [activeTab, setActiveTab] = useState("document");
+
+  const [documentQuestions, setDocumentQuestions] = useState<string[]>([]);
+  const [interviewQuestions, setInterviewQuestions] = useState<string[]>([]);
+
+  const [selfIntroductions, setSelfIntroductions] = useState<
+    SelfIntroduction[]
+  >([]); // 전체 자기소개 데이터
 
   useEffect(() => {
     const fetchRecruitmentDetails = async () => {
@@ -106,51 +113,100 @@ function RecurringNotePage() {
     };
 
     if (recruitmentId) {
-      fetchRecruitmentDetails(); 
+      fetchRecruitmentDetails();
     }
   }, [recruitmentId]);
 
   useEffect(() => {
-    const fetchRecurringNoteData = async () => {
+    const fetchSelfIntroductions = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`,
+          `${BASE_URL}/introduces?recruitmentId=${recruitmentId}`,
         );
-        console.log("API Response:", response.data);
-        setDocumentData(
-          response.data.data.document || {
-            id: 0,
-            satisfaction: "",
-            wellDonePoints: [],
-            shortcomingPoints: [],
-            wellDoneMemo: "",
-            shortcomingMemo: "",
-          },
-        );
-        setLoading(false);
+        const data = response.data.data;
+
+        const questions = data.map((intro: any) => intro.question);
+        setDocumentQuestions(questions);
+
+        setSelfIntroductions(data);
+
+        // 기본 질문 및 답변 설정
+        if (data.length > 0) {
+          const firstIntroduction = data[0];
+          setSelfIntroductionData({
+            introduceId: firstIntroduction.introduceId,
+            order: firstIntroduction.order,
+            question: firstIntroduction.question,
+            answer: firstIntroduction.answer,
+            reactionType: firstIntroduction.type || null,
+          });
+        }
       } catch (error) {
-        console.error("Error fetching recurring note data", error);
-        setLoading(false);
+        console.error("Error fetching self introductions", error);
       }
     };
-    if (recruitmentId) {
-      fetchRecurringNoteData();
-    }
+
+    fetchSelfIntroductions();
   }, [recruitmentId]);
+
+  const handleReactionSave = async (
+    introduceId: number,
+    reactionType: string,
+  ) => {
+    try {
+      // API 호출을 통해 저장 로직
+      await axios.put(`${BASE_URL}/introduces/${introduceId}/reaction`, {
+        reactionType,
+      });
+      alert("반응이 저장되었습니다.");
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+      alert("저장에 실패했습니다.");
+    }
+  };
+
+  const handleQuestionClick = (index: number) => {
+    const selectedIntroduction = selfIntroductions[index]; // 선택한 질문 데이터
+    setSelfIntroductionData({
+      introduceId: selectedIntroduction.introduceId,
+      order: selectedIntroduction.order,
+      question: selectedIntroduction.question,
+      answer: selectedIntroduction.answer, // 선택한 질문에 대한 답변
+      reactionType: selectedIntroduction.reactionType || null,
+    });
+  };
+
+  const fetchDataForTab = async (tab: string) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`,
+      );
+      const data = response.data.data;
+
+      if (tab === "document") {
+        setDocumentData(data.document);
+      } else if (tab === "interview") {
+        setInterviewData(data.interview);
+      } else if (tab === "etc") {
+        setEtcData(data.etc[0]);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataForTab(activeTab);
+  }, [activeTab]);
 
   const handleSave = async () => {
     const requestBody = {
-      document: {
-        id: documentData.id || null, // 복기 문서 ID (이미 존재하는 경우)
-        recruitmentId: recruitmentId,
-        satisfaction: documentData.satisfaction, // 만족도 정보
-        wellDonePoints: documentData.wellDonePoints, // 잘한 점
-        shortcomingPoints: documentData.shortcomingPoints, // 아쉬운 점
-        wellDoneMemo: documentData.wellDoneMemo, // 잘한 점 설명
-        shortcomingMemo: documentData.shortcomingMemo, // 개선할 점 설명
-      },
-      interview: {},
-      etc: [],
+      document: documentData,
+      interview: interviewData,
+      etc: [etcData],
     };
 
     try {
@@ -158,11 +214,11 @@ function RecurringNotePage() {
         `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
         requestBody,
       );
-      if (response.status === 200) {
-        alert("저장이 완료되었습니다.");
-      } else {
-        alert("저장 중 오류가 발생했습니다.");
-      }
+      alert(
+        response.status === 200
+          ? "저장이 완료되었습니다."
+          : "저장 중 오류가 발생했습니다.",
+      );
     } catch (error) {
       console.error("저장 실패:", error);
       alert("저장 실패");
@@ -170,7 +226,7 @@ function RecurringNotePage() {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // 데이터 로딩 중 상태
+    return <div>Loading...</div>;
   }
 
   return (
@@ -178,27 +234,62 @@ function RecurringNotePage() {
       <RecurringNoteHeader company={company} task={task} />
       <div className="flex flex-col items-start gap-[20px]">
         <div className="mt-[40px] flex w-full flex-col items-start gap-[20px]">
-            <RecurringNoteTab onTabChange={handleTabChange} onSave={handleSave} />
+          <RecurringNoteTab
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onSave={handleSave}
+          />
         </div>
-        <div className="flex items-start gap-[20px]">
-            <DocumentRecurringNoteLeftPart
-            documentData={documentData}
-            setDocumentData={setDocumentData}
-            />
-            {!isSelfIntroductionFetched ? (
-            <NoSelfIntroduction onClick={fetchSelfIntroductionData} />
-            ) : (
-            <DocumentRecurringNoteRightPart
-            question={currentIntroduction?.question || ""}
-            answer={currentIntroduction?.answer || ""}
-            goodQuestion="한 번 더 보면 좋을 질문"
-            questions={selfIntroductions.map((intro) => intro.question)}
-            reactionType={currentIntroduction?.reactionType || ""}
-            onReactionSave={handleReactionSave}
-            introduceId={currentIntroduction?.introduceId || null}
-            onQuestionClick={handleQuestionClick}
-            />
-            )}
+        <div className="flex w-full items-start gap-[20px]">
+          {activeTab === "document" && (
+            <>
+              <DocumentRecurringNoteLeftPart
+                documentData={documentData}
+                setDocumentData={setDocumentData}
+              />
+              {selfIntroductionData.question ? (
+                <DocumentRecurringNoteRightPart
+                  question={selfIntroductionData.question || ""}
+                  answer={selfIntroductionData.answer || ""}
+                  goodQuestion="한 번 더 보면 좋을 질문"
+                  reactionType={selfIntroductionData.reactionType || ""}
+                  introduceId={selfIntroductionData.introduceId || 0}
+                  questions={documentQuestions}
+                  onQuestionClick={handleQuestionClick}
+                  onReactionSave={handleReactionSave}
+                />
+              ) : (
+                <NoSelfIntroduction
+                  onClick={() => {
+                    console.log("NoSelfIntroduction clicked");
+                  }}
+                />
+              )}
+            </>
+          )}
+
+          {activeTab === "interview" && (
+            <>
+              <InterviewRecurringNoteLeftPart
+                interviewData={interviewData}
+                setInterviewData={setInterviewData}
+              />
+              <InterviewRecurringNoteRightPart
+                question={interviewAnswerData.question || ""}
+                answer={interviewAnswerData.answer || ""}
+                goodQuestion="한 번 더 보면 좋을 질문"
+                reactionType={interviewAnswerData.reactionType || ""}
+                introduceId={interviewAnswerData.introduceId || 0}
+                questions={interviewQuestions}
+                onQuestionClick={handleQuestionClick}
+                onReactionSave={handleReactionSave}
+              />
+            </>
+          )}
+
+          {activeTab === "etc" && (
+            <EtcRecurringNotePart etcData={etcData} setEtcData={setEtcData} />
+          )}
         </div>
       </div>
     </div>

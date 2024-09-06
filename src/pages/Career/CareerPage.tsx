@@ -3,7 +3,7 @@ import { NoSelfIntroduction } from "../Status/components/Helpers/RecurringNoteHe
 function CareerPage() {
   return (
     <>
-      <h1>커리어관리 페이지</h1>      
+      <h1>커리어관리 페이지</h1>
     </>
   );
 }

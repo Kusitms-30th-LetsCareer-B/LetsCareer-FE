@@ -1,20 +1,23 @@
 import { useState } from "react";
 
 interface ButtonGroupProps {
-    introduceId: number;
-    reactionType: string; 
-    onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
-  }
+  introduceId: number;
+  reactionType: string;
+  onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
+}
 
-  
-export const ButtonGroup = ({ introduceId, reactionType, onReactionSave }: ButtonGroupProps) => {
-    const handleReactionClick = async (reaction: string) => {
-        try {
-        await onReactionSave(introduceId, reaction); 
-        } catch (error) {
-          console.error("Error saving reaction:", error);
-        }
-      };    
+export const ButtonGroup = ({
+  introduceId,
+  reactionType,
+  onReactionSave,
+}: ButtonGroupProps) => {
+  const handleReactionClick = async (reaction: string) => {
+    try {
+      await onReactionSave(introduceId, reaction);
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+    }
+  };
 
   return (
     <div className="flex gap-[10px]">
@@ -23,7 +26,7 @@ export const ButtonGroup = ({ introduceId, reactionType, onReactionSave }: Butto
         onClick={() => handleReactionClick("잘했어요")}
       />
       <BadButton
-        isSelected={reactionType === "아쉬워요"} 
+        isSelected={reactionType === "아쉬워요"}
         onClick={() => handleReactionClick("아쉬워요")}
       />
     </div>
@@ -31,11 +34,11 @@ export const ButtonGroup = ({ introduceId, reactionType, onReactionSave }: Butto
 };
 
 interface GoodButtonProps {
-    isSelected: boolean;
-    onClick: () => void;
+  isSelected: boolean;
+  onClick: () => void;
 }
-  
-const GoodButton = ({isSelected, onClick}: GoodButtonProps) => {
+
+const GoodButton = ({ isSelected, onClick }: GoodButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -98,11 +101,11 @@ const GoodButton = ({isSelected, onClick}: GoodButtonProps) => {
 };
 
 interface BadButtonProps {
-    isSelected: boolean;
-    onClick: () => void;
+  isSelected: boolean;
+  onClick: () => void;
 }
 
-const BadButton = ({isSelected, onClick}: BadButtonProps) => {
+const BadButton = ({ isSelected, onClick }: BadButtonProps) => {
   return (
     <button
       onClick={onClick}

@@ -18,8 +18,8 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
   const { handlePrevClick, handleNextClick, changePage, getVisiblePages } =
     useStatusPagination(totalItems, itemsPerPage, currentPage, onPageChange);
 
-  console.log('Visible Pages:', getVisiblePages());
-  console.log('Total Pages:', totalPages);
+  console.log("Visible Pages:", getVisiblePages());
+  console.log("Total Pages:", totalPages);
 
   return (
     <nav className="mt-[20px] inline-flex items-center gap-[32px]">

@@ -9,7 +9,7 @@ interface SelfIntroductionQuestionProps {
 export const SelfIntroductionQuestions = ({
   questions,
   selectedQuestion,
-  onQuestionClick, 
+  onQuestionClick,
 }: SelfIntroductionQuestionProps) => {
   return (
     <div className="mt-[20px] flex items-center gap-[4px]">
@@ -23,7 +23,7 @@ export const SelfIntroductionQuestions = ({
               : "border-neutral-80 font-medium text-neutral-45"
           }`}
         >
-          {index + 1} 
+          {index + 1}
         </button>
       ))}
     </div>

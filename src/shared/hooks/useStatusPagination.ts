@@ -2,7 +2,7 @@ export const useStatusPagination = (
   totalItems: number,
   itemsPerPage: number,
   currentPage: number,
-  onPageChange: (page: number) => void
+  onPageChange: (page: number) => void,
 ) => {
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
 
