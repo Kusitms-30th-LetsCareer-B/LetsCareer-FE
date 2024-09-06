@@ -29,7 +29,7 @@ function DetailStatusPage() {
   const [today, setToday] = useState(new Date());
   const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 모달 상태
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
-  const isFinalStagePresent = stages.some((stage) => stage.isFinal);
+  const isFinalStagePresent = stages.some(stage => stage.isFinal);
 
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +46,7 @@ function DetailStatusPage() {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); 
   }, []);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ function DetailStatusPage() {
     };
 
     if (recruitmentId) {
-      fetchRecruitmentDetails(); // recruitmentId가 있을 때만 데이터 fetch
+      fetchRecruitmentDetails();
     }
   }, [recruitmentId, stages]);
 
@@ -90,26 +90,20 @@ function DetailStatusPage() {
     const topStage = stages[stages.length - 1];
     return topStage;
   };
-
+  
   const topStage = getTopStage();
 
-  // 날짜를 하루 이전으로
   const handlePrevDay = () => {
     const prevDay = new Date(today);
     prevDay.setDate(today.getDate() - 1);
     setToday(prevDay);
   };
 
-  // 날짜를 하루 이후로
   const handleNextDay = () => {
     const nextDay = new Date(today);
     nextDay.setDate(today.getDate() + 1);
     setToday(nextDay);
   };
-
-  if (loading) {
-    return <div>Loading...</div>; // 데이터 로딩 중 상태
-  }
 
   let StatusComponent;
   if (topStage) {
@@ -153,11 +147,11 @@ function DetailStatusPage() {
   }
 
   const handleAddClick = () => {
-    setIsAddModalOpen(true); // 플러스 버튼 클릭 시 모달 열림
+    setIsAddModalOpen(true);
   };
 
   const handleModalClose = () => {
-    setIsAddModalOpen(false); // 모달 닫기
+    setIsAddModalOpen(false); 
   };
 
   return (
@@ -173,40 +167,19 @@ function DetailStatusPage() {
           </span>
         </button>
       </div>
-
+      
       {StatusComponent && <div className="flex">{StatusComponent}</div>}
-
-      <div className="mb-[20px] flex items-center overflow-x-auto rounded-md bg-neutral-100">
+      
+      <div className="mb-[20px] flex items-center rounded-md bg-neutral-100 overflow-x-auto">
         <div className="inline-flex items-center">
           {stages.map((stage) => {
             const endDateFormatted = formatDate(new Date(stage.endDate));
             if (stage.status === "PROGRESS") {
-              return (
-                <ProgressCard
-                  key={stage.stageId}
-                  stageId={stage.stageId}
-                  name={stage.stageName}
-                  endDate={endDateFormatted}
-                />
-              );
+              return <ProgressCard key={stage.stageId} stageId={stage.stageId} name={stage.stageName} endDate={endDateFormatted}/>;
             } else if (stage.status === "PASSED") {
-              return (
-                <SuccessCard
-                  key={stage.stageId}
-                  stageId={stage.stageId}
-                  name={stage.stageName}
-                  endDate={endDateFormatted}
-                />
-              );
+              return <SuccessCard key={stage.stageId} stageId={stage.stageId} name={stage.stageName} endDate={endDateFormatted} />;
             } else if (stage.status === "FAILED") {
-              return (
-                <FailedCard
-                  key={stage.stageId}
-                  stageId={stage.stageId}
-                  name={stage.stageName}
-                  endDate={endDateFormatted}
-                />
-              );
+              return <FailedCard key={stage.stageId} stageId={stage.stageId} name={stage.stageName} endDate={endDateFormatted} />;
             } else {
               return null;
             }

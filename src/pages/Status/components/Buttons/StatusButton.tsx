@@ -282,15 +282,9 @@ interface RecurringNoteProps {
   onClick: () => void;
 }
 
-export const WriteRecurringNoteButton = ({
-  text,
-  onClick,
-}: RecurringNoteProps) => {
+export const WriteRecurringNoteButton = ({ text, onClick }: RecurringNoteProps) => {
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center justify-center rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[6px]"
-    >
+    <button onClick={onClick} className="flex items-center justify-center rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[6px]">
       <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
         {text}
       </span>

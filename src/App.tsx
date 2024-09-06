@@ -10,6 +10,7 @@ import CareerPage from "./pages/Career/CareerPage";
 import SelfIntroducePage from "./pages/Status/SelfIntroducePage";
 import DetailStatusPage from "./pages/Status/DetailStatusPage";
 import RecurringNotePage from "./pages/Status/RecurringNotePage";
+import ArchivingPage from "./pages/Status/ArchivingPage";
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
           <Route
             path="/status/:recruitmentId/recurring-note"
             element={<RecurringNotePage />}
+          />
+          <Route
+            path="/status/:recruitmentId/:archivingId"
+            element={<ArchivingPage />}
           />
           <Route path="/setting" element={<CareerPage />} />
         </Routes>

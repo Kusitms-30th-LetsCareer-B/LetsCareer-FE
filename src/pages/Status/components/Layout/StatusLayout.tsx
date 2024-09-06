@@ -1,7 +1,4 @@
-import {
-  Ddayh32Chip,
-  Finishh32Chip,
-} from "../../../../components/chips/DdayChip";
+import { Ddayh32Chip, Finishh32Chip } from "../../../../components/chips/DdayChip";
 import { useScrap } from "../../../../shared/hooks/useScrap";
 import { useStatusTab } from "../../../../shared/hooks/useStatusTab";
 import { DeleteIcon } from "../Buttons/StatusButton";
@@ -100,7 +97,9 @@ export const ConsequenceFailedStatus: React.FC<ConsequenceFailedProps> = ({
   const { scrap, scrapImage } = useScrap();
 
   return (
-    <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
+    <div
+      className="mt-[20px] flex flex-shrink-0 flex-col items-start"
+    >
       <div className="flex flex-col items-start self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-static-100 p-[20px]">
         <div className="mb-[16px] flex w-full items-center justify-between">
           <div className="flex items-center">
@@ -124,10 +123,10 @@ export const ConsequenceFailedStatus: React.FC<ConsequenceFailedProps> = ({
           className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0"
           onClick={onClick}
         >
-          {company}
+        {company}
         </span>
       </div>
-      <FailedStatus name={stageName} recruitmentId={recruitmentId} />
+      <FailedStatus name={stageName} recruitmentId={recruitmentId}/>
     </div>
   );
 };
@@ -143,12 +142,14 @@ export const ConsequenceSuccessStatus: React.FC<ConsequenceSuccessProps> = ({
   const { scrap, scrapImage } = useScrap();
 
   return (
-    <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
+    <div
+      className="mt-[20px] flex flex-shrink-0 flex-col items-start"
+    >
       <div className="flex flex-col items-start self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-static-100 p-[20px]">
         <div className="mb-[16px] flex w-full items-center justify-between">
           <div className="flex items-center">
             <div className="mr-[8px]">
-              <Finishh32Chip />
+                <Finishh32Chip />
             </div>
             <Departmenth32Chip department={department} />
           </div>
@@ -170,7 +171,7 @@ export const ConsequenceSuccessStatus: React.FC<ConsequenceSuccessProps> = ({
           {company}
         </span>
       </div>
-      <SuccessStatus recruitmentId={recruitmentId} />
+      <SuccessStatus recruitmentId={recruitmentId}/>
     </div>
   );
 };

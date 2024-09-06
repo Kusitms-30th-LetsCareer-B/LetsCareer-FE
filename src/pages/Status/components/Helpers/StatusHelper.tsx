@@ -234,6 +234,14 @@ export const DetailSuccessStatus = ({
   department,
 }: DetailStatusProps2) => {
   const { scrap, scrapImage } = useScrap();
+  const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const navigate = useNavigate();
+
+  const handleRecurringNote = () => {
+    if (recruitmentId) {
+      navigate(`/status/${recruitmentId}/recurring-note`);
+    }
+  };
 
   return (
     <div className="mb-[20px] flex w-full flex-col items-start self-stretch">
@@ -260,7 +268,7 @@ export const DetailSuccessStatus = ({
             </span>
           </div>
           <div className="flex items-center gap-[12px]">
-            <WriteRecurringNoteButton text="복기노트 작성하기" />
+            <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성하기" />
             <WhiteButton text="공고 이동" />
           </div>
         </div>
@@ -292,6 +300,14 @@ export const DetailFailedStatus = ({
   department,
 }: DetailStatusProps2) => {
   const { scrap, scrapImage } = useScrap();
+  const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const navigate = useNavigate();
+
+  const handleRecurringNote = () => {
+    if (recruitmentId) {
+      navigate(`/status/${recruitmentId}/recurring-note`);
+    }
+  };
 
   return (
     <div className="mb-[20px] flex w-full flex-col items-start self-stretch">
@@ -318,7 +334,7 @@ export const DetailFailedStatus = ({
             </span>
           </div>
           <div className="flex items-center gap-[12px]">
-            <WriteRecurringNoteButton text="복기노트 작성하기" />
+            <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성하기" />
             <WhiteButton text="공고 이동" />
           </div>
         </div>
