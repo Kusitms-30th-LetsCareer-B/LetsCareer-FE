@@ -1,27 +1,29 @@
 import { useState } from "react";
 
 interface SelfIntroductionQuestionProps {
-    questions: string[];
-  }
-  
-  export const SelfIntroductionQuestions = ({ questions }: SelfIntroductionQuestionProps) => {
-    const [selectedQuestion, setSelectedQuestion] = useState(0); 
-  
-    return (
-      <div className="flex items-center mt-[20px] gap-[4px]">
-        {questions.map((question, index) => (
-          <button
-            key={index}
-            onClick={() => setSelectedQuestion(index)} 
-            className={`w-[28px] h-[28px] flex flex-col justify-center items-center rounded-full border text-xsmall14 tracking-[-0.21px] text-center  ${
-              selectedQuestion === index
-                ? "border-primary text-primary font-semibold" 
-                : "border-neutral-80 text-neutral-45 font-medium"
-            }`}
-          >
-            {index + 1} {/* 문항 번호 표시 */}
-          </button>
-        ))}
-      </div>
-    );
-  };
+  questions: string[];
+}
+
+export const SelfIntroductionQuestions = ({
+  questions,
+}: SelfIntroductionQuestionProps) => {
+  const [selectedQuestion, setSelectedQuestion] = useState(0);
+
+  return (
+    <div className="mt-[20px] flex items-center gap-[4px]">
+      {questions.map((question, index) => (
+        <button
+          key={index}
+          onClick={() => setSelectedQuestion(index)}
+          className={`flex h-[28px] w-[28px] flex-col items-center justify-center rounded-full border text-center text-xsmall14 tracking-[-0.21px] ${
+            selectedQuestion === index
+              ? "border-primary font-semibold text-primary"
+              : "border-neutral-80 font-medium text-neutral-45"
+          }`}
+        >
+          {index + 1} {/* 문항 번호 표시 */}
+        </button>
+      ))}
+    </div>
+  );
+};

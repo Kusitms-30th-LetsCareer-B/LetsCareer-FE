@@ -3,20 +3,23 @@ import { useStatusPagination } from "../../../../shared/hooks/useStatusPaginatio
 interface PaginationComponentProps {
   totalItems: number;
   itemsPerPage: number;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
-const StatusPagination = ({
+const StatusPagination: React.FC<PaginationComponentProps> = ({
   totalItems,
   itemsPerPage,
-}: PaginationComponentProps) => {
-  const {
-    currentPage,
-    totalPages,
-    handlePrevClick,
-    handleNextClick,
-    changePage,
-    getVisiblePages,
-  } = useStatusPagination(totalItems, itemsPerPage);
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
+  const { handlePrevClick, handleNextClick, changePage, getVisiblePages } =
+    useStatusPagination(totalItems, itemsPerPage, currentPage, onPageChange);
+
+  console.log('Visible Pages:', getVisiblePages());
+  console.log('Total Pages:', totalPages);
 
   return (
     <nav className="mt-[20px] inline-flex items-center gap-[32px]">
@@ -84,9 +87,7 @@ const StatusPagination = ({
       <button
         onClick={handleNextClick}
         className={`flex items-center justify-center rounded-xxs border bg-static-100 py-[4px] pl-[5px] pr-[3px] ${
-          currentPage !== totalPages
-            ? "border-primary-50"
-            : "border-neutral-80 bg-static-100"
+          currentPage !== totalPages ? "border-primary-50" : "border-neutral-80"
         }`}
         disabled={currentPage === totalPages}
       >

@@ -1,32 +1,26 @@
-import { useState, useEffect } from "react";
-
 export const useStatusPagination = (
   totalItems: number,
   itemsPerPage: number,
+  currentPage: number,
+  onPageChange: (page: number) => void
 ) => {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
 
   const changePage = (page: number) => {
-    if (page < 1) {
-      setCurrentPage(1);
-    } else if (page > totalPages) {
-      setCurrentPage(totalPages);
-    } else {
-      setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      onPageChange(page);
     }
   };
 
   const handlePrevClick = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      onPageChange(currentPage - 1);
     }
   };
 
   const handleNextClick = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      onPageChange(currentPage + 1);
     }
   };
 
@@ -52,32 +46,13 @@ export const useStatusPagination = (
           pages.push(i);
         }
       } else {
-        const startPage = Math.max(
-          1,
-          currentPage - Math.floor(maxVisiblePages / 2),
-        );
-        const endPage = Math.min(
-          totalPages,
-          currentPage + Math.floor(maxVisiblePages / 2),
-        );
-
-        if (startPage > 1) {
-          pages.push(1);
-          if (startPage > 2) {
-            pages.push("...");
-          }
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
           pages.push(i);
         }
-
-        if (endPage < totalPages) {
-          if (endPage < totalPages - 1) {
-            pages.push("...");
-          }
-          pages.push(totalPages);
-        }
+        pages.push("...");
+        pages.push(totalPages);
       }
     }
     return pages;
