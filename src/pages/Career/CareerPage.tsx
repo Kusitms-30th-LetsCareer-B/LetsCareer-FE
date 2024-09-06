@@ -1,4 +1,7 @@
-import { NoSelfIntroduction } from "../Status/components/Helpers/RecurringNoteHelper";
+import {
+  NoGoodQuestion,
+  NoSelfIntroduction,
+} from "../Status/components/Helpers/RecurringNoteHelper";
 
 function CareerPage() {
   return (

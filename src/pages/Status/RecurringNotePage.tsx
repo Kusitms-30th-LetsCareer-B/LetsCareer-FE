@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import {
+  AgainQuestion,
   DocumentRecurringNoteLeftPart,
   DocumentRecurringNoteRightPart,
   EtcRecurringNotePart,
   InterviewRecurringNoteLeftPart,
   InterviewRecurringNoteRightPart,
+  NoGoodQuestion,
   NoSelfIntroduction,
   RecurringNoteHeader,
   RecurringNoteTab,
@@ -34,7 +36,7 @@ interface SelfIntroduction {
 }
 
 interface InterviewAnswer {
-  introduceId: number;
+  interviewId: number;
   order: number;
   question: string;
   answer: string;
@@ -74,7 +76,7 @@ function RecurringNotePage() {
 
   const [interviewAnswerData, setInterviewAnswerData] =
     useState<InterviewAnswer>({
-      introduceId: 0,
+      interviewId: 0,
       order: 0,
       question: "",
       answer: "",
@@ -90,11 +92,19 @@ function RecurringNotePage() {
   const [activeTab, setActiveTab] = useState("document");
 
   const [documentQuestions, setDocumentQuestions] = useState<string[]>([]);
-  const [interviewQuestions, setInterviewQuestions] = useState<string[]>([]);
+  const [interviewQuestions, setInterviewQuestions] = useState<
+    InterviewAnswer[]
+  >([]);
+  const [selectedOrder, setSelectedOrder] = useState<number>(1);
 
   const [selfIntroductions, setSelfIntroductions] = useState<
     SelfIntroduction[]
   >([]); // 전체 자기소개 데이터
+  const [interviewAnswers, setInterviewAnswers] = useState<InterviewAnswer[]>(
+    [],
+  ); // 면접 질문과 답변 데이터
+
+  const [goodQuestions, setGoodQuestions] = useState<string[]>([]); // 질문 리스트 상태
 
   useEffect(() => {
     const fetchRecruitmentDetails = async () => {
@@ -149,30 +159,89 @@ function RecurringNotePage() {
     fetchSelfIntroductions();
   }, [recruitmentId]);
 
-  const handleReactionSave = async (
-    introduceId: number,
-    reactionType: string,
-  ) => {
+  // 면접 질문과 답변을 받아오는 API 호출
+  useEffect(() => {
+    const fetchInterviewAnswers = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/interviews?recruitmentId=${recruitmentId}`,
+        );
+        const data = response.data.data;
+        setInterviewQuestions(data);
+
+        // 첫 번째 질문을 기본값으로 설정
+        if (data.length > 0) {
+          const firstInterview = data[0];
+          setInterviewAnswerData(firstInterview);
+        }
+      } catch (error) {
+        console.error("Error fetching interview answers", error);
+      }
+    };
+
+    fetchInterviewAnswers();
+  }, [recruitmentId]);
+
+  // 리액션 저장
+  const handleReactionSave = async (id: number, reactionType: string) => {
     try {
-      // API 호출을 통해 저장 로직
-      await axios.put(`${BASE_URL}/introduces/${introduceId}/reaction`, {
-        reactionType,
-      });
-      alert("반응이 저장되었습니다.");
+      if (activeTab === "document") {
+        await axios.patch(`${BASE_URL}/introduces/${id}/reaction`, {
+          reaction: reactionType,
+        });
+        setSelfIntroductionData((prevData) => ({
+            ...prevData,
+            reactionType: reactionType,
+          }));
+    } else if (activeTab === "interview") {
+        await axios.patch(`${BASE_URL}/interviews/${id}/reaction`, {
+          reaction: reactionType,
+        });
+
+        setInterviewAnswerData((prevData) => ({
+            ...prevData,
+            reactionType: reactionType,
+          }));
+        }
+
     } catch (error) {
       console.error("Error saving reaction:", error);
-      alert("저장에 실패했습니다.");
     }
   };
 
+
   const handleQuestionClick = (index: number) => {
-    const selectedIntroduction = selfIntroductions[index]; // 선택한 질문 데이터
+    const selectedIntroduction = selfIntroductions[index];
+
+    // 선택된 질문이 있는지 확인
+    if (!selectedIntroduction) {
+      console.error("선택된 질문이 없습니다.");
+      return;
+    }
+
     setSelfIntroductionData({
       introduceId: selectedIntroduction.introduceId,
       order: selectedIntroduction.order,
       question: selectedIntroduction.question,
-      answer: selectedIntroduction.answer, // 선택한 질문에 대한 답변
+      answer: selectedIntroduction.answer,
       reactionType: selectedIntroduction.reactionType || null,
+    });
+  };
+
+  const handleInterviewQuestionClick = (index: number) => {
+    const selectedInterview = interviewAnswers[index];
+
+    if (!selectedInterview) {
+      console.error("선택된 면접 질문이 없습니다.");
+      return; // 질문이 없으면 함수 실행을 멈춤
+    }
+
+    setInterviewAnswerData({
+      interviewId: selectedInterview.interviewId,
+      order: selectedInterview.order,
+      question: selectedInterview.question,
+      answer: selectedInterview.answer,
+      reactionType: selectedInterview.reactionType || null,
     });
   };
 
@@ -203,27 +272,127 @@ function RecurringNotePage() {
   }, [activeTab]);
 
   const handleSave = async () => {
-    const requestBody = {
-      document: documentData,
-      interview: interviewData,
-      etc: [etcData],
-    };
+    if (activeTab === "document") {
+      await handleDocumentSave();
+    } else if (activeTab === "interview") {
+      await handleInterviewSave();
+    } else if (activeTab === "etc") {
+      await handleEtcSave();
+    }
+  };
 
+  const handleDocumentSave = async () => {
     try {
+      const requestBody = {
+        document: documentData,
+        interview: {},
+        etc: [],
+      };
       const response = await axios.put(
         `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
         requestBody,
       );
-      alert(
-        response.status === 200
-          ? "저장이 완료되었습니다."
-          : "저장 중 오류가 발생했습니다.",
+      alert(response.status === 200 ? "서류 저장 완료" : "저장 중 오류 발생");
+    } catch (error) {
+      console.error("저장 실패:", error);
+    }
+  };
+
+  // interview 저장 로직
+  const handleInterviewSave = async () => {
+    try {
+      const requestBody = {
+        document: {},
+        interview: interviewData,
+        etc: [],
+      };
+      const response = await axios.put(
+        `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
+        requestBody,
+      );
+      alert(response.status === 200 ? "면접 저장 완료" : "저장 중 오류 발생");
+    } catch (error) {
+      console.error("저장 실패:", error);
+    }
+  };
+
+  // etc 저장 로직
+  const handleEtcSave = async () => {
+    try {
+      const requestBody = {
+        document: {},
+        interview: {},
+        etc: [etcData],
+      };
+      const response = await axios.put(
+        `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
+        requestBody,
       );
     } catch (error) {
       console.error("저장 실패:", error);
-      alert("저장 실패");
     }
   };
+
+  // 새로운 useEffect로 interviewQuestions가 업데이트될 때 selectedOrder로 선택된 질문 반영
+  useEffect(() => {
+    if (interviewQuestions.length > 0) {
+      const selectedQuestion = interviewQuestions.find(
+        (q) => q.order === selectedOrder,
+      );
+      if (selectedQuestion) {
+        setInterviewAnswerData(selectedQuestion);
+      }
+    }
+  }, [interviewQuestions, selectedOrder]);
+
+  // 면접 질문 리스트 가져오기
+  useEffect(() => {
+    const fetchInterviewAnswers = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/interviews?recruitmentId=${recruitmentId}`,
+        );
+        const data = response.data.data;
+        setInterviewQuestions(data);
+
+        // 첫 번째 질문을 기본값으로 설정
+        if (data.length > 0) {
+          setInterviewAnswerData(data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching interview answers", error);
+      }
+    };
+    fetchInterviewAnswers();
+  }, [recruitmentId]);
+
+  // 질문 번호 선택 시 선택된 질문으로 상태 업데이트
+  const handleQuestionSelect = (order: number) => {
+    setSelectedOrder(order);
+  };
+
+  useEffect(() => {
+    const fetchGoodQuestions = async (endpoint: string) => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}${endpoint}?recruitmentId=${recruitmentId}`,
+        );
+        const questionData = response.data.data;
+        if (questionData.length > 0) {
+          setGoodQuestions(questionData.map((q: any) => q.question)); // 질문 리스트 저장
+        }
+      } catch (error) {
+        console.error("Error fetching good questions:", error);
+        setGoodQuestions([]);
+      }
+    };
+
+    if (activeTab === "document") {
+      fetchGoodQuestions("/introduces/additional");
+    } else if (activeTab === "interview") {
+      fetchGoodQuestions("/interviews/additional");
+    }
+  }, [activeTab]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -240,7 +409,7 @@ function RecurringNotePage() {
             onSave={handleSave}
           />
         </div>
-        <div className="flex w-full items-start gap-[20px]">
+        <div className="flex w-1/2 w-full items-start gap-[20px]">
           {activeTab === "document" && (
             <>
               <DocumentRecurringNoteLeftPart
@@ -248,16 +417,23 @@ function RecurringNotePage() {
                 setDocumentData={setDocumentData}
               />
               {selfIntroductionData.question ? (
-                <DocumentRecurringNoteRightPart
-                  question={selfIntroductionData.question || ""}
-                  answer={selfIntroductionData.answer || ""}
-                  goodQuestion="한 번 더 보면 좋을 질문"
-                  reactionType={selfIntroductionData.reactionType || ""}
-                  introduceId={selfIntroductionData.introduceId || 0}
-                  questions={documentQuestions}
-                  onQuestionClick={handleQuestionClick}
-                  onReactionSave={handleReactionSave}
-                />
+                <div className="flex w-1/2 flex-col items-start">
+                  <DocumentRecurringNoteRightPart
+                    question={selfIntroductionData.question || ""}
+                    answer={selfIntroductionData.answer || ""}
+                    goodQuestion="한 번 더 보면 좋을 질문"
+                    reactionType={selfIntroductionData.reactionType || ""}
+                    introduceId={selfIntroductionData.introduceId || 0}
+                    questions={documentQuestions}
+                    onQuestionClick={handleQuestionClick}
+                    onReactionSave={handleReactionSave}
+                  />
+                  {goodQuestions.length > 0 ? (
+                    <AgainQuestion goodQuestions={goodQuestions} />
+                  ) : (
+                    <NoGoodQuestion />
+                  )}
+                </div>
               ) : (
                 <NoSelfIntroduction
                   onClick={() => {
@@ -274,16 +450,26 @@ function RecurringNotePage() {
                 interviewData={interviewData}
                 setInterviewData={setInterviewData}
               />
-              <InterviewRecurringNoteRightPart
-                question={interviewAnswerData.question || ""}
-                answer={interviewAnswerData.answer || ""}
-                goodQuestion="한 번 더 보면 좋을 질문"
-                reactionType={interviewAnswerData.reactionType || ""}
-                introduceId={interviewAnswerData.introduceId || 0}
-                questions={interviewQuestions}
-                onQuestionClick={handleQuestionClick}
-                onReactionSave={handleReactionSave}
-              />
+              <div className="flex h-full w-1/2 flex-col items-start gap-[20px]">
+                <InterviewRecurringNoteRightPart
+                  question={interviewAnswerData.question || ""}
+                  answer={interviewAnswerData.answer || ""}
+                  reactionType={interviewAnswerData.reactionType || ""}
+                  interviewId={interviewAnswerData.interviewId || 0}
+                  questions={interviewQuestions.map((q) => ({
+                    question: q.question,
+                    answer: q.answer,   // 'answer'를 포함하여 매핑
+                    interviewId: q.interviewId,  // 'interviewId'를 포함하여 매핑
+                  }))}
+                  onQuestionClick={(index) => handleQuestionSelect(index + 1)} // 질문 선택 처리
+                  onReactionSave={handleReactionSave}
+                />
+                {goodQuestions.length > 0 ? (
+                  <AgainQuestion goodQuestions={goodQuestions} />
+                ) : (
+                  <NoGoodQuestion />
+                )}
+              </div>
             </>
           )}
 
