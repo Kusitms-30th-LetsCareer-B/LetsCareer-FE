@@ -1,33 +1,41 @@
 import { useState } from "react";
 
-export const ButtonGroup = () => {
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+interface ButtonGroupProps {
+    introduceId: number;
+    reactionType: string; 
+    onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
+  }
 
-  const handleSelect = (buttonType: string) => {
-    setSelectedButton(buttonType);
-  };
+  
+export const ButtonGroup = ({ introduceId, reactionType, onReactionSave }: ButtonGroupProps) => {
+    const handleReactionClick = async (reaction: string) => {
+        try {
+        await onReactionSave(introduceId, reaction); 
+        } catch (error) {
+          console.error("Error saving reaction:", error);
+        }
+      };    
 
   return (
     <div className="flex gap-[10px]">
       <GoodButton
-        isSelected={selectedButton === "good"}
-        onClick={() => handleSelect("good")}
+        isSelected={reactionType === "잘했어요"}
+        onClick={() => handleReactionClick("잘했어요")}
       />
       <BadButton
-        isSelected={selectedButton === "bad"}
-        onClick={() => handleSelect("bad")}
+        isSelected={reactionType === "아쉬워요"} 
+        onClick={() => handleReactionClick("아쉬워요")}
       />
     </div>
   );
 };
 
-const GoodButton = ({
-  isSelected,
-  onClick,
-}: {
-  isSelected: boolean;
-  onClick: () => void;
-}) => {
+interface GoodButtonProps {
+    isSelected: boolean;
+    onClick: () => void;
+}
+  
+const GoodButton = ({isSelected, onClick}: GoodButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -89,13 +97,12 @@ const GoodButton = ({
   );
 };
 
-const BadButton = ({
-  isSelected,
-  onClick,
-}: {
-  isSelected: boolean;
-  onClick: () => void;
-}) => {
+interface BadButtonProps {
+    isSelected: boolean;
+    onClick: () => void;
+}
+
+const BadButton = ({isSelected, onClick}: BadButtonProps) => {
   return (
     <button
       onClick={onClick}

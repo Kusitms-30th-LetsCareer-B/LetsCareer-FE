@@ -1,7 +1,9 @@
+import { NoSelfIntroduction } from "../Status/components/Helpers/RecurringNoteHelper";
+
 function CareerPage() {
   return (
     <>
-      <h1>커리어관리 페이지</h1>
+      <h1>커리어관리 페이지</h1>      
     </>
   );
 }

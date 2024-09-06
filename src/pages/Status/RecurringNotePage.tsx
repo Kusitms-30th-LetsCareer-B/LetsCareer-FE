@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   DocumentRecurringNoteLeftPart,
   DocumentRecurringNoteRightPart,
+  NoSelfIntroduction,
   RecurringNoteHeader,
   RecurringNoteTab,
 } from "./components/Helpers/RecurringNoteHelper";
@@ -17,6 +18,12 @@ interface ReviewNote {
   shortcomingMemo: string;
 }
 
+interface SelfIntroduction {
+    introduceId: number | null;
+    question: string;
+    answer: string;
+    reactionType: string | null;
+}
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 function RecurringNotePage() {
@@ -24,24 +31,11 @@ function RecurringNotePage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const { recruitmentId } = useParams<{ recruitmentId: string }>(); // URL에서 recruitmentId를 받아옴
+  const { recruitmentId } = useParams<{ recruitmentId: string }>();
 
   const [company, setCompany] = useState<string>("");
   const [task, setTask] = useState<string>("");
   const [loading, setLoading] = useState(true);
-
-  const question =
-    "지원자가 생각하는 이 회사만의 경쟁력이 무엇이고, 향후 3년 간 사업 방향성은 어떻게 될 것 같나요?";
-  const answer = "잠이 오니";
-  const goodQuestion = "제가 잘하고 잇는걸까요..?";
-
-  const questions = [
-    "자기소개서 문항 1",
-    "자기소개서 문항 2",
-    "자기소개서 문항 3",
-    "자기소개서 문항 4",
-    "자기소개서 문항 5",
-  ];
 
   const [documentData, setDocumentData] = useState<ReviewNote>({
     id: 0,
@@ -51,6 +45,49 @@ function RecurringNotePage() {
     wellDoneMemo: "",
     shortcomingMemo: "",
   });
+
+  const [selfIntroductions, setSelfIntroductions] = useState<SelfIntroduction[] | null>(null);
+  const [currentIntroduction, setCurrentIntroduction] = useState<SelfIntroduction | null>(null);
+  const [isSelfIntroductionFetched, setIsSelfIntroductionFetched] = useState<boolean>(false);
+  const [currentTab, setCurrentTab] = useState("document");
+
+  const handleTabChange = (tab: string) => {
+    setCurrentTab(tab);
+  };
+
+  const fetchSelfIntroductionData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/introduces?recruitmentId=${recruitmentId}`);
+      const introductions = response.data.data;
+      setSelfIntroductions(introductions.length > 0 ? introductions : null);
+      if (introductions.length > 0) {
+        setCurrentIntroduction(introductions[0]); 
+        setIsSelfIntroductionFetched(true); 
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching self introduction data:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleReactionSave = async (introduceId: number | null, reactionType: string) => {
+    try {
+      await axios.put(`${BASE_URL}/introduces/${introduceId}/reaction`, {
+        reactionType,
+      });
+      alert("반응이 저장되었습니다.");
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+      alert("저장에 실패했습니다.");
+    }
+  };
+
+  const handleQuestionClick = (index: number) => {
+    if (selfIntroductions && selfIntroductions[index]) {
+      setCurrentIntroduction(selfIntroductions[index]); 
+    }
+  };
 
   useEffect(() => {
     const fetchRecruitmentDetails = async () => {
@@ -69,7 +106,7 @@ function RecurringNotePage() {
     };
 
     if (recruitmentId) {
-      fetchRecruitmentDetails(); // recruitmentId가 있을 때만 데이터 fetch
+      fetchRecruitmentDetails(); 
     }
   }, [recruitmentId]);
 
@@ -97,7 +134,7 @@ function RecurringNotePage() {
       }
     };
     if (recruitmentId) {
-      fetchRecurringNoteData(); // recruitmentId가 있을 때만 데이터 fetch
+      fetchRecurringNoteData();
     }
   }, [recruitmentId]);
 
@@ -139,21 +176,30 @@ function RecurringNotePage() {
   return (
     <div className="mx-[48px] mb-[100px] mt-[40px] w-[1128px]">
       <RecurringNoteHeader company={company} task={task} />
-      <div className="mb-[20px] mt-[40px] flex w-full flex-col items-start gap-[20px]">
-        <RecurringNoteTab onSave={handleSave} />
-      </div>
-      <div className="flex items-start gap-[20px]">
-        <DocumentRecurringNoteLeftPart
-          documentData={documentData}
-          setDocumentData={setDocumentData}
-        />
-
-        <DocumentRecurringNoteRightPart
-          question={question}
-          answer={answer}
-          goodQuestion={goodQuestion}
-          questions={questions}
-        />
+      <div className="flex flex-col items-start gap-[20px]">
+        <div className="mt-[40px] flex w-full flex-col items-start gap-[20px]">
+            <RecurringNoteTab onTabChange={handleTabChange} onSave={handleSave} />
+        </div>
+        <div className="flex items-start gap-[20px]">
+            <DocumentRecurringNoteLeftPart
+            documentData={documentData}
+            setDocumentData={setDocumentData}
+            />
+            {!isSelfIntroductionFetched ? (
+            <NoSelfIntroduction onClick={fetchSelfIntroductionData} />
+            ) : (
+            <DocumentRecurringNoteRightPart
+            question={currentIntroduction?.question || ""}
+            answer={currentIntroduction?.answer || ""}
+            goodQuestion="한 번 더 보면 좋을 질문"
+            questions={selfIntroductions.map((intro) => intro.question)}
+            reactionType={currentIntroduction?.reactionType || ""}
+            onReactionSave={handleReactionSave}
+            introduceId={currentIntroduction?.introduceId || null}
+            onQuestionClick={handleQuestionClick}
+            />
+            )}
+        </div>
       </div>
     </div>
   );
