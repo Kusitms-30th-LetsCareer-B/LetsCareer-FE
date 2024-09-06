@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useStatusPagination } from "../../shared/hooks/useStatusPagination";
 import { UserStatusChip } from "./components/Chips/StatusChip";
 import { WelcomeMessage } from "./components/Helpers/StatusHelper";
-import { ApplyStatus, ConsequenceFailedStatus, ConsequenceSuccessStatus } from "./components/Layout/StatusLayout";
+import {
+  ApplyStatus,
+  ConsequenceFailedStatus,
+  ConsequenceSuccessStatus,
+} from "./components/Layout/StatusLayout";
 import StatusPagination from "./components/Pagination/StatusPagination";
 import {
   RecruitmentDeleteButton,
@@ -28,9 +32,8 @@ interface Recruitment {
 }
 
 function StatusPage() {
-
   useEffect(() => {
-    window.scrollTo(0, 0); 
+    window.scrollTo(0, 0);
   }, []);
 
   const navigate = useNavigate();
@@ -55,10 +58,10 @@ function StatusPage() {
     useState<Recruitment | null>(null);
 
   const filteredRecruitments = recruitments.filter((recruitment) => {
-    if (selectedStage === "전체") return true; 
+    if (selectedStage === "전체") return true;
     if (selectedStage === "서류") return recruitment.stageName === "서류";
     if (selectedStage === "면접") return recruitment.stageName === "면접";
-    return recruitment.stageName !== "서류" && recruitment.stageName !== "면접"; 
+    return recruitment.stageName !== "서류" && recruitment.stageName !== "면접";
   });
 
   const fetchRecruitments = async (type: "progress" | "consequence") => {
@@ -76,7 +79,6 @@ function StatusPage() {
     const type = activeTab === "prepare" ? "progress" : "consequence";
     fetchRecruitments(type);
   }, [activeTab]);
-
 
   useEffect(() => {
     const fetchStatusCounts = async () => {
@@ -110,7 +112,7 @@ function StatusPage() {
             (rec) => rec.recruitmentId !== selectedRecruitment.recruitmentId,
           ),
         );
-        setIsDeletePopupOpen(false); 
+        setIsDeletePopupOpen(false);
       } catch (error) {
         console.error("Error deleting recruitment", error);
       }
@@ -118,7 +120,7 @@ function StatusPage() {
   };
 
   const handleDeleteCancel = () => {
-    setIsDeletePopupOpen(false); 
+    setIsDeletePopupOpen(false);
   };
 
   return (
@@ -136,82 +138,88 @@ function StatusPage() {
         </div>
       </div>
       <div className="mb-[4px] mt-[32px] flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex flex-shrink-0 items-center">
           <StatusTab
-              name="준비 현황"
-              isActive={activeTab === "prepare"}
-              onClick={() => tabClick("prepare")}
-            />
-            <StatusTab
-              name="지원 결과"
-              isActive={activeTab === "result"}
-              onClick={() => tabClick("result")}
-            />
+            name="준비 현황"
+            isActive={activeTab === "prepare"}
+            onClick={() => tabClick("prepare")}
+          />
+          <StatusTab
+            name="지원 결과"
+            isActive={activeTab === "result"}
+            onClick={() => tabClick("result")}
+          />
         </div>
         <div className="flex flex-shrink-0 items-center bg-static-100">
-            <StatusDropdown setSelectedStage={setSelectedStage} />
-            <StatusDeleteButton
-              toggleDeleteMode={() => setDeleteMode(!deleteMode)}
-            />
-          </div>
+          <StatusDropdown setSelectedStage={setSelectedStage} />
+          <StatusDeleteButton
+            toggleDeleteMode={() => setDeleteMode(!deleteMode)}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-[20px]">
-      {filteredRecruitments
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    .map((recruitment: Recruitment) => {
-      let StatusComponent;
+        {filteredRecruitments
+          .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+          .map((recruitment: Recruitment) => {
+            let StatusComponent;
 
-      // status에 따른 컴포넌트 분기 처리
-      switch (recruitment.status) {
-        case 'PROGRESS':
-          StatusComponent = (
-            <ApplyStatus
-              company={recruitment.companyName}
-              day={recruitment.daysUntilEnd}
-              department={recruitment.task}
-              stageName={recruitment.stageName}
-              endDate={recruitment.endDate}
-              deleteMode={deleteMode}
-              onDelete={() => handleDeleteClick(recruitment)}
-              onClick={() => navigate(`/status/${recruitment.recruitmentId}`)}
-            />
-          );
-          break;
-        case 'PASSED':
-          StatusComponent = (
-            <ConsequenceSuccessStatus
-              company={recruitment.companyName}
-              department={recruitment.task}
-              recruitmentId={recruitment.recruitmentId}
-              deleteMode={deleteMode}
-              onDelete={() => handleDeleteClick(recruitment)}
-              onClick={() => navigate(`/status/${recruitment.recruitmentId}`)}
-            />
-          );
-          break;
-        case 'FAILED':
-          StatusComponent = (
-            <ConsequenceFailedStatus
-              company={recruitment.companyName}
-              department={recruitment.task}
-              stageName={recruitment.stageName}
-              recruitmentId={recruitment.recruitmentId}
-              deleteMode={deleteMode}
-              onDelete={() => handleDeleteClick(recruitment)}
-              onClick={() => navigate(`/status/${recruitment.recruitmentId}`)}
-            />
-          );
-          break;
-        default:
-          StatusComponent = null;
-      }
+            // status에 따른 컴포넌트 분기 처리
+            switch (recruitment.status) {
+              case "PROGRESS":
+                StatusComponent = (
+                  <ApplyStatus
+                    company={recruitment.companyName}
+                    day={recruitment.daysUntilEnd}
+                    department={recruitment.task}
+                    stageName={recruitment.stageName}
+                    endDate={recruitment.endDate}
+                    deleteMode={deleteMode}
+                    onDelete={() => handleDeleteClick(recruitment)}
+                    onClick={() =>
+                      navigate(`/status/${recruitment.recruitmentId}`)
+                    }
+                  />
+                );
+                break;
+              case "PASSED":
+                StatusComponent = (
+                  <ConsequenceSuccessStatus
+                    company={recruitment.companyName}
+                    department={recruitment.task}
+                    deleteMode={deleteMode}
+                    recruitmentId={recruitment.recruitmentId}
+                    onDelete={() => handleDeleteClick(recruitment)}
+                    onClick={() =>
+                      navigate(`/status/${recruitment.recruitmentId}`)
+                    }
+                  />
+                );
+                break;
+              case "FAILED":
+                StatusComponent = (
+                  <ConsequenceFailedStatus
+                    company={recruitment.companyName}
+                    department={recruitment.task}
+                    stageName={recruitment.stageName}
+                    deleteMode={deleteMode}
+                    recruitmentId={recruitment.recruitmentId}
+                    onDelete={() => handleDeleteClick(recruitment)}
+                    onClick={() =>
+                      navigate(`/status/${recruitment.recruitmentId}`)
+                    }
+                  />
+                );
+                break;
+              default:
+                StatusComponent = null;
+            }
 
-      return (
-        <div key={recruitment.recruitmentId} className="relative">
-          {StatusComponent}
-        </div>
-      );
-    })}
+            return (
+              <div key={recruitment.recruitmentId} className="relative">
+                {StatusComponent}
+              </div>
+            );
+          })}
       </div>
       {/* 삭제 팝업 */}
       {isDeletePopupOpen && selectedRecruitment && (

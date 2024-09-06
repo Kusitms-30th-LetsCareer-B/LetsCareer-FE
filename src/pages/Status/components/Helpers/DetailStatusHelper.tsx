@@ -146,7 +146,10 @@ export const DetailSuccessStatus = ({
             </span>
           </div>
           <div className="flex items-center gap-[12px]">
-            <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성하기" />
+            <WriteRecurringNoteButton
+              onClick={handleRecurringNote}
+              text="복기노트 작성하기"
+            />
             <AnnouncementButton
               onClick={() => {
                 if ({ announcementUrl }) {
@@ -191,7 +194,6 @@ export const DetailFailedStatus = ({
   const navigate = useNavigate();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
 
-
   const handleRecurringNote = () => {
     if (recruitmentId) {
       navigate(`/status/${recruitmentId}/recurring-note`);
@@ -225,7 +227,10 @@ export const DetailFailedStatus = ({
             </span>
           </div>
           <div className="flex items-center gap-[12px]">
-            <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성하기" />
+            <WriteRecurringNoteButton
+              onClick={handleRecurringNote}
+              text="복기노트 작성하기"
+            />
             <AnnouncementButton
               onClick={() => {
                 if ({ announcementUrl }) {
@@ -260,18 +265,17 @@ export const DetailFailedStatus = ({
   );
 };
 
-
 interface CardProps {
   name: string;
   endDate: string;
-  stageId: string
+  stageId: string;
 }
 
 export const ProgressCard = ({ stageId, name, endDate }: CardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEditClick = () => {
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
@@ -280,56 +284,59 @@ export const ProgressCard = ({ stageId, name, endDate }: CardProps) => {
 
   return (
     <>
-    <div className="ml-[52px] flex flex-col items-center bg-neutral-100">
-      <div className="mb-[12px] mt-[40px] flex flex-col items-start gap-[20px] self-stretch rounded-sm border border-neutral-80 bg-static-100">
-        <div className="flex flex-col gap-[20px] p-[16px]">
-          <div className="flex w-[144px] items-center justify-between">
-            <ProgressChip />
-            <button onClick={handleEditClick} className="flex flex-shrink-0 items-center gap-[10px] rounded-full bg-neutral-95 p-[6px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
+      <div className="ml-[52px] flex flex-col items-center bg-neutral-100">
+        <div className="mb-[12px] mt-[40px] flex flex-col items-start gap-[20px] self-stretch rounded-sm border border-neutral-80 bg-static-100">
+          <div className="flex flex-col gap-[20px] p-[16px]">
+            <div className="flex w-[144px] items-center justify-between">
+              <ProgressChip />
+              <button
+                onClick={handleEditClick}
+                className="flex flex-shrink-0 items-center gap-[10px] rounded-full bg-neutral-95 p-[6px]"
               >
-                <path
-                  d="M7.99935 5.33308L2.66602 10.6664V13.3331L5.33268 13.3331L10.666 7.99974M7.99935 5.33308L9.91177 3.42065L9.91292 3.41952C10.1762 3.15626 10.308 3.0244 10.46 2.97501C10.5939 2.93151 10.7382 2.93151 10.8721 2.97501C11.024 3.02436 11.1557 3.15608 11.4186 3.41896L12.5784 4.57882C12.8424 4.84283 12.9745 4.9749 13.024 5.12712C13.0675 5.26101 13.0674 5.40524 13.0239 5.53914C12.9745 5.69125 12.8427 5.82312 12.579 6.08675L12.5784 6.08732L10.666 7.99974M7.99935 5.33308L10.666 7.99974"
-                  stroke="#BDBDBD"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="flex flex-col items-start gap-[2px]">
-            <span className="self-stretch text-xsmall16 font-bold tracking-[-0.096px] text-neutral-0">
-              {name}
-            </span>
-            <span className="self-stretch text-xxsmall12 font-medium tracking-[-0.3px] text-neutral-40">
-              {endDate}
-            </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    d="M7.99935 5.33308L2.66602 10.6664V13.3331L5.33268 13.3331L10.666 7.99974M7.99935 5.33308L9.91177 3.42065L9.91292 3.41952C10.1762 3.15626 10.308 3.0244 10.46 2.97501C10.5939 2.93151 10.7382 2.93151 10.8721 2.97501C11.024 3.02436 11.1557 3.15608 11.4186 3.41896L12.5784 4.57882C12.8424 4.84283 12.9745 4.9749 13.024 5.12712C13.0675 5.26101 13.0674 5.40524 13.0239 5.53914C12.9745 5.69125 12.8427 5.82312 12.579 6.08675L12.5784 6.08732L10.666 7.99974M7.99935 5.33308L10.666 7.99974"
+                    stroke="#BDBDBD"
+                    strokeWidth="1.33333"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex flex-col items-start gap-[2px]">
+              <span className="self-stretch text-xsmall16 font-bold tracking-[-0.096px] text-neutral-0">
+                {name}
+              </span>
+              <span className="self-stretch text-xxsmall12 font-medium tracking-[-0.3px] text-neutral-40">
+                {endDate}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mb-[36px]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <circle cx="8" cy="8" r="8" fill="#4D55F5" />
-        </svg>
-      </div>
-    </div>
-    {isModalOpen && 
-          <div className="fixed top-50% inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-        <UpdateTypeModal onClose={handleModalClose} stageId={stageId}/>
+        <div className="mb-[36px]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <circle cx="8" cy="8" r="8" fill="#4D55F5" />
+          </svg>
         </div>
-        }
+      </div>
+      {isModalOpen && (
+        <div className="top-50% fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <UpdateTypeModal onClose={handleModalClose} stageId={stageId} />
+        </div>
+      )}
     </>
   );
 };
@@ -346,56 +353,59 @@ export const FailedCard = ({ stageId, name, endDate }: CardProps) => {
   };
   return (
     <>
-    <div className="ml-[52px] flex flex-col items-center bg-neutral-100">
-      <div className="mb-[12px] mt-[40px] flex flex-col items-start gap-[20px] self-stretch rounded-sm border border-neutral-80 bg-static-100">
-        <div className="flex flex-col gap-[20px] p-[16px]">
-          <div className="flex w-[144px] items-center justify-between">
-            <FailedChip />
-            <button onClick={handleEditClick} className="flex flex-shrink-0 items-center gap-[10px] rounded-full bg-neutral-95 p-[6px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
+      <div className="ml-[52px] flex flex-col items-center bg-neutral-100">
+        <div className="mb-[12px] mt-[40px] flex flex-col items-start gap-[20px] self-stretch rounded-sm border border-neutral-80 bg-static-100">
+          <div className="flex flex-col gap-[20px] p-[16px]">
+            <div className="flex w-[144px] items-center justify-between">
+              <FailedChip />
+              <button
+                onClick={handleEditClick}
+                className="flex flex-shrink-0 items-center gap-[10px] rounded-full bg-neutral-95 p-[6px]"
               >
-                <path
-                  d="M7.99935 5.33308L2.66602 10.6664V13.3331L5.33268 13.3331L10.666 7.99974M7.99935 5.33308L9.91177 3.42065L9.91292 3.41952C10.1762 3.15626 10.308 3.0244 10.46 2.97501C10.5939 2.93151 10.7382 2.93151 10.8721 2.97501C11.024 3.02436 11.1557 3.15608 11.4186 3.41896L12.5784 4.57882C12.8424 4.84283 12.9745 4.9749 13.024 5.12712C13.0675 5.26101 13.0674 5.40524 13.0239 5.53914C12.9745 5.69125 12.8427 5.82312 12.579 6.08675L12.5784 6.08732L10.666 7.99974M7.99935 5.33308L10.666 7.99974"
-                  stroke="#BDBDBD"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="flex flex-col items-start gap-[2px]">
-            <span className="self-stretch text-xsmall16 font-bold tracking-[-0.096px] text-neutral-0">
-              {name}
-            </span>
-            <span className="self-stretch text-xxsmall12 font-medium tracking-[-0.3px] text-neutral-40">
-              {endDate}
-            </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    d="M7.99935 5.33308L2.66602 10.6664V13.3331L5.33268 13.3331L10.666 7.99974M7.99935 5.33308L9.91177 3.42065L9.91292 3.41952C10.1762 3.15626 10.308 3.0244 10.46 2.97501C10.5939 2.93151 10.7382 2.93151 10.8721 2.97501C11.024 3.02436 11.1557 3.15608 11.4186 3.41896L12.5784 4.57882C12.8424 4.84283 12.9745 4.9749 13.024 5.12712C13.0675 5.26101 13.0674 5.40524 13.0239 5.53914C12.9745 5.69125 12.8427 5.82312 12.579 6.08675L12.5784 6.08732L10.666 7.99974M7.99935 5.33308L10.666 7.99974"
+                    stroke="#BDBDBD"
+                    strokeWidth="1.33333"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex flex-col items-start gap-[2px]">
+              <span className="self-stretch text-xsmall16 font-bold tracking-[-0.096px] text-neutral-0">
+                {name}
+              </span>
+              <span className="self-stretch text-xxsmall12 font-medium tracking-[-0.3px] text-neutral-40">
+                {endDate}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mb-[36px]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <circle cx="8" cy="8" r="8" fill="#CB81F2" />
-        </svg>
-      </div>
-    </div>
-    {isModalOpen && 
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-        <UpdateTypeModal onClose={handleModalClose} stageId={stageId}/>
+        <div className="mb-[36px]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <circle cx="8" cy="8" r="8" fill="#CB81F2" />
+          </svg>
         </div>
-        }
+      </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <UpdateTypeModal onClose={handleModalClose} stageId={stageId} />
+        </div>
+      )}
     </>
   );
 };
@@ -413,56 +423,59 @@ export const SuccessCard = ({ stageId, name, endDate }: CardProps) => {
 
   return (
     <>
-    <div className="ml-[52px] flex flex-col items-center bg-neutral-100">
-      <div className="mb-[12px] mt-[40px] flex flex-col items-start gap-[20px] self-stretch rounded-sm border border-neutral-80 bg-static-100">
-        <div className="flex flex-col gap-[20px] p-[16px]">
-          <div className="flex w-[144px] items-center justify-between">
-            <SuccessChip />
-            <button onClick={handleEditClick} className="flex flex-shrink-0 items-center gap-[10px] rounded-full bg-neutral-95 p-[6px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
+      <div className="ml-[52px] flex flex-col items-center bg-neutral-100">
+        <div className="mb-[12px] mt-[40px] flex flex-col items-start gap-[20px] self-stretch rounded-sm border border-neutral-80 bg-static-100">
+          <div className="flex flex-col gap-[20px] p-[16px]">
+            <div className="flex w-[144px] items-center justify-between">
+              <SuccessChip />
+              <button
+                onClick={handleEditClick}
+                className="flex flex-shrink-0 items-center gap-[10px] rounded-full bg-neutral-95 p-[6px]"
               >
-                <path
-                  d="M7.99935 5.33308L2.66602 10.6664V13.3331L5.33268 13.3331L10.666 7.99974M7.99935 5.33308L9.91177 3.42065L9.91292 3.41952C10.1762 3.15626 10.308 3.0244 10.46 2.97501C10.5939 2.93151 10.7382 2.93151 10.8721 2.97501C11.024 3.02436 11.1557 3.15608 11.4186 3.41896L12.5784 4.57882C12.8424 4.84283 12.9745 4.9749 13.024 5.12712C13.0675 5.26101 13.0674 5.40524 13.0239 5.53914C12.9745 5.69125 12.8427 5.82312 12.579 6.08675L12.5784 6.08732L10.666 7.99974M7.99935 5.33308L10.666 7.99974"
-                  stroke="#BDBDBD"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="flex flex-col items-start gap-[2px]">
-            <span className="self-stretch text-xsmall16 font-bold tracking-[-0.096px] text-neutral-0">
-              {name}
-            </span>
-            <span className="self-stretch text-xxsmall12 font-medium tracking-[-0.3px] text-neutral-40">
-              {endDate}
-            </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    d="M7.99935 5.33308L2.66602 10.6664V13.3331L5.33268 13.3331L10.666 7.99974M7.99935 5.33308L9.91177 3.42065L9.91292 3.41952C10.1762 3.15626 10.308 3.0244 10.46 2.97501C10.5939 2.93151 10.7382 2.93151 10.8721 2.97501C11.024 3.02436 11.1557 3.15608 11.4186 3.41896L12.5784 4.57882C12.8424 4.84283 12.9745 4.9749 13.024 5.12712C13.0675 5.26101 13.0674 5.40524 13.0239 5.53914C12.9745 5.69125 12.8427 5.82312 12.579 6.08675L12.5784 6.08732L10.666 7.99974M7.99935 5.33308L10.666 7.99974"
+                    stroke="#BDBDBD"
+                    strokeWidth="1.33333"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex flex-col items-start gap-[2px]">
+              <span className="self-stretch text-xsmall16 font-bold tracking-[-0.096px] text-neutral-0">
+                {name}
+              </span>
+              <span className="self-stretch text-xxsmall12 font-medium tracking-[-0.3px] text-neutral-40">
+                {endDate}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mb-[36px]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <circle cx="8" cy="8" r="8" fill="#1BC47D" />
-        </svg>
-      </div>
-    </div>
-    {isModalOpen && 
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-        <UpdateTypeModal onClose={handleModalClose} stageId={stageId}/>
+        <div className="mb-[36px]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <circle cx="8" cy="8" r="8" fill="#1BC47D" />
+          </svg>
         </div>
-        }
+      </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <UpdateTypeModal onClose={handleModalClose} stageId={stageId} />
+        </div>
+      )}
     </>
   );
 };
@@ -541,7 +554,7 @@ export const ExistArchiving = () => {
   const fetchArchives = async (page: number) => {
     try {
       const response = await axios.get(
-        `http://43.203.124.122:8080/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page-1}&size=5`,
+        `http://43.203.124.122:8080/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page - 1}&size=5`,
       );
       console.log("API response:", response.data); // 응답 데이터 출력
       const archiveData = response.data.data;
@@ -803,12 +816,11 @@ interface RoutineItem {
   date: string;
 }
 
-
 interface TodoProps {
   companyName: string;
 }
 
-export const CreateTodo = ({companyName}: TodoProps) => {
+export const CreateTodo = ({ companyName }: TodoProps) => {
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [routines, setRoutines] = useState<RoutineItem[]>([]);
   const [isFocused, setIsFocused] = useState<boolean[]>(todos.map(() => false));
@@ -876,88 +888,90 @@ export const CreateTodo = ({companyName}: TodoProps) => {
     <div className="flex h-[380px] w-[410px] flex-col items-start self-stretch">
       {sortedItems.length === 0 ? (
         <div className="mb-[24px] flex h-[312px] flex-col items-center justify-center self-stretch">
-        <NoExistTodo name={companyName} />
-      </div>
+          <NoExistTodo name={companyName} />
+        </div>
       ) : (
-      <div className="mb-[24px] flex h-[312px] flex-col items-center justify-center self-stretch">
-        <ul>
-          {sortedItems.map((item, index) => (
-            <li
-              key={index}
-              className="mb-[4px] flex w-full items-center gap-[20px] self-stretch py-[6px]"
-            >
-              <div className="flex w-full items-center">
-                {"text" in item ? (
-                  <>
-                    <TodoCheckbox
-                      checked={item.checked}
-                      onChange={() => handleCheckboxChange(index, "todo")}
-                    />
-                    <div className="ml-[12px] flex-1 flex-shrink-0 flex-grow-0">
-                      <input
-                        type="text"
-                        value={item.text}
-                        placeholder="일정을 입력해주세요"
-                        onChange={(e) =>
-                          handleTextChange(index, e.target.value)
-                        }
-                        onFocus={() => handleFocus(index)}
-                        onBlur={() => handleBlur(index)}
-                        className={`mr-[20px] w-[330px] pb-[2px] text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30 ${item.text && !isFocused[index] ? "border-none" : ""} border-b-2 border-primary placeholder:text-neutral-45 focus:outline-none`}
-                      />
-                    </div>
-                    <TodoDropdown />
-                  </>
-                ) : (
-                  <div className="flex w-full items-center justify-between self-stretch">
-                    <div className="flex items-center">
-                      <RoutineCheckbox
+        <div className="mb-[24px] flex h-[312px] flex-col items-center justify-center self-stretch">
+          <ul>
+            {sortedItems.map((item, index) => (
+              <li
+                key={index}
+                className="mb-[4px] flex w-full items-center gap-[20px] self-stretch py-[6px]"
+              >
+                <div className="flex w-full items-center">
+                  {"text" in item ? (
+                    <>
+                      <TodoCheckbox
                         checked={item.checked}
-                        onChange={() => handleCheckboxChange(index, "routine")}
+                        onChange={() => handleCheckboxChange(index, "todo")}
                       />
-                      <span className="ml-[12px] mr-[12px] text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-                        {item.name}
-                      </span>
-                    </div>
+                      <div className="ml-[12px] flex-1 flex-shrink-0 flex-grow-0">
+                        <input
+                          type="text"
+                          value={item.text}
+                          placeholder="일정을 입력해주세요"
+                          onChange={(e) =>
+                            handleTextChange(index, e.target.value)
+                          }
+                          onFocus={() => handleFocus(index)}
+                          onBlur={() => handleBlur(index)}
+                          className={`mr-[20px] w-[330px] pb-[2px] text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30 ${item.text && !isFocused[index] ? "border-none" : ""} border-b-2 border-primary placeholder:text-neutral-45 focus:outline-none`}
+                        />
+                      </div>
+                      <TodoDropdown />
+                    </>
+                  ) : (
+                    <div className="flex w-full items-center justify-between self-stretch">
+                      <div className="flex items-center">
+                        <RoutineCheckbox
+                          checked={item.checked}
+                          onChange={() =>
+                            handleCheckboxChange(index, "routine")
+                          }
+                        />
+                        <span className="ml-[12px] mr-[12px] text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+                          {item.name}
+                        </span>
+                      </div>
 
-                    <div className="flex-end flex items-center justify-center gap-[8px]">
-                      {item.frequency === "매일" ? (
-                        <span className="text-xsmall14 font-medium tracking-[-0.21px] text-secondary">
-                          {item.frequency}
-                        </span>
-                      ) : (
-                        <span className="text-xsmall14 font-medium tracking-[-0.21px] text-secondary">
-                          {item.frequency} {item.selectedDay.join(", ")}요일
-                        </span>
-                      )}
-                      <div className="flex rounded-full p-[3px]">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                        >
-                          <path
-                            d="M7.49829 12H3.74829V15.75M10.4983 6H14.2483V2.25M3.43555 6.75255C3.85606 5.71175 4.56012 4.80978 5.4677 4.14917C6.37529 3.48856 7.45093 3.09564 8.57061 3.01538C9.69028 2.93512 10.8093 3.17055 11.8019 3.69496C12.7944 4.21937 13.6192 5.0119 14.1839 5.98209M14.5615 11.2478C14.1409 12.2886 13.4369 13.1906 12.5293 13.8512C11.6217 14.5118 10.5472 14.9042 9.42749 14.9845C8.30782 15.0647 7.18784 14.8293 6.19531 14.3049C5.20279 13.7805 4.37741 12.9881 3.81274 12.0179"
-                            stroke="#1BC47D"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <div className="pt-[6px]">
-                        <RoutineDropdown />
+                      <div className="flex-end flex items-center justify-center gap-[8px]">
+                        {item.frequency === "매일" ? (
+                          <span className="text-xsmall14 font-medium tracking-[-0.21px] text-secondary">
+                            {item.frequency}
+                          </span>
+                        ) : (
+                          <span className="text-xsmall14 font-medium tracking-[-0.21px] text-secondary">
+                            {item.frequency} {item.selectedDay.join(", ")}요일
+                          </span>
+                        )}
+                        <div className="flex rounded-full p-[3px]">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                          >
+                            <path
+                              d="M7.49829 12H3.74829V15.75M10.4983 6H14.2483V2.25M3.43555 6.75255C3.85606 5.71175 4.56012 4.80978 5.4677 4.14917C6.37529 3.48856 7.45093 3.09564 8.57061 3.01538C9.69028 2.93512 10.8093 3.17055 11.8019 3.69496C12.7944 4.21937 13.6192 5.0119 14.1839 5.98209M14.5615 11.2478C14.1409 12.2886 13.4369 13.1906 12.5293 13.8512C11.6217 14.5118 10.5472 14.9042 9.42749 14.9845C8.30782 15.0647 7.18784 14.8293 6.19531 14.3049C5.20279 13.7805 4.37741 12.9881 3.81274 12.0179"
+                              stroke="#1BC47D"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        </div>
+                        <div className="pt-[6px]">
+                          <RoutineDropdown />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
       <div className="flex items-center justify-center gap-[10px] self-stretch">
         <button

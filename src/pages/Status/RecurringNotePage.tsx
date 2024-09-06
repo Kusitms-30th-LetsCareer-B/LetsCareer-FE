@@ -20,10 +20,10 @@ interface ReviewNote {
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 function RecurringNotePage() {
-    useEffect(() => {
-        window.scrollTo(0, 0); 
-      }, []);
-      
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { recruitmentId } = useParams<{ recruitmentId: string }>(); // URL에서 recruitmentId를 받아옴
 
   const [company, setCompany] = useState<string>("");

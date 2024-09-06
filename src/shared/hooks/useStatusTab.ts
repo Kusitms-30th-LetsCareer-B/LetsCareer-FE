@@ -5,7 +5,6 @@ export const useStatusTab = () => {
 
   const tabClick = (tab: "prepare" | "result") => {
     setActiveTab(tab);
-    console.log(`Tab clicked: ${tab}`);
   };
 
   return {

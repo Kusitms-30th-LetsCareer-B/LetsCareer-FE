@@ -225,7 +225,7 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
             </svg>
           </button>
           {isDatePickerOpen && (
-            <div className="absolute -translate-x-1/2 z-50 mt-2">
+            <div className="absolute z-50 mt-2 -translate-x-1/2">
               <DatePicker
                 onCancel={() => setIsDatePickerOpen(false)}
                 onSelect={handleDateSelect}
@@ -343,9 +343,9 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
 };
 
 interface UpdateTypeModalProps {
-    onClose: () => void;
-    stageId: string;
-  }
+  onClose: () => void;
+  stageId: string;
+}
 
 export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null); // 선택된 전형명 상태
@@ -370,11 +370,12 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
     setIsDatePickerOpen(false);
   };
 
-
   useEffect(() => {
     const fetchStageData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/stages?stageId=${stageId}`);
+        const response = await axios.get(
+          `${BASE_URL}/stages?stageId=${stageId}`,
+        );
         const stageData = response.data.data;
 
         setSelectedType(stageData.stageName);
@@ -382,21 +383,20 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
         setIsFinalStage(stageData.isFinal);
 
         if (stageData.stageName !== "서류" || stageData.stageName !== "면접") {
-            setInputValue(stageData.stageName);
-          }
-          const formattedDate = formatDateForDisplay(stageData.endDate);
-          setSelectedDate(formattedDate);
-          setApiDate(stageData.endDate); // API에 보낼 원본 날짜는 유지
-        } catch (error) {
-          console.error("Error fetching stage data:", error);
+          setInputValue(stageData.stageName);
         }
-      };
-  
-      if (stageId) {
-        fetchStageData(); // stageId가 있을 때만 데이터 fetch
+        const formattedDate = formatDateForDisplay(stageData.endDate);
+        setSelectedDate(formattedDate);
+        setApiDate(stageData.endDate); // API에 보낼 원본 날짜는 유지
+      } catch (error) {
+        console.error("Error fetching stage data:", error);
       }
-    }, [stageId]);
-  
+    };
+
+    if (stageId) {
+      fetchStageData(); // stageId가 있을 때만 데이터 fetch
+    }
+  }, [stageId]);
 
   const mapStatusToDisplay = (status: string) => {
     switch (status) {
@@ -433,10 +433,10 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
 
   const handleUpdate = async () => {
     const requestBody = {
-        stageName: selectedType === "기타" ? inputValue : selectedType,
-        endDate: apiDate,
-        status: selectedStatus,
-      };
+      stageName: selectedType === "기타" ? inputValue : selectedType,
+      endDate: apiDate,
+      status: selectedStatus,
+    };
 
     try {
       await axios.put(`${BASE_URL}/stages?stageId=${stageId}`, requestBody);
@@ -449,8 +449,7 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
   // 삭제 API 호출
   const handleDelete = async () => {
     try {
-      await axios.delete(`${BASE_URL}/stages?stageId=${stageId}`,
-      );
+      await axios.delete(`${BASE_URL}/stages?stageId=${stageId}`);
       onClose();
     } catch (error) {
       console.error("Error deleting stage:", error);
@@ -521,7 +520,7 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
           {selectedType === "기타" && (
             <input
               type="text"
-              className={`border border-neutral-80 w-full rounded-sm px-[20px] py-[14px] ${isFocused ? "border-primary" : "border-neutral-80"}`}
+              className={`w-full rounded-sm border border-neutral-80 px-[20px] py-[14px] ${isFocused ? "border-primary" : "border-neutral-80"}`}
               placeholder="전형명을 입력하세요"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -556,7 +555,7 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
             </svg>
           </button>
           {isDatePickerOpen && (
-            <div className="absolute -translate-x-1/2 z-50 mt-2">
+            <div className="absolute z-50 mt-2 -translate-x-1/2">
               <DatePicker
                 onCancel={() => setIsDatePickerOpen(false)}
                 onSelect={handleDateSelect}
@@ -661,12 +660,18 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
           </div>
         </div>
         <div className="flex w-full items-start gap-[12px] self-stretch">
-          <button onClick={handleDelete} className="flex items-center justify-center rounded-sm bg-neutral-90 px-[28px] py-[10px] hover:bg-neutral-80">
+          <button
+            onClick={handleDelete}
+            className="flex items-center justify-center rounded-sm bg-neutral-90 px-[28px] py-[10px] hover:bg-neutral-80"
+          >
             <span className="text-xsmall16 font-medium tracking-[-0.096px] text-system-error">
               삭제
             </span>
           </button>
-          <button onClick={handleUpdate} className="flex w-3/5 items-center justify-center self-stretch rounded-sm bg-primary px-[28px] py-[10px] text-neutral-45 text-static-100 hover:bg-primary-120">
+          <button
+            onClick={handleUpdate}
+            className="flex w-3/5 items-center justify-center self-stretch rounded-sm bg-primary px-[28px] py-[10px] text-neutral-45 text-static-100 hover:bg-primary-120"
+          >
             <span className="text-xsmall16 font-medium tracking-[-0.096px]">
               완료
             </span>

@@ -5,6 +5,6 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   esbuild: {
-    logOverride: { 'ts(6133)': 'silent' } // TS6133 에러 무시 (사용되지 않는 변수)
-  }
+    logOverride: { "ts(6133)": "silent" }, // TS6133 에러 무시 (사용되지 않는 변수)
+  },
 });

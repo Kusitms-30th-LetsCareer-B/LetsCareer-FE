@@ -100,7 +100,7 @@ export const FailedStatus = ({ name, recruitmentId }: RecurringNoteProps) => {
     }
   };
   return (
-    <div className="bg-teritory-light flex h-[60px] w-[554px] items-center rounded-bl-md rounded-br-md rounded-tl-none rounded-tr-none border-b border-l border-r border-neutral-80 px-[20px]">
+    <div className="flex h-[60px] w-[554px] items-center rounded-bl-md rounded-br-md rounded-tl-none rounded-tr-none border-b border-l border-r border-neutral-80 bg-teritory-light px-[20px]">
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center">
           <svg
@@ -118,11 +118,14 @@ export const FailedStatus = ({ name, recruitmentId }: RecurringNoteProps) => {
               strokeLinejoin="round"
             />
           </svg>
-          <span className="text-teritory-normal ml-[6px] text-small20 font-semibold tracking-[-0.4px]">
+          <span className="ml-[6px] text-small20 font-semibold tracking-[-0.4px] text-teritory-normal">
             {name} 불합격
           </span>
         </div>
-        <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성" />
+        <WriteRecurringNoteButton
+          onClick={handleRecurringNote}
+          text="복기노트 작성"
+        />
       </div>
     </div>
   );
@@ -160,7 +163,10 @@ export const SuccessStatus = ({ recruitmentId }: RecurringNoteProps2) => {
             최종 합격
           </span>
         </div>
-        <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성" />
+        <WriteRecurringNoteButton
+          onClick={handleRecurringNote}
+          text="복기노트 작성"
+        />
       </div>
     </div>
   );

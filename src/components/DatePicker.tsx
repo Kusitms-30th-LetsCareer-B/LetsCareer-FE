@@ -46,7 +46,7 @@ const DatePicker = ({ onCancel, onSelect, message }: DatePickerProps) => {
 
   return (
     /* 캘린더 전체 윤곽 컨테이너 스타일 */
-    <div className="bg-static-100 w-[360px] rounded-lg border border-neutral-90 font-sans shadow-xl">
+    <div className="w-[360px] rounded-lg border border-neutral-90 bg-static-100 font-sans shadow-xl">
       {" "}
       {/* width를 360px로 고정함. w-[360px] 삭제하면 반응형으로 됨 */}
       {/* 첫 번째 헤더 파트 */}
