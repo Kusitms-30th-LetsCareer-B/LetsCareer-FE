@@ -5,12 +5,20 @@ import NavBar from "./components/Layout/NavBar";
 import PlannerSideBar from "./components/Layout/PlannerSideBar";
 import MainPage from "./pages/Main/MainPage";
 import CalendarPage from "./pages/Calendar/CalendarPage";
+import ScheduleEnvPage from "./pages/ScheduleEnv/ScheduleEnvPage.tsx"
 import StatusPage from "./pages/Status/StatusPage";
 import CareerPage from "./pages/Career/CareerPage";
 import SelfIntroducePage from "./pages/Status/SelfIntroducePage";
 import DetailStatusPage from "./pages/Status/DetailStatusPage";
 import RecurringNotePage from "./pages/Status/RecurringNotePage";
 import ArchivingPage from "./pages/Status/ArchivingPage";
+
+import {userInfo} from "./shared/api/loginInstance.ts" /* 로그인 정보 받기 */
+
+const testUser: userInfo = {
+  userId: 3,
+  userName: "오민지"
+};
 
 function App() {
   return (
@@ -19,8 +27,9 @@ function App() {
       <NavBar />
       <PlannerSideBar>
         <Routes>
-          <Route path="/home" element={<MainPage userName={"오민지"} />} />
-          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/home" element={<MainPage userId={testUser.userId} userName={testUser.userName} />} />
+          <Route path="/calendar" element={<CalendarPage userId={testUser.userId} userName={testUser.userName} />} />
+          <Route path="/calendar/schedule" element={<ScheduleEnvPage/>} />
           <Route path="/status/" element={<StatusPage />} />
           <Route path="/status/:recruitmentId" element={<DetailStatusPage />} />
           <Route

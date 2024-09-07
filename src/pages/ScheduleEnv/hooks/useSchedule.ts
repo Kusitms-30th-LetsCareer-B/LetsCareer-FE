@@ -4,7 +4,7 @@ import { useState } from 'react';
 // 페이지 전환 이벤트
 import { useNavigate } from "react-router-dom";
 
-const useCalendar = () => {
+const useSchedule = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜
   const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 선택된 날짜
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null); // 호버된 날짜
@@ -131,4 +131,4 @@ const useCalendar = () => {
   };
 };
 
-export default useCalendar;
+export default useSchedule;

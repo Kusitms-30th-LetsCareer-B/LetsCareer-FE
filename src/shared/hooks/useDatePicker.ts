@@ -21,6 +21,7 @@ const useDatePicker = () => {
   return {
     isDatePickerOpen,
     selectedDate,
+    setSelectedDate,
     handleOpenDatePicker,
     handleCloseDatePicker,
     handleDateSelected,
