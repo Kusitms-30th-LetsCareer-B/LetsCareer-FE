@@ -13,9 +13,14 @@ import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
   InterviewScheduleChip, OtherScheduleChip, PersonalScheduleChip, } from "../../../components/chips/TodoListChip"
 
 
+  
+/* API 연동 부분 */
+import {userInfo} from "../../../shared/api/loginInstance.ts" /* 로그인 정보 받기 */
 // ToDo 관련 Tools 임포트
 // 채용일정, 개인일정, 투두리스트 중 채용일정만
 import { RecruitmentScheduleListProps, formatDate2 } from "../../../components/ToDoListTool.ts"
+// 부모 컴포로부터 최종 입력받을 Probs 합체
+interface CombinedProps extends userInfo, RecruitmentScheduleListProps {}
 
   
 /* 리스트로 각 기업에 대한 일정 정보들을 받기:  API 연동 */
@@ -26,8 +31,9 @@ const sampleCompanies = [
     { id: 3, name: "현대자동차", schedules: ["코딩 테스트", "최종 발표"], completed: [true, true] },
 ];
 
+
 // TodoList 컴포넌트
-const TodoList = ({selectedDate, setSelectedDate}: RecruitmentScheduleListProps) => {
+const TodoList = ({userId, userName, selectedDate, setSelectedDate}: CombinedProps) => {
 
     // 커스텀 훅에서 상태와 핸들러 가져오기
     const { 

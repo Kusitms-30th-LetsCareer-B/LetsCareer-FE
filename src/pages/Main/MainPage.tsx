@@ -37,7 +37,7 @@ function MainPage({userId, userName} : userInfo) {
 
         <div>
           {/** 투두 리스트  */}
-          <MainTodayList />
+          <MainTodayList userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
           <MainTodoList userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
         </div>
       </div>
