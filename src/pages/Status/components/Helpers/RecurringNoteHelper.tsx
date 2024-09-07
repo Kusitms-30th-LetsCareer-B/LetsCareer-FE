@@ -9,6 +9,7 @@ import {
 } from "../Chips/RecurringNoteChip";
 import {
   ButtonGroup,
+  ButtonGroup2,
   InterviewDeleteButton,
 } from "../Buttons/RecurringNoteButton";
 import { SelfIntroductionQuestions } from "../Pagination/RecurringNotePagination";
@@ -41,15 +42,13 @@ export const RecurringNoteHeader = ({ company, task }: RecurringNoteProps) => {
   );
 };
 
-export const RecurringNoteTab = ({ activeTab, setActiveTab, onSave }) => {
+export const RecurringNoteTab = ({ activeTab, setActiveTab, etcData, setActiveTabById, handleNewEtcClick, onSave }) => {
   return (
     <div className="flex w-full items-center justify-between">
       <div className="flex items-center">
         <button
           className={`rounded-sm px-[12px] py-[6px] text-small18 font-semibold tracking-[-0.022px] ${
-            activeTab === "document"
-              ? "bg-primary-10 text-primary"
-              : "text-neutral-45"
+            activeTab === "document" ? "bg-primary-10 text-primary" : "text-neutral-45"
           }`}
           onClick={() => setActiveTab("document")}
         >
@@ -57,24 +56,38 @@ export const RecurringNoteTab = ({ activeTab, setActiveTab, onSave }) => {
         </button>
         <button
           className={`rounded-sm px-[12px] py-[6px] text-small18 font-semibold tracking-[-0.022px] ${
-            activeTab === "interview"
-              ? "bg-primary-10 text-primary"
-              : "text-neutral-45"
+            activeTab === "interview" ? "bg-primary-10 text-primary" : "text-neutral-45"
           }`}
           onClick={() => setActiveTab("interview")}
         >
           면접
         </button>
+
         <button
           className={`rounded-sm px-[12px] py-[6px] text-small18 font-semibold tracking-[-0.022px] ${
-            activeTab === "etc"
-              ? "bg-primary-10 text-primary"
-              : "text-neutral-45"
+            activeTab === "etc" ? "bg-primary-10 text-primary" : "text-neutral-45"
           }`}
-          onClick={() => setActiveTab("etc")}
+          onClick={() => {
+            setActiveTab("etc"); // 기타 탭으로 전환
+            handleNewEtcClick();   // 새로운 기타 항목 추가
+          }}
         >
           기타
         </button>
+        {activeTab === "etc" && (
+          <>
+            {/* 상단 탭에 저장된 reviewName들을 버튼으로 나열 */}
+            {etcData.map((etcNote) => (
+              <button
+                key={etcNote.id}
+                className="ml-[8px] px-[12px] py-[6px] border border-neutral-80 bg-neutral-100 text-neutral-30 rounded-sm"
+                onClick={() => setActiveTabById(etcNote.id)} // 기타 탭 클릭 시 데이터 조회
+              >
+                {etcNote.reviewName}
+              </button>
+            ))}
+          </>
+        )}
       </div>
       <button
         className="flex flex-shrink-0 justify-center gap-[10px] rounded-sm bg-primary px-[28px] py-[10px]"
@@ -120,16 +133,16 @@ export const DocumentRecurringNoteLeftPart = ({
 }: DocumentRecurringNoteLeftPartProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [wellDonePoints, setWellDonePoints] = useState<string[]>(
-    documentData.wellDonePoints,
+    documentData?.wellDonePoints || []
   );
   const [shortcomingPoints, setShortcomingPoints] = useState<string[]>(
-    documentData.shortcomingPoints,
+    documentData?.shortcomingPoints || []
   );
 
   useEffect(() => {
-    setWellDonePoints(documentData.wellDonePoints);
-    setShortcomingPoints(documentData.shortcomingPoints);
-  }, [documentData.wellDonePoints, documentData.shortcomingPoints]);
+    setWellDonePoints(documentData?.wellDonePoints || []);
+    setShortcomingPoints(documentData?.shortcomingPoints || []);
+  }, [documentData?.wellDonePoints, documentData?.shortcomingPoints]);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -178,7 +191,7 @@ export const DocumentRecurringNoteLeftPart = ({
         </span>
         <div className="flex gap-[10px]">
           <RecurringNoteChipGroup
-            selected={documentData.satisfaction}
+            selected={documentData?.satisfaction || ""} // Ensure empty string if satisfaction is null
             setSelected={(satisfaction) =>
               setDocumentData((prev) => ({
                 ...prev,
@@ -226,7 +239,7 @@ export const DocumentRecurringNoteLeftPart = ({
                 ? "outline-primary"
                 : "border-neutral-80 text-neutral-30"
             }`}
-            value={documentData.wellDoneMemo}
+            value={documentData?.wellDoneMemo || ""}
             onChange={(e) =>
               setDocumentData((prev) => ({
                 ...prev,
@@ -274,7 +287,7 @@ export const DocumentRecurringNoteLeftPart = ({
                 ? "outline-primary"
                 : "border-neutral-80 text-neutral-30"
             }`}
-            value={documentData.shortcomingMemo}
+            value={documentData?.shortcomingMemo || ""}
             onChange={(e) =>
               setDocumentData((prev) => ({
                 ...prev,
@@ -287,7 +300,6 @@ export const DocumentRecurringNoteLeftPart = ({
     </div>
   );
 };
-
 interface InterviewRecurringNoteLeftPartProps {
   interviewData?: ReviewNote;
   setInterviewData: React.Dispatch<React.SetStateAction<ReviewNote>>;
@@ -482,7 +494,7 @@ interface NoSelfIntroductionProps {
 
 export const NoSelfIntroduction = ({ onClick }: NoSelfIntroductionProps) => {
   return (
-    <div className="flex w-1/2 flex-col gap-[20px]">
+    <div className="flex w-full flex-col gap-[20px] mb-[16px] ">
       <div className="flex min-h-[756px] w-full flex-col items-end rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
         <span className="self-stretch text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
           자기소개 문항 불러오기
@@ -517,7 +529,6 @@ interface SelfIntroduction {
 interface DocumentRecurringNoteProps {
   question: string;
   answer: string;
-  goodQuestion: string;
   questions: string[];
   reactionType: string;
   onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
@@ -529,7 +540,6 @@ export const DocumentRecurringNoteRightPart = ({
   question,
   questions,
   answer,
-  goodQuestion,
   reactionType,
   onReactionSave,
   introduceId,
@@ -537,6 +547,7 @@ export const DocumentRecurringNoteRightPart = ({
 }: DocumentRecurringNoteProps) => {
   const [selectedDot, setSelectedDot] = useState(0);
   const [selectedQuestion, setSelectedQuestion] = useState(0); // 선택된 질문 번호
+  const [reactionList, setReactionList] = useState(reactionType); // 각 질문의 reactionType을 상태로 저장
 
   const handleQuestionClick = (index: number) => {
     setSelectedQuestion(index);
@@ -545,6 +556,19 @@ export const DocumentRecurringNoteRightPart = ({
 
   const handleDotClick = (index: number) => {
     setSelectedDot(index);
+  };
+
+  const handleReactionSave = async (introduceId: number, reactionType: string) => {
+    try {
+      // API 호출을 통한 리액션 저장
+      await axios.post(`${BASE_URL}/introduces/${introduceId}/save`, {
+        introduceId,
+        reactionType,
+      });
+      console.log("Reaction saved successfully");
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+    }
   };
 
   return (
@@ -574,8 +598,8 @@ export const DocumentRecurringNoteRightPart = ({
       <div className="flex">
         <ButtonGroup
           introduceId={introduceId}
-          reactionType={reactionType}
-          onReactionSave={onReactionSave}
+          initialReactionType={reactionList[selectedQuestion]} // 각 질문의 reactionType을 개별적으로 전달
+          onReactionSave={handleReactionSave}
         />
       </div>
     </div>
@@ -635,6 +659,30 @@ const QuestionComponent = ({
   );
 };
 
+interface InterviewQuestion {
+  interviewId: number | null;
+  question: string;
+  answer: string;
+}
+
+interface InterviewRecurringNoteRightPartProps {
+  questions: InterviewQuestion[];
+  onQuestionClick: (index: number) => void;
+  recruitmentId: string;  // 필요한 경우 받아옵니다.
+}
+
+interface InterviewQuestion {
+  interviewId: number | null;
+  question: string;
+  answer: string;
+}
+
+interface InterviewRecurringNoteRightPartProps {
+  questions: InterviewQuestion[];
+  onQuestionClick: (index: number) => void;
+  recruitmentId: string;  // 필요한 경우 받아옵니다.
+}
+
 export const InterviewRecurringNoteRightPart = ({
   question,
   questions,
@@ -653,13 +701,85 @@ export const InterviewRecurringNoteRightPart = ({
     null,
   ); // 선택된 질문의 interviewId
 
+  const [newQuestion, setNewQuestion] = useState("");
+  const [newAnswer, setNewAnswer] = useState("");
+  const [isAddingNewQuestion, setIsAddingNewQuestion] = useState(false); // 새로운 질문 추가 상태
+
+  const handleAddQuestion = async () => {
+    try {
+      setIsAddingNewQuestion(true);
+      const newOrder = questionList.length + 1;
+      const newQuestion = { interviewId: null, order: newOrder, question: "", answer: "" };
+      setQuestionList([...questionList, newQuestion]); // 새로운 질문 추가
+      setSelectedQuestion(questionList.length); // 새로운 질문 선택
+
+      // API 요청으로 새로운 질문 추가
+      const response = await axios.put(`${BASE_URL}/interviews?recruitmentId=${interviewId}`, [
+        newQuestion,
+      ]);
+
+      const addedQuestion = response.data[0]; // 서버에서 반환된 질문 데이터
+      const updatedQuestionList = [...questionList];
+      updatedQuestionList[updatedQuestionList.length - 1].interviewId = addedQuestion.interviewId;
+      setQuestionList(updatedQuestionList); // 새로운 질문에 interviewId 추가
+    } catch (error) {
+      console.error("Error adding new question:", error);
+    }
+  };
+
   // 초기 질문, 답변 데이터 업데이트 (조회)
   useEffect(() => {
     setQuestionList(
       questions.map((q) => ({ question: q.question, answer: q.answer, interviewId: q.interviewId }))
     );
   }, [questions, question, answer]);
+  
+  const handleReactionSave = async (interviewId: number, reactionType: string) => {
+    try {
+      // API 호출을 통한 리액션 저장
+      await axios.post(`${BASE_URL}/interviews/${interviewId}/reaction`, {
+        interviewId,
+        reactionType,
+      });
+      console.log("Reaction saved successfully");
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+    }
+  }
 
+  const handleSaveNewQuestion = async (field: string, value: string) => {
+    try {
+      // 필드에 따라 저장할 데이터 구성
+      const dataToSave = { question: newQuestion, answer: newAnswer };
+      if (field === "question") {
+        dataToSave.question = value;
+      } else if (field === "answer") {
+        dataToSave.answer = value;
+      }
+
+      const response = await axios.post(`${BASE_URL}/interviews`, dataToSave);
+
+      // 새로운 질문 추가 후 리스트에 반영
+      setQuestionList([...questionList, response.data]);
+      setCurrentInterviewId(response.data.interviewId); // 생성된 인터뷰 ID 저장
+    } catch (error) {
+      console.error("Error adding new question or answer:", error);
+    }
+  };
+
+  const handleEditQuestion = async (index, updatedQuestion, updatedAnswer) => {
+    try {
+      await axios.put(`${BASE_URL}/interviews/${questions[index].interviewId}`, {
+        question: updatedQuestion,
+        answer: updatedAnswer,
+      });
+      const updatedQuestions = [...questionList];
+      updatedQuestions[index] = { ...updatedQuestions[index], question: updatedQuestion, answer: updatedAnswer };
+      setQuestionList(updatedQuestions); // 수정된 질문 업데이트
+    } catch (error) {
+      console.error("Error updating question:", error);
+    }
+  };
 
   const handleQuestionClick = (index: number) => {
     setSelectedQuestion(index);
@@ -680,17 +800,14 @@ export const InterviewRecurringNoteRightPart = ({
         await axios.delete(`${BASE_URL}/interviews/${interviewIdToDelete}`, {
           params: { recruitmentId: interviewId },
         });
-        alert("질문이 삭제되었습니다.");
         // 삭제 후 처리 (예: 질문 리스트 갱신)
         const updatedQuestions = questionList.filter((_, i) => i !== selectedQuestion);
         setQuestionList(updatedQuestions);
         setSelectedQuestion(0); // 첫 번째 질문 선택
       } else {
-        alert("삭제할 질문의 ID를 찾을 수 없습니다.");
       }
     } catch (error) {
       console.error("Error deleting question:", error);
-      alert("질문 삭제에 실패했습니다.");
     }
     setShowDeleteConfirm(false); // 삭제 확인창 닫기
   };
@@ -698,27 +815,6 @@ export const InterviewRecurringNoteRightPart = ({
 
   const handleDeleteCancel = () => {
     setShowDeleteConfirm(false); // 삭제 확인창 닫기
-  };
-
-  const handleAddQuestion = async () => {
-    try {
-      const newOrder = questionList.length + 1;
-      const newQuestion = { interviewId: null, order: newOrder, question: "", answer: "" };
-      setQuestionList([...questionList, newQuestion]); // 새로운 질문 추가
-      setSelectedQuestion(questionList.length); // 새로운 질문 선택
-
-      // API 요청으로 새로운 질문 추가
-      const response = await axios.put(`${BASE_URL}/interviews?recruitmentId=${interviewId}`, [
-        newQuestion,
-      ]);
-
-      const addedQuestion = response.data[0]; // 서버에서 반환된 질문 데이터
-      const updatedQuestionList = [...questionList];
-      updatedQuestionList[updatedQuestionList.length - 1].interviewId = addedQuestion.interviewId;
-      setQuestionList(updatedQuestionList); // 새로운 질문에 interviewId 추가
-    } catch (error) {
-      console.error("Error adding new question:", error);
-    }
   };
 
   const handleAnswerChange = (index: number, value: string) => {
@@ -731,17 +827,11 @@ export const InterviewRecurringNoteRightPart = ({
   const handleQuestionChange = async (index: number, value: string) => {
     const updatedQuestions = [...questionList];
     updatedQuestions[index].question = value;
-    setQuestionList(updatedQuestions); // 질문 업데이트
 
-    // API 호출하여 변경된 질문 저장
     try {
       await axios.put(
-        `${BASE_URL}/interviews?recruitmentId=${interviewId}`,
-        updatedQuestions.map((q, i) => ({
-          order: i + 1,
-          question: q.question,
-          answer: q.answer,
-        })),
+        `${BASE_URL}/interviews/${questionList[index].interviewId}`, 
+        { question: value }
       );
     } catch (error) {
       console.error("Error updating question:", error);
@@ -806,9 +896,9 @@ export const InterviewRecurringNoteRightPart = ({
 
         <div className="flex">
           {/* 리액션 버튼 그룹 */}
-          <ButtonGroup
-            introduceId={interviewId}
-            reactionType={reactionType}
+          <ButtonGroup2
+            interviewId={interviewId}
+            initialReactionType={reactionType}
             onReactionSave={onReactionSave}
           />
         </div>
@@ -817,86 +907,85 @@ export const InterviewRecurringNoteRightPart = ({
   );
 };
 
-interface EtcRecurringNotePartProps {
-  etcData?: ReviewNote;
-  setEtcData: React.Dispatch<React.SetStateAction<ReviewNote>>;
-}
 
-export const EtcRecurringNotePart = ({
-  etcData = {
-    id: 0,
-    reviewName: "",
-    satisfaction: "",
-    wellDonePoints: [],
-    shortcomingPoints: [],
-    wellDoneMemo: "",
-    shortcomingMemo: "",
-    difficulty: "",
-  },
-  setEtcData,
-}: EtcRecurringNotePartProps) => {
+interface EtcRecurringNotePartProps {
+  etcData: ReviewNote[];  // ReviewNote 배열로 수정
+  setEtcData: (index: number, updatedEtc: ReviewNote) => void;
+}
+export const EtcRecurringNotePart = ({ etcData, setEtcData }) => {
   return (
     <div className="flex w-full flex-col items-start gap-[20px] self-stretch rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
-      <div className="flex w-full items-center justify-between self-stretch">
+      <div className="flex w-full items-center justify-between">
         <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
           간편 복기
         </span>
       </div>
+
+      {/* 전형명 입력 */}
+      <div className="flex w-full items-center self-stretch gap-[50px]">
+        <span className="text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
+          전형명
+        </span>
+        <input
+          type="text"
+          value={etcData.reviewName}
+          onChange={(e) => setEtcData({ ...etcData, reviewName: e.target.value })}
+          placeholder="전형명을 입력하세요"
+          className="border border-neutral-80 px-[16px] py-[12px] rounded-sm text-neutral-30 placeholder:text-neutral-45"
+        />
+      </div>
+
+      {/* 만족도, 난이도 등 기타 정보 입력 */}
+      {/* 만족도 */}
       <div className="flex items-center gap-[50px]">
         <span className="text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
           만족도
         </span>
-        <div className="flex gap-[10px]">
-          <RecurringNoteChipGroup
-            selected={etcData.satisfaction}
-            setSelected={(satisfaction) =>
-              setEtcData((prev) => ({
-                ...prev,
-                satisfaction: satisfaction || "",
-              }))
-            }
-          />
-        </div>
+        <RecurringNoteChipGroup
+          selected={etcData.satisfaction}
+          setSelected={(satisfaction) =>
+            setEtcData({ ...etcData, satisfaction: satisfaction || "" })
+          }
+        />
       </div>
 
+      {/* 난이도 */}
       <div className="flex items-center gap-[50px]">
         <span className="text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
           난이도
         </span>
-        <div className="flex gap-[10px]">
-          <RecurringNoteChipGroup2
-            selected={etcData.difficulty}
-            setSelected={(difficulty) =>
-              setEtcData((prev) => ({
-                ...prev,
-                difficulty: difficulty || "",
-              }))
-            }
+        <RecurringNoteChipGroup2
+          selected={etcData.difficulty}
+          setSelected={(difficulty) =>
+            setEtcData({ ...etcData, difficulty: difficulty || "" })
+          }
+        />
+      </div>
+
+      {/* 잘한 점, 아쉬운 점 */}
+      <div className="flex flex-col gap-[20px]">
+        <div className="flex w-full items-start gap-[47px] self-stretch">
+          <span className="text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
+            잘한 점
+          </span>
+          <textarea
+            value={etcData.wellDoneMemo}
+            onChange={(e) => setEtcData({ ...etcData, wellDoneMemo: e.target.value })}
+            placeholder="추가로 메모하고 싶은 점을 적어주세요"
+            className="font-regular min-h-[130px] min-w-[980px] resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
           />
         </div>
-      </div>
 
-      <div className="flex w-full items-start gap-[45px] self-stretch">
-        <span className="w-text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
-          잘한 점
-        </span>
-        <div className="flex min-w-[988px] items-start self-stretch rounded-sm">
+        <div className="flex w-full items-start gap-[33px] self-stretch">
+          <span className="text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
+            아쉬운 점
+          </span>
           <textarea
+            value={etcData.shortcomingMemo}
+            onChange={(e) => setEtcData({ ...etcData, shortcomingMemo: e.target.value })}
             placeholder="추가로 메모하고 싶은 점을 적어주세요"
-            className="font-regular min-h-[130px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
-          ></textarea>
-        </div>
-      </div>
-
-      <div className="flex w-full items-start gap-[32px] self-stretch">
-        <span className="text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-30">
-          아쉬운 점
-        </span>
-        <div className="flex min-w-[988px] items-start self-stretch rounded-sm">
-          <textarea
-            placeholder="추가로 메모하고 싶은 점을 적어주세요"
-            className="font-regular min-h-[130px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
-          ></textarea>
+            className="font-regular min-h-[130px] min-w-[980px] resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
+          />
         </div>
       </div>
     </div>
@@ -904,10 +993,10 @@ export const EtcRecurringNotePart = ({
 };
 
 interface AgainQuestionProps {
-  goodQuestions: string[]; // 질문 리스트로 수정
+  badQuestions: string[]; // 질문 리스트로 수정
 }
 
-export const AgainQuestion = ({ goodQuestions }: AgainQuestionProps) => {
+export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
   const [selectedDot, setSelectedDot] = useState(0); // 현재 선택된 질문의 index
 
   const handleDotClick = (index: number) => {
@@ -922,11 +1011,11 @@ export const AgainQuestion = ({ goodQuestions }: AgainQuestionProps) => {
         </span>
         <div className="mb-[20px] flex min-h-[96px] items-start self-stretch rounded-sm bg-primary-10 px-[16px] py-[12px]">
           <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-            {goodQuestions[selectedDot]} {/* 선택된 질문 표시 */}
+            {badQuestions[selectedDot]} {/* 선택된 질문 표시 */}
           </span>
         </div>
         <div className="flex items-center justify-center gap-[8px]">
-          {goodQuestions.map((_, index) => (
+          {badQuestions.map((_, index) => (
             <button key={index} onClick={() => handleDotClick(index)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -955,7 +1044,7 @@ export const NoGoodQuestion = () => {
     <div className="mb-[20px] flex h-full w-full flex-col items-start rounded-md border border-neutral-80 bg-static-100 px-[24px] py-[24px] pt-[20px]">
       <div className="flex w-full flex-col gap-[20px]">
         <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
-          한번 더 보면 좋을 질문
+          한 번 더 보면 좋을 질문
         </span>
         <div className="flex min-h-[96px] items-center justify-center self-stretch rounded-sm bg-primary-10 px-[16px] py-[12px]">
           <span className="text-xsmall16 font-medium tracking-[-0.096px] text-primary-70">

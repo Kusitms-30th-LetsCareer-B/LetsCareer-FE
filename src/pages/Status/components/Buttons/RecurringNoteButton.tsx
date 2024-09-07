@@ -1,8 +1,11 @@
+import axios from "axios";
 import { useState } from "react";
+
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 interface ButtonGroupProps {
   introduceId: number;
-  reactionType: string;
+  reactionType: string;  // 초기 reactionType을 props로 전달
   onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
 }
 
@@ -14,6 +17,39 @@ export const ButtonGroup = ({
   const handleReactionClick = async (reaction: string) => {
     try {
       await onReactionSave(introduceId, reaction);
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+    }
+  };
+
+  return (
+    <div className="flex gap-[10px]">
+      <GoodButton
+        isSelected={reactionType === "잘했어요"}
+        onClick={() => handleReactionClick("잘했어요")}
+      />
+      <BadButton
+        isSelected={reactionType === "아쉬워요"}
+        onClick={() => handleReactionClick("아쉬워요")}
+      />
+    </div>
+  );
+};
+
+interface ButtonGroupProps2 {
+  interviewId: number;
+  reactionType: string;  // 초기 reactionType을 props로 전달
+  onReactionSave: (interviewId: number, reactionType: string) => Promise<void>;
+}
+
+export const ButtonGroup2 = ({
+  interviewId,
+  reactionType,
+  onReactionSave,
+}: ButtonGroupProps2) => {
+  const handleReactionClick = async (reaction: string) => {
+    try {
+      await onReactionSave(interviewId, reaction);
     } catch (error) {
       console.error("Error saving reaction:", error);
     }

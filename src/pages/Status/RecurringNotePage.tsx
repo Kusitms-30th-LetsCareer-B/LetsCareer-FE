@@ -87,8 +87,8 @@ function RecurringNotePage() {
     useState<ReviewNote>(initialReviewNote);
   const [interviewData, setInterviewData] =
     useState<ReviewNote>(initialReviewNote);
-  const [etcData, setEtcData] = useState<ReviewNote>(initialReviewNote);
-
+  const [etcData, setEtcData] = useState<ReviewNote[]>([]);
+  const [newEtcData, setNewEtcData] = useState<ReviewNote | null>(null);
   const [activeTab, setActiveTab] = useState("document");
 
   const [documentQuestions, setDocumentQuestions] = useState<string[]>([]);
@@ -99,20 +99,26 @@ function RecurringNotePage() {
 
   const [selfIntroductions, setSelfIntroductions] = useState<
     SelfIntroduction[]
-  >([]); // 전체 자기소개 데이터
+  >([]);
   const [interviewAnswers, setInterviewAnswers] = useState<InterviewAnswer[]>(
     [],
-  ); // 면접 질문과 답변 데이터
+  );
+  const [activeEtcId, setActiveEtcId] = useState<number | null>(null);  // 현재 활성화된 기타 항목 ID
+  const [isNewEtcOpen, setIsNewEtcOpen] = useState<boolean>(false);  // 새로운 기타 항목 열림 여부
+  const [inputReviewName, setInputReviewName] = useState("");  // 전형명 입력을 저장할 상태
+  const [shouldSaveEtc, setShouldSaveEtc] = useState(false); // 새 항목 생성 여부
 
-  const [goodQuestions, setGoodQuestions] = useState<string[]>([]); // 질문 리스트 상태
+  const [goodQuestions, setGoodQuestions] = useState<string[]>([]); // 잘했어요 질문 리스트
 
+
+  // 기업 정보 가져오기 - 기본 값 설정
   useEffect(() => {
     const fetchRecruitmentDetails = async () => {
       try {
         const response = await axios.get(
           `${BASE_URL}/recruitments/${recruitmentId}`,
         );
-        const { companyName, task } = response.data.data;
+        const { companyName = "", task = "" } = response.data.data || {};
         setCompany(companyName);
         setTask(task);
         setLoading(false);
@@ -127,13 +133,14 @@ function RecurringNotePage() {
     }
   }, [recruitmentId]);
 
+  // 자기소개서 정보 가져오기 - 기본 값 설정
   useEffect(() => {
     const fetchSelfIntroductions = async () => {
       try {
         const response = await axios.get(
           `${BASE_URL}/introduces?recruitmentId=${recruitmentId}`,
         );
-        const data = response.data.data;
+        const data = response.data.data || [];
 
         const questions = data.map((intro: any) => intro.question);
         setDocumentQuestions(questions);
@@ -159,14 +166,14 @@ function RecurringNotePage() {
     fetchSelfIntroductions();
   }, [recruitmentId]);
 
-  // 면접 질문과 답변을 받아오는 API 호출
+  // 면접 질문과 답변을 받아오는 API 호출 - 기본 값 설정
   useEffect(() => {
     const fetchInterviewAnswers = async () => {
       try {
         const response = await axios.get(
           `${BASE_URL}/interviews?recruitmentId=${recruitmentId}`,
         );
-        const data = response.data.data;
+        const data = response.data.data || [];
         setInterviewQuestions(data);
 
         // 첫 번째 질문을 기본값으로 설정
@@ -182,7 +189,6 @@ function RecurringNotePage() {
     fetchInterviewAnswers();
   }, [recruitmentId]);
 
-  // 리액션 저장
   const handleReactionSave = async (id: number, reactionType: string) => {
     try {
       if (activeTab === "document") {
@@ -208,7 +214,6 @@ function RecurringNotePage() {
       console.error("Error saving reaction:", error);
     }
   };
-
 
   const handleQuestionClick = (index: number) => {
     const selectedIntroduction = selfIntroductions[index];
@@ -245,91 +250,100 @@ function RecurringNotePage() {
     });
   };
 
-  const fetchDataForTab = async (tab: string) => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`,
-      );
-      const data = response.data.data;
-
-      if (tab === "document") {
-        setDocumentData(data.document);
-      } else if (tab === "interview") {
-        setInterviewData(data.interview);
-      } else if (tab === "etc") {
-        setEtcData(data.etc[0]);
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchDataForTab(activeTab);
-  }, [activeTab]);
+    const fetchAllData = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`
+        );
+        const { document, interview, etc, companyName, task } = response.data.data || {};
 
-  const handleSave = async () => {
-    if (activeTab === "document") {
-      await handleDocumentSave();
-    } else if (activeTab === "interview") {
-      await handleInterviewSave();
-    } else if (activeTab === "etc") {
-      await handleEtcSave();
+        setDocumentData(document || {});
+        setInterviewData(interview || {});
+        setEtcData(etc || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching all data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [recruitmentId]);
+
+  const [newEtcNote, setNewEtcNote] = useState<ReviewNote>({
+    id: etcData.length + 1,
+    reviewName: "",
+    satisfaction: "",
+    difficulty: "",
+    wellDoneMemo: "",
+    shortcomingMemo: "",
+    wellDonePoints: [],
+    shortcomingPoints: [],
+  });  
+
+  const [selectedEtcId, setSelectedEtcId] = useState<number | null>(null); // 선택된 기타 항목 ID
+
+
+   // 저장 버튼 클릭 시 새로운 기타 항목 저장 로직 추가
+   const handleSave = async () => {
+    if (newEtcData) {
+      const updatedEtcData = [...etcData, { ...newEtcData, id: etcData.length + 1 }];
+      setEtcData(updatedEtcData); // 새로 추가된 기타 데이터 저장
+      setNewEtcData(null); // 템플릿 초기화
+      setActiveEtcId(updatedEtcData.length); // 새 항목 선택
     }
-  };
 
-  const handleDocumentSave = async () => {
+    // 추가적인 API 호출로 저장
     try {
       const requestBody = {
         document: documentData,
-        interview: {},
-        etc: [],
-      };
-      const response = await axios.put(
-        `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
-        requestBody,
-      );
-      alert(response.status === 200 ? "서류 저장 완료" : "저장 중 오류 발생");
-    } catch (error) {
-      console.error("저장 실패:", error);
-    }
-  };
-
-  // interview 저장 로직
-  const handleInterviewSave = async () => {
-    try {
-      const requestBody = {
-        document: {},
         interview: interviewData,
-        etc: [],
+        etc: etcData,
       };
-      const response = await axios.put(
-        `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
-        requestBody,
-      );
-      alert(response.status === 200 ? "면접 저장 완료" : "저장 중 오류 발생");
+      await axios.put(`${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`, requestBody);
+      alert("저장 완료");
     } catch (error) {
       console.error("저장 실패:", error);
     }
   };
 
-  // etc 저장 로직
-  const handleEtcSave = async () => {
-    try {
-      const requestBody = {
-        document: {},
-        interview: {},
-        etc: [etcData],
-      };
-      const response = await axios.put(
-        `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
-        requestBody,
-      );
-    } catch (error) {
-      console.error("저장 실패:", error);
+
+  // 기존 기타 자료를 클릭했을 때의 동작
+  const handleEtcClick = (id: number) => {
+    const selectedEtc = etcData.find((data) => data.id === id);
+    if (selectedEtc) {
+      setNewEtcData(null); // 새 입력 템플릿 해제
+      setActiveEtcId(id);
+    }
+  };
+
+  // 새로운 기타 항목 작성
+  const handleNewEtcClick = () => {
+    setNewEtcData(initialReviewNote); // 새 항목을 추가하기 위한 템플릿 설정
+    setActiveEtcId(null); // 기존 항목 비활성화
+  };
+
+  // 기존 기타 자료 탭 클릭 시 데이터 조회
+  const handleEtcTabClick = (id: number) => {
+    const selectedEtc = etcData.find((etc) => etc.id === id);
+    if (selectedEtc) {
+      setNewEtcNote(selectedEtc); // 선택된 항목의 데이터를 조회하여 입력 폼에 반영
+      setSelectedEtcId(id); // 선택된 ID 설정
+    }
+  };
+
+  const handleEtcInputChange = (field: string, value: string) => {
+    setNewEtcNote((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // 기타 탭 클릭 시 새로운 항목 작성
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (tab === "etc") {
+      // 기타 탭을 눌렀을 때 새로운 항목을 작성할 수 있게 함
+      setIsNewEtcOpen(true);  // 새로운 항목 열림 상태
+      setActiveEtcId(null);   // 기존 항목에서 벗어나도록
     }
   };
 
@@ -393,6 +407,28 @@ function RecurringNotePage() {
       fetchGoodQuestions("/interviews/additional");
     }
   }, [activeTab]);
+  
+  const handleAddNewEtc = () => {
+    const newEtc = {
+      id: etcData.length + 1,
+      reviewName: "",
+      satisfaction: "",
+      difficulty: "",
+      wellDoneMemo: "",
+      shortcomingMemo: "",
+      wellDonePoints: [],  // 빈 배열로 초기화
+      shortcomingPoints: [], // 빈 배열로 초기화
+    };
+  
+    setEtcData([...etcData, newEtc]);
+    setActiveEtcId(newEtc.id);
+  };
+
+  const handleEtcDataChange = (index: number, updatedEtc: ReviewNote) => {
+    const updatedEtcData = [...etcData];
+    updatedEtcData[index] = updatedEtc;
+    setEtcData(updatedEtcData);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -403,11 +439,14 @@ function RecurringNotePage() {
       <RecurringNoteHeader company={company} task={task} />
       <div className="flex flex-col items-start gap-[20px]">
         <div className="mt-[40px] flex w-full flex-col items-start gap-[20px]">
-          <RecurringNoteTab
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            onSave={handleSave}
-          />
+        <RecurringNoteTab
+          activeTab={activeTab}
+          setActiveTab={setActiveTab} 
+          etcData={etcData} // Etc 탭일 때만 reviewName 버튼이 보이도록 조건 추가
+          setActiveTabById={handleEtcClick} // 기타 탭 클릭 시 처리
+          handleNewEtcClick={handleNewEtcClick} // 새로운 기타 항목 클릭시 템플릿 로드
+          onSave={handleSave}
+        />
         </div>
         <div className="flex w-1/2 w-full items-start gap-[20px]">
           {activeTab === "document" && (
@@ -421,25 +460,27 @@ function RecurringNotePage() {
                   <DocumentRecurringNoteRightPart
                     question={selfIntroductionData.question || ""}
                     answer={selfIntroductionData.answer || ""}
-                    goodQuestion="한 번 더 보면 좋을 질문"
-                    reactionType={selfIntroductionData.reactionType || ""}
+                    reactionType ={selfIntroductionData.reactionType|| ""}
                     introduceId={selfIntroductionData.introduceId || 0}
                     questions={documentQuestions}
                     onQuestionClick={handleQuestionClick}
                     onReactionSave={handleReactionSave}
                   />
                   {goodQuestions.length > 0 ? (
-                    <AgainQuestion goodQuestions={goodQuestions} />
+                    <AgainQuestion badQuestions={goodQuestions} />
                   ) : (
                     <NoGoodQuestion />
                   )}
                 </div>
               ) : (
-                <NoSelfIntroduction
-                  onClick={() => {
-                    console.log("NoSelfIntroduction clicked");
-                  }}
-                />
+                <div className="flex w-1/2 flex-col">
+                  <NoSelfIntroduction
+                    onClick={() => {
+                      console.log("NoSelfIntroduction clicked");
+                    }}
+                  />
+                  <NoGoodQuestion />
+                </div>
               )}
             </>
           )}
@@ -447,8 +488,8 @@ function RecurringNotePage() {
           {activeTab === "interview" && (
             <>
               <InterviewRecurringNoteLeftPart
-                interviewData={interviewData}
-                setInterviewData={setInterviewData}
+              interviewData={interviewData || initialReviewNote} // undefined 방지
+              setInterviewData={setInterviewData}
               />
               <div className="flex h-full w-1/2 flex-col items-start gap-[20px]">
                 <InterviewRecurringNoteRightPart
@@ -465,21 +506,42 @@ function RecurringNotePage() {
                   onReactionSave={handleReactionSave}
                 />
                 {goodQuestions.length > 0 ? (
-                  <AgainQuestion goodQuestions={goodQuestions} />
+                  <AgainQuestion badQuestions={goodQuestions} />
                 ) : (
                   <NoGoodQuestion />
                 )}
               </div>
             </>
           )}
-
           {activeTab === "etc" && (
-            <EtcRecurringNotePart etcData={etcData} setEtcData={setEtcData} />
+            <>
+              {/* 기존 기타 항목을 조회할 때 */}
+              {activeEtcId && !newEtcData && (
+                <EtcRecurringNotePart
+                  etcData={etcData.find((data) => data.id === activeEtcId) as ReviewNote}
+                  setEtcData={(updatedEtcNote) => {
+                    const updatedEtc = etcData.map((data) =>
+                      data.id === activeEtcId ? updatedEtcNote : data
+                    );
+                    setEtcData(updatedEtc);
+                  }}
+                />
+              )}
+
+              {/* 새로운 기타 항목을 입력할 때 */}
+              {newEtcData && (
+                <EtcRecurringNotePart
+                  etcData={newEtcData}
+                  setEtcData={setNewEtcData}
+                />
+              )}
+            </>
           )}
         </div>
       </div>
     </div>
   );
 }
+
 
 export default RecurringNotePage;
