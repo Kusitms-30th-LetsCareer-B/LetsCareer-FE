@@ -32,7 +32,7 @@ const sampleCompanies = [
 
 
 /** TodoList 컴포넌트 */
-const TodoList = ({userId, userName, recruitmentId, selectedDate, setSelectedDate} : CombinedProps) => {
+const TodoList = ({userId, userName, selectedDate, setSelectedDate} : CombinedProps) => {
 
     // 커스텀 훅에서 상태와 핸들러 가져오기
     const { 

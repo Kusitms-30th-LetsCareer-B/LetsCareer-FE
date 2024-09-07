@@ -7,6 +7,12 @@ import {Company, useCountIncomplete, useTotalCountIncomplete,} from '../../../sh
 // 아이콘 이미지 임포트
 import todoListIcon from "../../../shared/assets/todoList.png"
 
+/* 로그인 정보 받기 */
+import {userInfo} from "../../../shared/api/loginInstance.ts"
+/* ToDo 관련 Tools 임포트 */
+import { TodoListProps, formatDate2 } from "../../../components/ToDoListTool.ts"
+// 부모 컴포로부터 최종 입력받을 Probs 합체
+interface CombinedProps extends userInfo, TodoListProps {}
 
   
 /* 리스트로 각 기업에 대한 일정 정보들을 받기:  API 연동 */
@@ -20,7 +26,7 @@ const sampleCompanies: Company[] = [
   
 
 // SubTodoList 컴포넌트
-const SubTodoList = () => {
+const SubTodoList = ({userId, userName, selectedDate, setSelectedDate} : CombinedProps) => {
 
     // 기업별 일정 데이터
     const [companies, setCompanies] = useState(sampleCompanies); // 기업 데이터
