@@ -22,8 +22,15 @@ import {
   ClickedPersonalChip,
 } from "./chips/CalendarChip";
 
-// 캘린더 컴포넌트
-const CustomCalendar = () => {
+
+// 부모 컴포에게 selectedDate값을 넘기기위한 Probs
+interface CustomCalendarProps {
+  onDateSelected: (date: Date) => void;
+}
+
+
+/** 캘린더 컴포넌트 */
+const CustomCalendar = ({onDateSelected}: CustomCalendarProps) => {
   // 커스텀 캘린더 훅에서 상태와 핸들러 가져오기
   const {
     currentDate,
@@ -38,6 +45,15 @@ const CustomCalendar = () => {
     handleAllSchedule,
     handleNewSchedule,
   } = useCalendar();
+
+  
+  
+  // handleDateSelected 발동시에
+  // 부모 컴포에게 selectedDate를 넘기기 위한 훅 정의
+  const handleDateSelect = (date: Date) => {
+    handleDateClick(date);   // 기존 훅 업뎃
+    onDateSelected(date);    // 부모에게 선택된 데이터 전송
+  };
 
   // 달력 헤더에 표시할 컬럼명 배열 선언
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
