@@ -1,33 +1,44 @@
 import { useState } from "react";
 
-export const ButtonGroup = () => {
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+interface ButtonGroupProps {
+  introduceId: number;
+  reactionType: string;
+  onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
+}
 
-  const handleSelect = (buttonType: string) => {
-    setSelectedButton(buttonType);
+export const ButtonGroup = ({
+  introduceId,
+  reactionType,
+  onReactionSave,
+}: ButtonGroupProps) => {
+  const handleReactionClick = async (reaction: string) => {
+    try {
+      await onReactionSave(introduceId, reaction);
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+    }
   };
 
   return (
     <div className="flex gap-[10px]">
       <GoodButton
-        isSelected={selectedButton === "good"}
-        onClick={() => handleSelect("good")}
+        isSelected={reactionType === "잘했어요"}
+        onClick={() => handleReactionClick("잘했어요")}
       />
       <BadButton
-        isSelected={selectedButton === "bad"}
-        onClick={() => handleSelect("bad")}
+        isSelected={reactionType === "아쉬워요"}
+        onClick={() => handleReactionClick("아쉬워요")}
       />
     </div>
   );
 };
 
-const GoodButton = ({
-  isSelected,
-  onClick,
-}: {
+interface GoodButtonProps {
   isSelected: boolean;
   onClick: () => void;
-}) => {
+}
+
+const GoodButton = ({ isSelected, onClick }: GoodButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -89,13 +100,12 @@ const GoodButton = ({
   );
 };
 
-const BadButton = ({
-  isSelected,
-  onClick,
-}: {
+interface BadButtonProps {
   isSelected: boolean;
   onClick: () => void;
-}) => {
+}
+
+const BadButton = ({ isSelected, onClick }: BadButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -140,5 +150,61 @@ const BadButton = ({
         아쉬워요
       </span>
     </button>
+  );
+};
+
+interface InterviewDeleteButtonProps {
+  onDelete: () => void;
+  onCancel: () => void;
+}
+
+export const InterviewDeleteButton = ({
+  onDelete,
+  onCancel,
+}: InterviewDeleteButtonProps) => {
+  return (
+    <div className="flex h-auto w-[418px] flex-col rounded-lg bg-static-100 shadow-lg">
+      <div className="flex items-center justify-between px-[24px] pb-[16px] pt-[24px]">
+        <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-10">
+          삭제 확인
+        </span>
+        <button onClick={onCancel}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M17 7L7 17M7 7L17 17"
+              stroke="#2A2D34"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <div className="px-[24px]">
+        <span className="font-regular font-regular text-xsmall14 tracking-[-0.21px] text-neutral-45">
+          질문을 삭제하시겠습니까?
+        </span>
+      </div>
+      <div className="flex justify-end gap-[16px] p-[24px]">
+        <button
+          onClick={onCancel}
+          className="flex rounded-sm bg-neutral-90 px-[28px] py-[10px] text-neutral-45"
+        >
+          취소
+        </button>
+        <button
+          onClick={onDelete}
+          className="rounded-sm bg-system-error px-[28px] py-[10px] text-static-100"
+        >
+          삭제
+        </button>
+      </div>
+    </div>
   );
 };

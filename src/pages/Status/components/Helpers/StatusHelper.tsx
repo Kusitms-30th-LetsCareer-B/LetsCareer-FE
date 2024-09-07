@@ -268,7 +268,10 @@ export const DetailSuccessStatus = ({
             </span>
           </div>
           <div className="flex items-center gap-[12px]">
-            <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성하기" />
+            <WriteRecurringNoteButton
+              onClick={handleRecurringNote}
+              text="복기노트 작성하기"
+            />
             <WhiteButton text="공고 이동" />
           </div>
         </div>
@@ -334,7 +337,10 @@ export const DetailFailedStatus = ({
             </span>
           </div>
           <div className="flex items-center gap-[12px]">
-            <WriteRecurringNoteButton onClick={handleRecurringNote} text="복기노트 작성하기" />
+            <WriteRecurringNoteButton
+              onClick={handleRecurringNote}
+              text="복기노트 작성하기"
+            />
             <WhiteButton text="공고 이동" />
           </div>
         </div>

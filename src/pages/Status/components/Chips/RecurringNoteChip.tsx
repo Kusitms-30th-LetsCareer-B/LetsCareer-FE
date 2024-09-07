@@ -73,3 +73,31 @@ export const RecurringNoteChip2 = ({
     </button>
   );
 };
+
+export const RecurringNoteChipGroup2 = ({
+  selected,
+  setSelected,
+}: {
+  selected: string | null;
+  setSelected: (difficulty: string | null) => void;
+}) => {
+  return (
+    <div className="flex gap-[10px]">
+      <RecurringNoteChip
+        text="상"
+        isSelected={selected === "상"}
+        onClick={() => setSelected("상")}
+      />
+      <RecurringNoteChip
+        text="중"
+        isSelected={selected === "중"}
+        onClick={() => setSelected("중")}
+      />
+      <RecurringNoteChip
+        text="하"
+        isSelected={selected === "하"}
+        onClick={() => setSelected("하")}
+      />
+    </div>
+  );
+};
