@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useStatusPagination } from "../../../../shared/hooks/useStatusPagination";
 
 interface PaginationComponentProps {
@@ -11,15 +12,18 @@ interface PaginationComponentProps {
 const StatusPagination: React.FC<PaginationComponentProps> = ({
   totalItems,
   itemsPerPage,
-  currentPage,
+  currentPage: initialPage,
   totalPages,
   onPageChange,
 }) => {
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const { handlePrevClick, handleNextClick, changePage, getVisiblePages } =
-    useStatusPagination(totalItems, itemsPerPage, currentPage, onPageChange);
+    useStatusPagination(totalItems, itemsPerPage, currentPage, handlePageChange);
 
-  console.log("Visible Pages:", getVisiblePages());
-  console.log("Total Pages:", totalPages);
+  function handlePageChange(page: number) {
+    setCurrentPage(page);
+    onPageChange(page); 
+  }
 
   return (
     <nav className="mt-[20px] inline-flex items-center gap-[32px]">
@@ -28,7 +32,7 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
         className={`flex items-center justify-center rounded-xxs border bg-static-100 py-[4px] pl-[3px] pr-[5px] ${
           currentPage > 1 ? "border-primary-50" : "border-neutral-80"
         }`}
-        disabled={currentPage === 1}
+        disabled={currentPage === 1} 
       >
         {currentPage > 1 ? (
           <svg
@@ -87,11 +91,11 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
       <button
         onClick={handleNextClick}
         className={`flex items-center justify-center rounded-xxs border bg-static-100 py-[4px] pl-[5px] pr-[3px] ${
-          currentPage !== totalPages ? "border-primary-50" : "border-neutral-80"
+          currentPage-1 < totalPages ? "border-primary-50" : "border-neutral-80"
         }`}
         disabled={currentPage === totalPages}
       >
-        {currentPage < totalPages ? (
+        {currentPage-1 < totalPages ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
