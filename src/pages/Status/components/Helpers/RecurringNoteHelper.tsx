@@ -530,9 +530,9 @@ interface DocumentRecurringNoteProps {
   question: string;
   answer: string;
   questions: string[];
-  reactionType: string;
-  onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
+  reactionType: string | null; // 초기 reactionType을 받음
   introduceId: number;
+  onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
   onQuestionClick: (index: number) => void;
 }
 
@@ -547,7 +547,6 @@ export const DocumentRecurringNoteRightPart = ({
 }: DocumentRecurringNoteProps) => {
   const [selectedDot, setSelectedDot] = useState(0);
   const [selectedQuestion, setSelectedQuestion] = useState(0); // 선택된 질문 번호
-  const [reactionList, setReactionList] = useState(reactionType); // 각 질문의 reactionType을 상태로 저장
 
   const handleQuestionClick = (index: number) => {
     setSelectedQuestion(index);
@@ -556,19 +555,6 @@ export const DocumentRecurringNoteRightPart = ({
 
   const handleDotClick = (index: number) => {
     setSelectedDot(index);
-  };
-
-  const handleReactionSave = async (introduceId: number, reactionType: string) => {
-    try {
-      // API 호출을 통한 리액션 저장
-      await axios.post(`${BASE_URL}/introduces/${introduceId}/save`, {
-        introduceId,
-        reactionType,
-      });
-      console.log("Reaction saved successfully");
-    } catch (error) {
-      console.error("Error saving reaction:", error);
-    }
   };
 
   return (
@@ -596,11 +582,11 @@ export const DocumentRecurringNoteRightPart = ({
         </div>
       </div>
       <div className="flex">
-        <ButtonGroup
+      <ButtonGroup
           introduceId={introduceId}
-          initialReactionType={reactionList[selectedQuestion]} // 각 질문의 reactionType을 개별적으로 전달
-          onReactionSave={handleReactionSave}
-        />
+        initialReactionType={reactionType || ""} // 초기 reactionType을 넘김
+          onReactionSave={onReactionSave}
+          />
       </div>
     </div>
   );
@@ -617,7 +603,7 @@ interface InterviewRecurringNoteProps {
   answer: string;
   questions:  InterviewQuestion[]; // 여기서 questions 배열은 { question: string } 형태의 객체 배열
   reactionType: string;
-  onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
+  onReactionSave: (interviewId: number, reactionType: string) => Promise<void>;
   interviewId: number;
   onQuestionClick: (index: number) => void;
 }
@@ -704,6 +690,7 @@ export const InterviewRecurringNoteRightPart = ({
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
   const [isAddingNewQuestion, setIsAddingNewQuestion] = useState(false); // 새로운 질문 추가 상태
+  const [reactionList, setReactionList] = useState<string[]>([]); // 각 질문의 reactionType을 저장하는 배열
 
   const handleAddQuestion = async () => {
     try {
@@ -734,18 +721,6 @@ export const InterviewRecurringNoteRightPart = ({
     );
   }, [questions, question, answer]);
   
-  const handleReactionSave = async (interviewId: number, reactionType: string) => {
-    try {
-      // API 호출을 통한 리액션 저장
-      await axios.post(`${BASE_URL}/interviews/${interviewId}/reaction`, {
-        interviewId,
-        reactionType,
-      });
-      console.log("Reaction saved successfully");
-    } catch (error) {
-      console.error("Error saving reaction:", error);
-    }
-  }
 
   const handleSaveNewQuestion = async (field: string, value: string) => {
     try {
@@ -764,6 +739,24 @@ export const InterviewRecurringNoteRightPart = ({
       setCurrentInterviewId(response.data.interviewId); // 생성된 인터뷰 ID 저장
     } catch (error) {
       console.error("Error adding new question or answer:", error);
+    }
+  };
+
+  const handleReactionSave = async (introduceId: number, reactionType: string) => {
+    try {
+      // API 요청: reactionType을 서버에 저장
+      await axios.post(`${BASE_URL}/interviews/${introduceId}/reaction`, {
+        reaction: reactionType,
+      });
+  
+      // 서버에 저장한 후, reactionList를 업데이트
+      setReactionList((prevList) => {
+        const updatedList = [...prevList];
+        updatedList[selectedQuestion] = reactionType; // 선택된 질문의 reactionType 업데이트
+        return updatedList;
+      });
+    } catch (error) {
+      console.error("Error saving reaction:", error);
     }
   };
 
@@ -898,8 +891,8 @@ export const InterviewRecurringNoteRightPart = ({
           {/* 리액션 버튼 그룹 */}
           <ButtonGroup2
             interviewId={interviewId}
-            initialReactionType={reactionType}
-            onReactionSave={onReactionSave}
+            initialReactionType={reactionList[selectedQuestion] || ""}
+            onReactionSave={handleReactionSave}
           />
         </div>
       </div>

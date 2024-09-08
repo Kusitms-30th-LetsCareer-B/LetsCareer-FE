@@ -32,7 +32,7 @@ interface SelfIntroduction {
   order: number;
   question: string;
   answer: string;
-  reactionType: string | null;
+  type: string | null;
 }
 
 interface InterviewAnswer {
@@ -40,7 +40,7 @@ interface InterviewAnswer {
   order: number;
   question: string;
   answer: string;
-  reactionType: string | null;
+  type: string | null;
 }
 
 function RecurringNotePage() {
@@ -71,7 +71,7 @@ function RecurringNotePage() {
       order: 0,
       question: "",
       answer: "",
-      reactionType: null,
+      type: null,
     });
 
   const [interviewAnswerData, setInterviewAnswerData] =
@@ -80,7 +80,7 @@ function RecurringNotePage() {
       order: 0,
       question: "",
       answer: "",
-      reactionType: null,
+      type: null,
     });
 
   const [documentData, setDocumentData] =
@@ -100,6 +100,7 @@ function RecurringNotePage() {
   const [selfIntroductions, setSelfIntroductions] = useState<
     SelfIntroduction[]
   >([]);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0); // 현재 선택된 질문의 인덱스
   const [interviewAnswers, setInterviewAnswers] = useState<InterviewAnswer[]>(
     [],
   );
@@ -108,8 +109,28 @@ function RecurringNotePage() {
   const [inputReviewName, setInputReviewName] = useState("");  // 전형명 입력을 저장할 상태
   const [shouldSaveEtc, setShouldSaveEtc] = useState(false); // 새 항목 생성 여부
 
-  const [goodQuestions, setGoodQuestions] = useState<string[]>([]); // 잘했어요 질문 리스트
+  const [goodQuestions, setGoodQuestions] = useState<string[]>([]); // 한번 더 보면 좋을 질문들
 
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`
+        );
+        const { document, interview, etc, companyName, task } = response.data.data || {};
+
+        setDocumentData(document || {});
+        setInterviewData(interview || {});
+        setEtcData(etc || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching all data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [recruitmentId]);
 
   // 기업 정보 가져오기 - 기본 값 설정
   useEffect(() => {
@@ -144,8 +165,7 @@ function RecurringNotePage() {
 
         const questions = data.map((intro: any) => intro.question);
         setDocumentQuestions(questions);
-
-        setSelfIntroductions(data);
+        setSelfIntroductions(data); // 질문 배열을 설정
 
         // 기본 질문 및 답변 설정
         if (data.length > 0) {
@@ -155,7 +175,7 @@ function RecurringNotePage() {
             order: firstIntroduction.order,
             question: firstIntroduction.question,
             answer: firstIntroduction.answer,
-            reactionType: firstIntroduction.type || null,
+            type: firstIntroduction.reactionType || null, // 초기 reactionType 설정
           });
         }
       } catch (error) {
@@ -166,6 +186,7 @@ function RecurringNotePage() {
     fetchSelfIntroductions();
   }, [recruitmentId]);
 
+  
   // 면접 질문과 답변을 받아오는 API 호출 - 기본 값 설정
   useEffect(() => {
     const fetchInterviewAnswers = async () => {
@@ -189,47 +210,48 @@ function RecurringNotePage() {
     fetchInterviewAnswers();
   }, [recruitmentId]);
 
-  const handleReactionSave = async (id: number, reactionType: string) => {
+  const handleReactionSave = async (introduceId: number, type: string) => {
     try {
-      if (activeTab === "document") {
-        await axios.patch(`${BASE_URL}/introduces/${id}/reaction`, {
-          reaction: reactionType,
-        });
-        setSelfIntroductionData((prevData) => ({
-            ...prevData,
-            reactionType: reactionType,
-          }));
-    } else if (activeTab === "interview") {
-        await axios.patch(`${BASE_URL}/interviews/${id}/reaction`, {
-          reaction: reactionType,
-        });
+      await axios.patch(`${BASE_URL}/introduces/${introduceId}/reaction`, {
+        reaction: type,
+      });
 
-        setInterviewAnswerData((prevData) => ({
-            ...prevData,
-            reactionType: reactionType,
-          }));
+      setSelfIntroductions((prevIntroductions) =>
+        prevIntroductions.map((intro, index) =>
+          index === selectedQuestionIndex
+            ? { ...intro, type } // 선택된 질문의 reactionType만 업데이트
+            : intro
+        )
+      );
+      if (type === "아쉬워요") {
+        // '아쉬워요'가 선택된 경우, 중복된 질문이 없을 때만 추가
+        if (!goodQuestions.includes(selfIntroductionData.question)) {
+          setGoodQuestions((prevQuestions) => [
+            ...prevQuestions,
+            selfIntroductionData.question,
+          ]);
         }
-
+      } else if (type === "잘했어요") {
+        // '잘했어요'가 선택된 경우, 해당 질문을 "한 번 더 보면 좋을 질문" 리스트에서 제거
+        setGoodQuestions((prevQuestions) =>
+          prevQuestions.filter((q) => q !== selfIntroductionData.question)
+        );
+      }
     } catch (error) {
       console.error("Error saving reaction:", error);
     }
   };
 
+  
   const handleQuestionClick = (index: number) => {
     const selectedIntroduction = selfIntroductions[index];
-
-    // 선택된 질문이 있는지 확인
-    if (!selectedIntroduction) {
-      console.error("선택된 질문이 없습니다.");
-      return;
-    }
 
     setSelfIntroductionData({
       introduceId: selectedIntroduction.introduceId,
       order: selectedIntroduction.order,
       question: selectedIntroduction.question,
       answer: selectedIntroduction.answer,
-      reactionType: selectedIntroduction.reactionType || null,
+      type: selectedIntroduction.type || null,
     });
   };
 
@@ -246,30 +268,9 @@ function RecurringNotePage() {
       order: selectedInterview.order,
       question: selectedInterview.question,
       answer: selectedInterview.answer,
-      reactionType: selectedInterview.reactionType || null,
+      type: selectedInterview.type || null,
     });
   };
-
-  useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`
-        );
-        const { document, interview, etc, companyName, task } = response.data.data || {};
-
-        setDocumentData(document || {});
-        setInterviewData(interview || {});
-        setEtcData(etc || []);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching all data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchAllData();
-  }, [recruitmentId]);
 
   const [newEtcNote, setNewEtcNote] = useState<ReviewNote>({
     id: etcData.length + 1,
@@ -460,7 +461,7 @@ function RecurringNotePage() {
                   <DocumentRecurringNoteRightPart
                     question={selfIntroductionData.question || ""}
                     answer={selfIntroductionData.answer || ""}
-                    reactionType ={selfIntroductionData.reactionType|| ""}
+                    reactionType ={selfIntroductionData.type|| ""}
                     introduceId={selfIntroductionData.introduceId || 0}
                     questions={documentQuestions}
                     onQuestionClick={handleQuestionClick}
@@ -495,7 +496,7 @@ function RecurringNotePage() {
                 <InterviewRecurringNoteRightPart
                   question={interviewAnswerData.question || ""}
                   answer={interviewAnswerData.answer || ""}
-                  reactionType={interviewAnswerData.reactionType || ""}
+                  reactionType={interviewAnswerData.type || ""}
                   interviewId={interviewAnswerData.interviewId || 0}
                   questions={interviewQuestions.map((q) => ({
                     question: q.question,
