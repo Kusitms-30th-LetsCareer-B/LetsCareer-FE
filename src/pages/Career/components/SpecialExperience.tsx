@@ -1,6 +1,6 @@
 import { CareerHeader } from "./CareerHeader";
 import { CareerAnswer, CareerQuestion } from "./CareerQuestion";
-import { HideAnswerToggle, ShowAnswerToggle } from "./CareerToggle";
+import { HideAnswerToggle, ShowAnswerToggle, UpdateAnswerToggle } from "./CareerToggle";
 
 function SpecialExperience() {
   return (
@@ -44,6 +44,9 @@ function SpecialExperience() {
               guide="팀 내에서 자신이 수행한 역할,어떤 점을 배웠는지, 협업 과정 중 갈등 상황, 소통 방법등 기억에 남는 에피소드를 중심으로 구체적으로 작성해보세요."
             />
             <CareerAnswer />
+            <UpdateAnswerToggle title="협업 경험" content="민지님이 공동의 목표를 달성하기 위해 다른 사람들과 힘을 합쳐 노력했던 경험에 대해 작성해보세요."
+            />
+            <ShowAnswerToggle title="협업 경험" content="민지님이 공동의 목표를 달성하기 위해 다른 사람들과 힘을 합쳐 노력했던 경험에 대해 작성해보세요."/>
           </div>
         </div>
       </div>
