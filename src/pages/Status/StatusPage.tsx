@@ -59,6 +59,8 @@ function StatusPage() {
   const [selectedRecruitment, setSelectedRecruitment] =
     useState<Recruitment | null>(null);
 
+  const [filteredItemCount, setFilteredItemCount] = useState(0);
+
   const fetchRecruitments = async (type:string, pageId: number) => {
     try {
       const response = await axios.get(
@@ -76,12 +78,16 @@ function StatusPage() {
     }
   };
 
-const filteredRecruitments = (recruitments[currentPage] || []).filter((recruitment) => {
+  const filteredRecruitments = (recruitments[currentPage] || []).filter((recruitment) => {
     if (selectedStage === "전체") return true;
     if (selectedStage === "서류") return recruitment.stageName === "서류";
     if (selectedStage === "면접") return recruitment.stageName === "면접";
     return recruitment.stageName !== "서류" && recruitment.stageName !== "면접";
   });
+
+  useEffect(() => {
+    setFilteredItemCount(filteredRecruitments.length);
+  }, [filteredRecruitments]);
 
   const loadSurroundingPages = async (type: string) => {
     const pageStart = Math.max(1, currentPage - Math.floor(pageRange / 2));
@@ -103,7 +109,7 @@ const filteredRecruitments = (recruitments[currentPage] || []).filter((recruitme
 
     // 현재 페이지를 기준으로 필요한 페이지들 불러오기
     loadSurroundingPages(type);
-  }, [currentPage, activeTab]);
+  }, [currentPage, activeTab, filteredItemCount]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page); // 현재 페이지 변경
@@ -276,7 +282,7 @@ const filteredRecruitments = (recruitments[currentPage] || []).filter((recruitme
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={Math.ceil(filteredItemCount / itemsPerPage)}
           onPageChange={handlePageChange}
         />
       </div>

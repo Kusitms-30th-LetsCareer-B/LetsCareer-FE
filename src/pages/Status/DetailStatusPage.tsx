@@ -156,7 +156,7 @@ function DetailStatusPage() {
 
   return (
     <div className="mb-[100px] px-[48px] pt-[40px]">
-      <div className="flex w-[1128px] items-start justify-between">
+      <div className="flex items-start justify-between">
         <GoBackButton text="기업별 진행현황" />
         <button
           onClick={handleDeleteClick}

@@ -14,6 +14,7 @@ import RecurringNotePage from "./pages/Status/RecurringNotePage";
 import ArchivingPage from "./pages/Status/ArchivingPage";
 
 import { userInfo } from "./shared/api/loginInstance.ts"; /* 로그인 정보 받기 */
+import SpecialExperience from "./pages/Career/components/SpecialExperience.tsx";
 
 const testUser: userInfo = {
   userId: 1,
@@ -58,6 +59,8 @@ function App() {
             element={<ArchivingPage />}
           />
           <Route path="/setting" element={<CareerPage />} />
+          <Route path="/setting/special-experience" element={<SpecialExperience />} />
+
         </Routes>
       </PlannerSideBar>
       <Footer />
