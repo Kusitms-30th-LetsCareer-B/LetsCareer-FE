@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 // API 연동 모듈 임포트
-import { registerSchedule } from './api/scheduleApiService';
+import { registerSchedule } from "./api/scheduleApiService";
 
 // Date picker를 띄우는 컴포넌트와 훅
 import PopUpDatePicker from "../../components/PopUpDatePicker";
@@ -14,9 +14,9 @@ import favoriteStarIconFilled from "../../shared/assets/favoriteStarFilled.png";
 
 // 컴포넌트
 const ScheduleEnvPage = () => {
-  const [companyName, setCompanyName] = useState('');
-  const [task, setTask] = useState('');
-  const [announcementUrl, setAnnouncementUrl] = useState('');
+  const [companyName, setCompanyName] = useState("");
+  const [task, setTask] = useState("");
+  const [announcementUrl, setAnnouncementUrl] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
   const [isRemind, setIsRemind] = useState(false);
 
@@ -43,7 +43,7 @@ const ScheduleEnvPage = () => {
   // API 호출 핸들러
   const handleSubmit = async () => {
     if (!companyName || !task || !selectedStartDate || !selectedEndDate) {
-      alert('모든 필수 입력값을 입력해주세요.');
+      alert("모든 필수 입력값을 입력해주세요.");
       return;
     }
 
@@ -53,22 +53,22 @@ const ScheduleEnvPage = () => {
       task,
       isRemind,
       announcementUrl,
-      stageStartDate: selectedStartDate.toISOString().split('T')[0],
-      stageEndDate: selectedEndDate.toISOString().split('T')[0],
+      stageStartDate: selectedStartDate.toISOString().split("T")[0],
+      stageEndDate: selectedEndDate.toISOString().split("T")[0],
     };
 
     try {
       const response = await registerSchedule(userId, scheduleData);
       alert(response.message); // 성공 메시지 출력
     } catch (error) {
-      alert('채용 일정을 등록하는 데 실패했습니다.');
+      alert("채용 일정을 등록하는 데 실패했습니다.");
     }
   };
 
   return (
-    <div className="bg-static-100 rounded-sm p-10">
+    <div className="rounded-sm bg-static-100 p-10">
       {/** 타이틀 */}
-      <div className="flex justify-start items-center text-center font-bold text-medium24 text-neutral-0">
+      <div className="flex items-center justify-start text-center text-medium24 font-bold text-neutral-0">
         <div className="flex items-center">
           <img src={prevButtonIcon} className="h-[16px]" />
         </div>
@@ -78,33 +78,36 @@ const ScheduleEnvPage = () => {
       </div>
 
       {/** 기업 정보 입력 */}
-      <div className="grid grid-cols-2 py-2 gap-4" style={{ gridTemplateColumns: "100px minmax(0px, 1fr)" }}>
+      <div
+        className="grid grid-cols-2 gap-4 py-2"
+        style={{ gridTemplateColumns: "100px minmax(0px, 1fr)" }}
+      >
         {/** 기업명 */}
-        <div className="flex justify-start items-center">
-          <div className="text-start font-semibold text-small18 text-neutral-30">
+        <div className="flex items-center justify-start">
+          <div className="text-start text-small18 font-semibold text-neutral-30">
             기업명
           </div>
-          <div className="text-start font-semibold text-small18 text-system-error">
+          <div className="text-start text-small18 font-semibold text-system-error">
             *
           </div>
         </div>
-        <div className="flex justify-start items-center">
+        <div className="flex items-center justify-start">
           <input
             type="text"
-            className="text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[550px]"
+            className="font-regular min-w-[550px] rounded-xs border border-neutral-80 p-5 text-start text-xsmall16 text-neutral-45"
             placeholder="기업명 검색"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
           />
-          <div className="flex font-medium text-xsmall16 text-neutral-45 px-5">
+          <div className="flex px-5 text-xsmall16 font-medium text-neutral-45">
             {/* isFavorite에 따라 다른 이미지 렌더링 */}
             <img
-              src={isFavorite ? favoriteStarIconFilled : favoriteStarIconEmpty} 
+              src={isFavorite ? favoriteStarIconFilled : favoriteStarIconEmpty}
               alt="favorite icon"
             />
             <div
-              className="px-4 cursor-pointer"
-              onClick={() => setIsFavorite(!isFavorite)}  // 클릭 시 토글
+              className="cursor-pointer px-4"
+              onClick={() => setIsFavorite(!isFavorite)} // 클릭 시 토글
             >
               {isFavorite ? "관심기업으로 등록됨" : "관심기업으로 등록하기"}
             </div>
@@ -112,14 +115,18 @@ const ScheduleEnvPage = () => {
         </div>
 
         {/** 직무 */}
-        <div className="flex justify-start items-center">
-          <div className="text-start font-semibold text-small18 text-neutral-30">직무</div>
-          <div className="text-start font-semibold text-small18 text-system-error">*</div>
+        <div className="flex items-center justify-start">
+          <div className="text-start text-small18 font-semibold text-neutral-30">
+            직무
+          </div>
+          <div className="text-start text-small18 font-semibold text-system-error">
+            *
+          </div>
         </div>
-        <div className="flex justify-start items-center">
+        <div className="flex items-center justify-start">
           <input
             type="text"
-            className="text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[550px]"
+            className="font-regular min-w-[550px] rounded-xs border border-neutral-80 p-5 text-start text-xsmall16 text-neutral-45"
             placeholder="직무 입력"
             value={task}
             onChange={(e) => setTask(e.target.value)}
@@ -127,44 +134,64 @@ const ScheduleEnvPage = () => {
         </div>
 
         {/** 서류 일정 */}
-        <div className="flex justify-start items-center">
-          <div className="text-start font-semibold text-small18 text-neutral-30">서류 일정</div>
-          <div className="text-start font-semibold text-small18 text-system-error">*</div>
+        <div className="flex items-center justify-start">
+          <div className="text-start text-small18 font-semibold text-neutral-30">
+            서류 일정
+          </div>
+          <div className="text-start text-small18 font-semibold text-system-error">
+            *
+          </div>
         </div>
-        <div className="flex justify-start items-center">
-          <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[248px]" onClick={handleOpenStartDatePicker}>
-            {selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : '시작일'}
+        <div className="flex items-center justify-start">
+          <div
+            className="font-regular flex min-w-[248px] justify-between rounded-xs border border-neutral-80 p-5 text-start text-xsmall16 text-neutral-45"
+            onClick={handleOpenStartDatePicker}
+          >
+            {selectedStartDate
+              ? selectedStartDate.toISOString().split("T")[0]
+              : "시작일"}
             {/* 이미지 클릭 시 DatePicker 열기 */}
-            <PopUpDatePicker onDateSelected={handleStartDateSelected}/>
+            <PopUpDatePicker onDateSelected={handleStartDateSelected} />
           </div>
           <div className="px-5">~</div>
-          <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[248px]" onClick={handleOpenEndDatePicker}>
-            {selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : '마감일'}
-            
+          <div
+            className="font-regular flex min-w-[248px] justify-between rounded-xs border border-neutral-80 p-5 text-start text-xsmall16 text-neutral-45"
+            onClick={handleOpenEndDatePicker}
+          >
+            {selectedEndDate
+              ? selectedEndDate.toISOString().split("T")[0]
+              : "마감일"}
+
             {/* 이미지 클릭 시 DatePicker 열기 */}
-            <PopUpDatePicker onDateSelected={handleEndDateSelected}/>
+            <PopUpDatePicker onDateSelected={handleEndDateSelected} />
           </div>
         </div>
 
         {/** 마감일 리마인드 */}
-        <div className="flex justify-start items-center"></div>
-        <div className="flex justify-start items-center">
-          <div className="text-start font-regular text-xsmall16 text-neutral-45 mx-2">
+        <div className="flex items-center justify-start"></div>
+        <div className="flex items-center justify-start">
+          <div className="font-regular mx-2 text-start text-xsmall16 text-neutral-45">
             마감일 리마인드 알림을 드릴까요?
           </div>
           <div className="mx-2">
-            <input type="checkbox" checked={isRemind} onChange={() => setIsRemind(!isRemind)} />
+            <input
+              type="checkbox"
+              checked={isRemind}
+              onChange={() => setIsRemind(!isRemind)}
+            />
           </div>
         </div>
 
         {/** 공고 링크 */}
-        <div className="flex justify-start items-center">
-          <div className="text-start font-semibold text-small18 text-neutral-30">공고 링크</div>
+        <div className="flex items-center justify-start">
+          <div className="text-start text-small18 font-semibold text-neutral-30">
+            공고 링크
+          </div>
         </div>
-        <div className="flex justify-start items-center">
+        <div className="flex items-center justify-start">
           <input
             type="text"
-            className="text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[550px]"
+            className="font-regular min-w-[550px] rounded-xs border border-neutral-80 p-5 text-start text-xsmall16 text-neutral-45"
             placeholder="공고 링크"
             value={announcementUrl}
             onChange={(e) => setAnnouncementUrl(e.target.value)}
@@ -173,7 +200,10 @@ const ScheduleEnvPage = () => {
       </div>
 
       {/** 등록 버튼 */}
-      <button className="mt-5 p-3 bg-blue-500 text-white rounded" onClick={handleSubmit}>
+      <button
+        className="mt-5 rounded bg-blue-500 p-3 text-white"
+        onClick={handleSubmit}
+      >
         등록하기
       </button>
     </div>

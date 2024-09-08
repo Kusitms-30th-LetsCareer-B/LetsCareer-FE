@@ -1,14 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // 페이지 전환을 위한 useNavigate 훅
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // 페이지 전환을 위한 useNavigate 훅
 import { Ddayh24Chip } from "../../../components/chips/DdayChip.tsx";
 import { getCareerList } from "../api/careerRecruitmentsStatusApiService.ts"; // API 모듈에서 함수 임포트
 import nextButtonIcon from "../../../shared/assets/calendar-next.png";
 
 // 상태 칩스
-import { PrepareDocumentChip, PassDocumentChip, PrepareInterviewChip, PassInterviewChip, OtherStatusChip } from "../../../components/chips/StatusChip.tsx";
+import {
+  PrepareDocumentChip,
+  PassDocumentChip,
+  PrepareInterviewChip,
+  PassInterviewChip,
+  OtherStatusChip,
+} from "../../../components/chips/StatusChip.tsx";
 
 // API 연동 타입
-import { GetParamsRecruitmentStatusType, GetRequestRecruitmentStatusType } from "../api/careerRecruitmentsStatusType.ts"
+import {
+  GetParamsRecruitmentStatusType,
+  GetRequestRecruitmentStatusType,
+} from "../api/careerRecruitmentsStatusType.ts";
 
 /** 더미
  *  end_date:2024-11-01
@@ -46,26 +55,26 @@ status:
 */
 // 상태 값에 따라 칩 컴포넌트를 반환하는 훅
 const getChipComponent = (stageName: string, status: string) => {
-  switch(stageName){
+  switch (stageName) {
     case "서류":
-      switch(status){
+      switch (status) {
         case "PROGRESS":
           return <PrepareDocumentChip />;
         case "PASSED":
           return <PassDocumentChip />;
       }
     case "면접":
-      switch(status){
+      switch (status) {
         case "PROGRESS":
           return <PrepareInterviewChip />;
         case "PASSED":
           return <PassInterviewChip />;
       }
   }
-  
+
   let contents = "";
   contents += stageName;
-  switch(status){
+  switch (status) {
     case "PROGRESS":
       contents = contents + "준비중";
     case "PASSED":
@@ -78,7 +87,6 @@ const getChipComponent = (stageName: string, status: string) => {
   return <OtherStatusChip contents={contents} />;
 };
 
-
 /* 컴포넌트 */
 const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
   const [careerList, setCareerList] = useState<Career[]>([]); // 채용 일정 상태 저장
@@ -89,11 +97,10 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
   useEffect(() => {
     const fetchCareerList = async () => {
       try {
-        const data = await getCareerList({userId, page});
+        const data = await getCareerList({ userId, page });
         setCareerList(data.data.recruitments); // API 응답 데이터 중 recruitments 저장
-
       } catch (error) {
-        console.error('데이터를 가져오는 데 실패했습니다:', error);
+        console.error("데이터를 가져오는 데 실패했습니다:", error);
       }
     };
 
@@ -106,19 +113,23 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
   };
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
+    <div className="mx-auto max-w-2xl p-4">
       {/* 커리어 현황 헤더 */}
       <div className="flex justify-between py-7">
-        <div className="text-neutral-10 text-small20 font-semibold">
+        <div className="text-small20 font-semibold text-neutral-10">
           내 커리어 현황, 한 눈에 확인해요
         </div>
         <div>
-          <img src={nextButtonIcon} onClick={handleMoreButtonClick} alt="more button" />
+          <img
+            src={nextButtonIcon}
+            onClick={handleMoreButtonClick}
+            alt="more button"
+          />
         </div>
       </div>
 
       {/* 테이블 헤더 */}
-      <div className="grid grid-cols-4 text-xsmall14 font-medium text-neutral-50 bg-static-100 border-t-2 border-b-2 border-neutral-80 py-3">
+      <div className="grid grid-cols-4 border-b-2 border-t-2 border-neutral-80 bg-static-100 py-3 text-xsmall14 font-medium text-neutral-50">
         <div className="flex justify-start px-2">마감기한</div>
         <div className="flex justify-start px-3">기업</div>
         <div className="flex justify-start px-3">직무</div>
@@ -129,18 +140,19 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
       {careerList.slice(0, visibleCareers).map((career) => (
         <div
           key={career.recruitmentId}
-          className="flex justify-center grid grid-cols-4 gap-2 py-2 text-xsmall14 text-neutral-30"
+          className="flex grid grid-cols-4 justify-center gap-2 py-2 text-xsmall14 text-neutral-30"
         >
-          <div className="flex px-2 gap-2">
+          <div className="flex gap-2 px-2">
             음{career.companyName}
             <Ddayh24Chip day={career.daysUntilEnd} /> {career.endDate}
           </div>
           <div className="px-2">{career.companyName}</div>
           <div className="px-2">{career.task}</div>
-          <div className="px-2">{getChipComponent(career.stageName, career.status)}</div>
+          <div className="px-2">
+            {getChipComponent(career.stageName, career.status)}
+          </div>
         </div>
       ))}
-      
     </div>
   );
 };

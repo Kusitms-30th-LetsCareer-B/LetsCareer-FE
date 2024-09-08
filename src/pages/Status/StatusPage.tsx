@@ -130,7 +130,7 @@ function StatusPage() {
 
   return (
     <div className="flex flex-col p-[48px]">
-      <div className="inline-flex items-center justify-between gap-[186px]">
+      <div className="inline-flex min-w-[1128px] items-center justify-between gap-[186px]">
         <WelcomeMessage name="오민지" />
         <div className="flex gap-[12px]">
           <UserStatusChip classification="전체" num={statusCounts.total} />
@@ -162,7 +162,7 @@ function StatusPage() {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-[20px]">
+      <div className="grid w-full grid-cols-2 gap-[20px]">
         {filteredRecruitments
           .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
           .map((recruitment: Recruitment) => {

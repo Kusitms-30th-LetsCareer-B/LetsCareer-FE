@@ -1,4 +1,4 @@
-export const URL = "/calendars/personal"
+export const URL = "/calendars/personal";
 
 // 개인 일정 타입
 export interface PersonalSchedule {

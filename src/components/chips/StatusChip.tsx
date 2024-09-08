@@ -38,12 +38,11 @@ export const PassInterviewChip = () => {
   );
 };
 
-
 interface OtherStatusChipProps {
-  contents : string;
+  contents: string;
 }
 
-export const OtherStatusChip = ({contents}: OtherStatusChipProps) => {
+export const OtherStatusChip = ({ contents }: OtherStatusChipProps) => {
   return (
     <div className="inline-flex h-[36px] items-center justify-center rounded-sm bg-teritory-light px-[12px] py-[8px]">
       <div className="text-center text-xsmall14 font-semibold tracking-[-0.21px] text-teritory-normal">

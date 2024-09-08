@@ -104,9 +104,9 @@ function RecurringNotePage() {
   const [interviewAnswers, setInterviewAnswers] = useState<InterviewAnswer[]>(
     [],
   );
-  const [activeEtcId, setActiveEtcId] = useState<number | null>(null);  // 현재 활성화된 기타 항목 ID
-  const [isNewEtcOpen, setIsNewEtcOpen] = useState<boolean>(false);  // 새로운 기타 항목 열림 여부
-  const [inputReviewName, setInputReviewName] = useState("");  // 전형명 입력을 저장할 상태
+  const [activeEtcId, setActiveEtcId] = useState<number | null>(null); // 현재 활성화된 기타 항목 ID
+  const [isNewEtcOpen, setIsNewEtcOpen] = useState<boolean>(false); // 새로운 기타 항목 열림 여부
+  const [inputReviewName, setInputReviewName] = useState(""); // 전형명 입력을 저장할 상태
   const [shouldSaveEtc, setShouldSaveEtc] = useState(false); // 새 항목 생성 여부
 
   const [goodQuestions, setGoodQuestions] = useState<string[]>([]); // 한번 더 보면 좋을 질문들
@@ -115,9 +115,10 @@ function RecurringNotePage() {
     const fetchAllData = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`
+          `${BASE_URL}/reviews/recruitment?recruitmentId=${recruitmentId}`,
         );
-        const { document, interview, etc, companyName, task } = response.data.data || {};
+        const { document, interview, etc, companyName, task } =
+          response.data.data || {};
 
         setDocumentData(document || {});
         setInterviewData(interview || {});
@@ -186,7 +187,6 @@ function RecurringNotePage() {
     fetchSelfIntroductions();
   }, [recruitmentId]);
 
-  
   // 면접 질문과 답변을 받아오는 API 호출 - 기본 값 설정
   useEffect(() => {
     const fetchInterviewAnswers = async () => {
@@ -220,8 +220,8 @@ function RecurringNotePage() {
         prevIntroductions.map((intro, index) =>
           index === selectedQuestionIndex
             ? { ...intro, type } // 선택된 질문의 reactionType만 업데이트
-            : intro
-        )
+            : intro,
+        ),
       );
       if (type === "아쉬워요") {
         // '아쉬워요'가 선택된 경우, 중복된 질문이 없을 때만 추가
@@ -234,7 +234,7 @@ function RecurringNotePage() {
       } else if (type === "잘했어요") {
         // '잘했어요'가 선택된 경우, 해당 질문을 "한 번 더 보면 좋을 질문" 리스트에서 제거
         setGoodQuestions((prevQuestions) =>
-          prevQuestions.filter((q) => q !== selfIntroductionData.question)
+          prevQuestions.filter((q) => q !== selfIntroductionData.question),
         );
       }
     } catch (error) {
@@ -242,7 +242,6 @@ function RecurringNotePage() {
     }
   };
 
-  
   const handleQuestionClick = (index: number) => {
     const selectedIntroduction = selfIntroductions[index];
 
@@ -281,15 +280,17 @@ function RecurringNotePage() {
     shortcomingMemo: "",
     wellDonePoints: [],
     shortcomingPoints: [],
-  });  
+  });
 
   const [selectedEtcId, setSelectedEtcId] = useState<number | null>(null); // 선택된 기타 항목 ID
 
-
-   // 저장 버튼 클릭 시 새로운 기타 항목 저장 로직 추가
-   const handleSave = async () => {
+  // 저장 버튼 클릭 시 새로운 기타 항목 저장 로직 추가
+  const handleSave = async () => {
     if (newEtcData) {
-      const updatedEtcData = [...etcData, { ...newEtcData, id: etcData.length + 1 }];
+      const updatedEtcData = [
+        ...etcData,
+        { ...newEtcData, id: etcData.length + 1 },
+      ];
       setEtcData(updatedEtcData); // 새로 추가된 기타 데이터 저장
       setNewEtcData(null); // 템플릿 초기화
       setActiveEtcId(updatedEtcData.length); // 새 항목 선택
@@ -302,13 +303,15 @@ function RecurringNotePage() {
         interview: interviewData,
         etc: etcData,
       };
-      await axios.put(`${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`, requestBody);
+      await axios.put(
+        `${BASE_URL}/reviews/save?recruitmentId=${recruitmentId}`,
+        requestBody,
+      );
       alert("저장 완료");
     } catch (error) {
       console.error("저장 실패:", error);
     }
   };
-
 
   // 기존 기타 자료를 클릭했을 때의 동작
   const handleEtcClick = (id: number) => {
@@ -343,8 +346,8 @@ function RecurringNotePage() {
     setActiveTab(tab);
     if (tab === "etc") {
       // 기타 탭을 눌렀을 때 새로운 항목을 작성할 수 있게 함
-      setIsNewEtcOpen(true);  // 새로운 항목 열림 상태
-      setActiveEtcId(null);   // 기존 항목에서 벗어나도록
+      setIsNewEtcOpen(true); // 새로운 항목 열림 상태
+      setActiveEtcId(null); // 기존 항목에서 벗어나도록
     }
   };
 
@@ -408,7 +411,7 @@ function RecurringNotePage() {
       fetchGoodQuestions("/interviews/additional");
     }
   }, [activeTab]);
-  
+
   const handleAddNewEtc = () => {
     const newEtc = {
       id: etcData.length + 1,
@@ -417,10 +420,10 @@ function RecurringNotePage() {
       difficulty: "",
       wellDoneMemo: "",
       shortcomingMemo: "",
-      wellDonePoints: [],  // 빈 배열로 초기화
+      wellDonePoints: [], // 빈 배열로 초기화
       shortcomingPoints: [], // 빈 배열로 초기화
     };
-  
+
     setEtcData([...etcData, newEtc]);
     setActiveEtcId(newEtc.id);
   };
@@ -440,14 +443,14 @@ function RecurringNotePage() {
       <RecurringNoteHeader company={company} task={task} />
       <div className="flex flex-col items-start gap-[20px]">
         <div className="mt-[40px] flex w-full flex-col items-start gap-[20px]">
-        <RecurringNoteTab
-          activeTab={activeTab}
-          setActiveTab={setActiveTab} 
-          etcData={etcData} // Etc 탭일 때만 reviewName 버튼이 보이도록 조건 추가
-          setActiveTabById={handleEtcClick} // 기타 탭 클릭 시 처리
-          handleNewEtcClick={handleNewEtcClick} // 새로운 기타 항목 클릭시 템플릿 로드
-          onSave={handleSave}
-        />
+          <RecurringNoteTab
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            etcData={etcData} // Etc 탭일 때만 reviewName 버튼이 보이도록 조건 추가
+            setActiveTabById={handleEtcClick} // 기타 탭 클릭 시 처리
+            handleNewEtcClick={handleNewEtcClick} // 새로운 기타 항목 클릭시 템플릿 로드
+            onSave={handleSave}
+          />
         </div>
         <div className="flex w-1/2 w-full items-start gap-[20px]">
           {activeTab === "document" && (
@@ -461,7 +464,7 @@ function RecurringNotePage() {
                   <DocumentRecurringNoteRightPart
                     question={selfIntroductionData.question || ""}
                     answer={selfIntroductionData.answer || ""}
-                    reactionType ={selfIntroductionData.type|| ""}
+                    reactionType={selfIntroductionData.type || ""}
                     introduceId={selfIntroductionData.introduceId || 0}
                     questions={documentQuestions}
                     onQuestionClick={handleQuestionClick}
@@ -489,8 +492,8 @@ function RecurringNotePage() {
           {activeTab === "interview" && (
             <>
               <InterviewRecurringNoteLeftPart
-              interviewData={interviewData || initialReviewNote} // undefined 방지
-              setInterviewData={setInterviewData}
+                interviewData={interviewData || initialReviewNote} // undefined 방지
+                setInterviewData={setInterviewData}
               />
               <div className="flex h-full w-1/2 flex-col items-start gap-[20px]">
                 <InterviewRecurringNoteRightPart
@@ -499,9 +502,11 @@ function RecurringNotePage() {
                   reactionType={interviewAnswerData.type || ""}
                   interviewId={interviewAnswerData.interviewId || 0}
                   questions={interviewQuestions.map((q) => ({
+                    interviewId: q.interviewId ?? null,
                     question: q.question,
-                    answer: q.answer,   // 'answer'를 포함하여 매핑
-                    interviewId: q.interviewId,  // 'interviewId'를 포함하여 매핑
+                    answer: q.answer,
+                    order: q.order,  // 추가된 order 필드
+                    type: q.type,    // 추가된 type 필드
                   }))}
                   onQuestionClick={(index) => handleQuestionSelect(index + 1)} // 질문 선택 처리
                   onReactionSave={handleReactionSave}
@@ -519,10 +524,14 @@ function RecurringNotePage() {
               {/* 기존 기타 항목을 조회할 때 */}
               {activeEtcId && !newEtcData && (
                 <EtcRecurringNotePart
-                  etcData={etcData.find((data) => data.id === activeEtcId) as ReviewNote}
+                  etcData={
+                    etcData.find(
+                      (data) => data.id === activeEtcId,
+                    ) as ReviewNote
+                  }
                   setEtcData={(updatedEtcNote) => {
                     const updatedEtc = etcData.map((data) =>
-                      data.id === activeEtcId ? updatedEtcNote : data
+                      data.id === activeEtcId ? updatedEtcNote : data,
                     );
                     setEtcData(updatedEtc);
                   }}
@@ -543,6 +552,5 @@ function RecurringNotePage() {
     </div>
   );
 }
-
 
 export default RecurringNotePage;

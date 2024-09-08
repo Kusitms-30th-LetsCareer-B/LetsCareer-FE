@@ -20,7 +20,6 @@ export const ButtonGroup = ({
     setReactionType(initialReactionType); // 초기 type 값이 바뀌면 반영
   }, [initialReactionType]);
 
-
   const handleReactionClick = async (reaction: string) => {
     setReactionType(reaction); // 클릭한 버튼에 맞게 상태를 업데이트합니다.
 
@@ -47,7 +46,7 @@ export const ButtonGroup = ({
 
 interface ButtonGroupProps2 {
   interviewId: number;
-  initialReactionType: string;  // 초기 reactionType을 props로 전달
+  initialReactionType: string; // 초기 reactionType을 props로 전달
   onReactionSave: (interviewId: number, reactionType: string) => Promise<void>;
 }
 

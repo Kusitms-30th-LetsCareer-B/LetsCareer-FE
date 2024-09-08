@@ -1,15 +1,16 @@
 /** 이 훅은 MainTodoList와 CalendarTodoList 컴포에서 공용으로 사용 */
-import React, { useMemo, useCallback } from 'react';
-import checkedBox from "../assets/checkSquareChecked.png"
-import blankedBox from "../assets/checkSquareBlanked.png"
+import React, { useMemo, useCallback } from "react";
+import checkedBox from "../assets/checkSquareChecked.png";
+import blankedBox from "../assets/checkSquareBlanked.png";
 
 // ToDoList 관련 Tools 임포트
-import { RecruitmentScheduleListProps } from "../../components/ToDoListTool"
-
+import { RecruitmentScheduleListProps } from "../../components/ToDoListTool";
 
 // TodoList 컴포넌트
-export const useTodoList = ({selectedDate, setSelectedDate}: RecruitmentScheduleListProps) => {
-
+export const useTodoList = ({
+  selectedDate,
+  setSelectedDate,
+}: RecruitmentScheduleListProps) => {
   // 이전 일자로 이동하는 함수
   const handlePrevDay = () => {
     if (selectedDate) {
@@ -27,7 +28,7 @@ export const useTodoList = ({selectedDate, setSelectedDate}: RecruitmentSchedule
       setSelectedDate(nextDay);
     }
   };
-  
+
   /**
    * 특정 id와 index에 따라 이미지를 반환하고 상태를 토글하는 커스텀 훅
    * @param id - 아이디
@@ -40,9 +41,8 @@ export const useTodoList = ({selectedDate, setSelectedDate}: RecruitmentSchedule
     id: number,
     index: number,
     completed: boolean[],
-    setCompleted: (newCompleted: boolean[]) => void
+    setCompleted: (newCompleted: boolean[]) => void,
   ) => {
-
     // completed 상태에 따라 이미지를 선택
     const imageSrc = useMemo(() => {
       return completed[index] ? checkedBox : blankedBox;
@@ -54,20 +54,17 @@ export const useTodoList = ({selectedDate, setSelectedDate}: RecruitmentSchedule
       newCompleted[index] = !newCompleted[index];
       setCompleted(newCompleted);
     }, [id, index, completed, setCompleted]);
-    
+
     // 이미지와 토글 여부를 반환
     return { imageSrc, toggleCompleted };
   };
 
-
   return {
     handlePrevDay,
     handleNextDay,
-    useCompletedImage
+    useCompletedImage,
   };
 };
-
-
 
 // Company 인터페이스 정의
 export interface Company {
@@ -96,7 +93,9 @@ export const useCountIncomplete = (completed: boolean[]) => {
 // 모든 회사의 미완료 스케줄 수의 총합을 계산하는 훅
 export const useTotalCountIncomplete = (companies: Company[]) => {
   // Calculate incomplete counts for all companies outside useMemo
-  const incompleteCounts = companies.map(company => useCountIncomplete(company.completed));
+  const incompleteCounts = companies.map((company) =>
+    useCountIncomplete(company.completed),
+  );
 
   // Use useMemo only for summing the incomplete counts
   const totalCount = useMemo(() => {
