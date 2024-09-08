@@ -65,25 +65,28 @@ function StatusPage() {
     return recruitment.stageName !== "서류" && recruitment.stageName !== "면접";
   });
 
-  const fetchRecruitments = async (
-    type: "progress" | "consequence",
-    pageId: number,
-  ) => {
+  const fetchRecruitments = async (type:string, pageId: number) => {
     try {
       const response = await axios.get(
         `${BASE_URL}/recruitments/status?type=${type}&userId=1&page=${pageId}`,
       );
-      setRecruitments(response.data.data.recruitments);
-      setTotalItems(totalItems || 0);
+      const { recruitments, totalElementsCount } = response.data.data;
+      setRecruitments(recruitments);
+      setTotalItems(totalElementsCount); 
     } catch (error) {
       console.error("Error fetching recruitments", error);
     }
   };
 
+  // 페이지 변경 시 호출되는 함수
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page); // 현재 페이지 상태 업데이트
+  };
+
   useEffect(() => {
     const type = activeTab === "prepare" ? "progress" : "consequence";
     fetchRecruitments(type, currentPage);
-  }, [activeTab]);
+  }, [currentPage, activeTab]);
 
   useEffect(() => {
     const fetchStatusCounts = async () => {
@@ -241,7 +244,7 @@ function StatusPage() {
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={(page) => setCurrentPage(page)}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>
