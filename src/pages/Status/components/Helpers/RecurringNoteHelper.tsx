@@ -687,8 +687,8 @@ interface InterviewQuestion {
   interviewId: number | null;
   question: string;
   answer: string;
-  order: number;   // 질문의 순서
-  type: string | null;   
+  order: number; // 질문의 순서
+  type: string | null;
 }
 
 interface InterviewRecurringNoteProps {
@@ -701,8 +701,18 @@ interface InterviewRecurringNoteProps {
   onReactionSave: (interviewId: number, type: string) => Promise<void>;
 }
 
-export const InterviewRecurringNoteRightPart = ({question, answer, reactionType, interviewId, questions, onQuestionClick, onReactionSave,}: InterviewRecurringNoteProps) => { 
-  const [interviewQuestions, setInterviewQuestions] = useState<InterviewQuestion[]>([]);
+export const InterviewRecurringNoteRightPart = ({
+  question,
+  answer,
+  reactionType,
+  interviewId,
+  questions,
+  onQuestionClick,
+  onReactionSave,
+}: InterviewRecurringNoteProps) => {
+  const [interviewQuestions, setInterviewQuestions] = useState<
+    InterviewQuestion[]
+  >([]);
   const [selectedQuestion, setSelectedQuestion] = useState(0); // 선택된 질문 번호
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); // 삭제 확인창 표시 상태
   const [reactionList, setReactionList] = useState<string[]>([]); // 각 질문의 reactionType을 저장하는 배열
@@ -724,7 +734,13 @@ export const InterviewRecurringNoteRightPart = ({question, answer, reactionType,
         } else {
           // 조회된 데이터가 없으면 빈 질문 하나 추가
           setInterviewQuestions([
-            { interviewId: null, question: "", answer: "", order: 1, type: null },
+            {
+              interviewId: null,
+              question: "",
+              answer: "",
+              order: 1,
+              type: null,
+            },
           ]);
         }
       } catch (error) {
@@ -742,7 +758,13 @@ export const InterviewRecurringNoteRightPart = ({question, answer, reactionType,
   const handleAddQuestion = () => {
     setInterviewQuestions([
       ...interviewQuestions,
-      { interviewId: null, question: "", answer: "", order: interviewQuestions.length + 1, type: null },
+      {
+        interviewId: null,
+        question: "",
+        answer: "",
+        order: interviewQuestions.length + 1,
+        type: null,
+      },
     ]);
   };
 
@@ -752,40 +774,47 @@ export const InterviewRecurringNoteRightPart = ({question, answer, reactionType,
     try {
       if (questionToSave.interviewId === null) {
         // 새로운 질문을 등록하는 경우
-        const response = await axios.put(`${BASE_URL}/interviews`, 
-        [
+        const response = await axios.put(
+          `${BASE_URL}/interviews`,
+          [
+            {
+              order: questionToSave.order,
+              question: questionToSave.question,
+              answer: questionToSave.answer,
+            },
+          ],
           {
-            order: questionToSave.order,
-            question: questionToSave.question,
-            answer: questionToSave.answer,
-          }
-        ], 
-        {
-          params: { recruitmentId }, // recruitmentId를 쿼리 파라미터로 전달
-        });
+            params: { recruitmentId }, // recruitmentId를 쿼리 파라미터로 전달
+          },
+        );
 
         // 응답 데이터가 올바른지 확인하고 상태 업데이트
         const newQuestion = response.data?.data?.[0] || null;
         if (newQuestion) {
           const updatedQuestions = [...interviewQuestions];
-          updatedQuestions[index] = { ...questionToSave, interviewId: newQuestion.interviewId };
+          updatedQuestions[index] = {
+            ...questionToSave,
+            interviewId: newQuestion.interviewId,
+          };
           setInterviewQuestions(updatedQuestions);
         } else {
           console.error("No data returned from the server");
         }
       } else {
         // 기존 질문을 수정하는 경우
-        await axios.put(`${BASE_URL}/interviews`, 
-        [
+        await axios.put(
+          `${BASE_URL}/interviews`,
+          [
+            {
+              order: questionToSave.order,
+              question: questionToSave.question,
+              answer: questionToSave.answer,
+            },
+          ],
           {
-            order: questionToSave.order,
-            question: questionToSave.question,
-            answer: questionToSave.answer,
-          }
-        ], 
-        {
-          params: { recruitmentId }, // recruitmentId를 쿼리 파라미터로 전달
-        });
+            params: { recruitmentId }, // recruitmentId를 쿼리 파라미터로 전달
+          },
+        );
       }
     } catch (error) {
       console.error("Error saving question", error);
@@ -798,7 +827,8 @@ export const InterviewRecurringNoteRightPart = ({question, answer, reactionType,
 
   const handleDeleteConfirm = async () => {
     try {
-      const interviewIdToDelete = interviewQuestions[selectedQuestion]?.interviewId;
+      const interviewIdToDelete =
+        interviewQuestions[selectedQuestion]?.interviewId;
 
       if (interviewIdToDelete) {
         // API 호출을 통한 삭제 처리
@@ -826,7 +856,13 @@ export const InterviewRecurringNoteRightPart = ({question, answer, reactionType,
     const updatedQuestions = [...interviewQuestions];
 
     if (!updatedQuestions[index]) {
-      updatedQuestions[index] = { interviewId: null, question: "", answer: "", order: index + 1, type: null };
+      updatedQuestions[index] = {
+        interviewId: null,
+        question: "",
+        answer: "",
+        order: index + 1,
+        type: null,
+      };
     }
 
     updatedQuestions[index].question = value;
@@ -837,7 +873,13 @@ export const InterviewRecurringNoteRightPart = ({question, answer, reactionType,
     const updatedQuestions = [...interviewQuestions];
 
     if (!updatedQuestions[index]) {
-      updatedQuestions[index] = { interviewId: null, question: "", answer: "", order: index + 1, type: null };
+      updatedQuestions[index] = {
+        interviewId: null,
+        question: "",
+        answer: "",
+        order: index + 1,
+        type: null,
+      };
     }
 
     updatedQuestions[index].answer = value;
@@ -903,8 +945,12 @@ export const InterviewRecurringNoteRightPart = ({question, answer, reactionType,
         <QuestionComponent
           question={interviewQuestions[selectedQuestion]?.question || ""}
           answer={interviewQuestions[selectedQuestion]?.answer || ""}
-          onQuestionChange={(value) => handleQuestionChange(selectedQuestion, value)}
-          onAnswerChange={(value) => handleAnswerChange(selectedQuestion, value)}
+          onQuestionChange={(value) =>
+            handleQuestionChange(selectedQuestion, value)
+          }
+          onAnswerChange={(value) =>
+            handleAnswerChange(selectedQuestion, value)
+          }
         />
 
         <div className="flex">

@@ -59,8 +59,10 @@ function App() {
             element={<ArchivingPage />}
           />
           <Route path="/setting" element={<CareerPage />} />
-          <Route path="/setting/special-experience" element={<SpecialExperience />} />
-
+          <Route
+            path="/setting/special-experience"
+            element={<SpecialExperience />}
+          />
         </Routes>
       </PlannerSideBar>
       <Footer />

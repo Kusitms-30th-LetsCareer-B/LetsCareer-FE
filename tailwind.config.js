@@ -17,9 +17,9 @@ export default {
         xxsmall12: ["0.75rem", { lineHeight: "1rem" }],
         xxsmall11: ["0.67rem", { lineHeight: "1rem" }],
       },
-      
+
       borderWidth: {
-        '1.5': '1.5px',
+        1.5: "1.5px",
       },
 
       screens: {

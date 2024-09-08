@@ -101,13 +101,13 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
 
   const handleSubmit = async () => {
     let mappedStatus = "";
-  if (selectedStatus === "진행중") {
-    mappedStatus = "준비중";
-  } else if (selectedStatus === "합격") {
-    mappedStatus = "합격";
-  } else if (selectedStatus === "불합격") {
-    mappedStatus = "불합격";
-  }
+    if (selectedStatus === "진행중") {
+      mappedStatus = "준비중";
+    } else if (selectedStatus === "합격") {
+      mappedStatus = "합격";
+    } else if (selectedStatus === "불합격") {
+      mappedStatus = "불합격";
+    }
 
     const requestBody = {
       stageName: selectedType === "기타" ? inputValue : selectedType,
@@ -407,7 +407,6 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
       fetchStageData(); // stageId가 있을 때만 데이터 fetch
     }
   }, [stageId]);
-
 
   // API로 날짜를 보낼 때는 yyyy-mm-dd 형식으로 변환
   const formatDateForDisplay = (apiDate: string) => {
