@@ -1,8 +1,7 @@
-export const URL = "/todos"
-export const URLAllCompany = "/groupedByCompany"
-export const URLCheck = "/check"
-export const URLDelay = "/delay"
-
+export const URL = "/todos";
+export const URLAllCompany = "/groupedByCompany";
+export const URLCheck = "/check";
+export const URLDelay = "/delay";
 
 // 채용 일정 타입
 /*

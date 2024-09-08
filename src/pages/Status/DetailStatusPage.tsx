@@ -170,8 +170,8 @@ function DetailStatusPage() {
 
       {StatusComponent && <div className="flex">{StatusComponent}</div>}
 
-      <div className="mb-[20px] flex items-center overflow-x-auto rounded-md bg-neutral-100">
-        <div className="inline-flex items-center">
+      <div className="mb-[20px] flex items-center rounded-md bg-neutral-100">
+        <div className="inline-flex items-center overflow-x-auto whitespace-nowrap" >  
           {stages.map((stage) => {
             const endDateFormatted = formatDate(new Date(stage.endDate));
             if (stage.status === "PROGRESS") {
@@ -205,7 +205,6 @@ function DetailStatusPage() {
               return null;
             }
           })}
-
           {!isFinalStagePresent && <AddCard onAddClick={handleAddClick} />}
         </div>
       </div>

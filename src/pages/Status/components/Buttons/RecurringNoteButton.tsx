@@ -1,19 +1,30 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 interface ButtonGroupProps {
   introduceId: number;
-  reactionType: string;
+  initialReactionType: string;
   onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
 }
 
 export const ButtonGroup = ({
   introduceId,
-  reactionType,
+  initialReactionType,
   onReactionSave,
 }: ButtonGroupProps) => {
+  const [reactionType, setReactionType] = useState(initialReactionType);
+
+  useEffect(() => {
+    setReactionType(initialReactionType); // 초기 type 값이 바뀌면 반영
+  }, [initialReactionType]);
+
   const handleReactionClick = async (reaction: string) => {
+    setReactionType(reaction); // 클릭한 버튼에 맞게 상태를 업데이트합니다.
+
     try {
-      await onReactionSave(introduceId, reaction);
+      await onReactionSave(introduceId, reaction); // 서버에 저장 요청
     } catch (error) {
       console.error("Error saving reaction:", error);
     }
@@ -27,6 +38,44 @@ export const ButtonGroup = ({
       />
       <BadButton
         isSelected={reactionType === "아쉬워요"}
+        onClick={() => handleReactionClick("아쉬워요")}
+      />
+    </div>
+  );
+};
+
+interface ButtonGroupProps2 {
+  interviewId: number;
+  initialReactionType: string; // 초기 reactionType을 props로 전달
+  onReactionSave: (interviewId: number, reactionType: string) => Promise<void>;
+}
+
+export const ButtonGroup2 = ({
+  interviewId,
+  initialReactionType,
+  onReactionSave,
+}: ButtonGroupProps2) => {
+  const [reactionType, setReactionType] = useState(initialReactionType);
+
+  // 버튼 클릭 핸들러
+  const handleReactionClick = async (reaction: string) => {
+    setReactionType(reaction); // 클릭한 버튼에 맞게 상태를 업데이트합니다.
+
+    try {
+      await onReactionSave(interviewId, reaction); // 서버에 저장 요청
+    } catch (error) {
+      console.error("Error saving reaction:", error);
+    }
+  };
+
+  return (
+    <div className="flex gap-[10px]">
+      <GoodButton
+        isSelected={reactionType === "잘했어요"} // reactionType이 "잘했어요"일 때 선택된 상태
+        onClick={() => handleReactionClick("잘했어요")}
+      />
+      <BadButton
+        isSelected={reactionType === "아쉬워요"} // reactionType이 "아쉬워요"일 때 선택된 상태
         onClick={() => handleReactionClick("아쉬워요")}
       />
     </div>

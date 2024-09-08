@@ -1,11 +1,9 @@
 /** API 연동 관련 모듈, 변수 가져오기 */
-import { AxiosError } from 'axios';
-import { AxiosInstance, BASE_URL } from '../../../shared/api/axiosInstance';
-
+import { AxiosError } from "axios";
+import { AxiosInstance, BASE_URL } from "../../../shared/api/axiosInstance";
 
 /** 에러 처리 관련 */
-import { handleApiError } from './errorHandler';
-
+import { handleApiError } from "./errorHandler";
 
 /** API Type 관련 */
 import {
@@ -14,19 +12,19 @@ import {
   GetPersonalScheduleResponse,
   PostPersonalScheduleRequest,
   PostPersonalScheduleResponse,
-} from './personalType';
-
-
+} from "./personalType";
 
 /** API 호출 모듈화: 엔드포인트 2가지 */
 // Function to fetch personal schedules (GET request)
 export const getPersonalSchedules = async (
-  params: GetPersonalScheduleParams
+  params: GetPersonalScheduleParams,
 ): Promise<GetPersonalScheduleResponse> => {
   try {
-    const response = await AxiosInstance.get<GetPersonalScheduleResponse>(`${BASE_URL}${URL}`, { params });
+    const response = await AxiosInstance.get<GetPersonalScheduleResponse>(
+      `${BASE_URL}${URL}`,
+      { params },
+    );
     return response.data;
-    
   } catch (error) {
     handleApiError(error as AxiosError);
     throw error; // Re-throw error to handle in the component
@@ -36,7 +34,7 @@ export const getPersonalSchedules = async (
 // Function to add a personal schedule (POST request)
 export const addPersonalSchedule = async (
   userId: number,
-  scheduleData: PostPersonalScheduleRequest
+  scheduleData: PostPersonalScheduleRequest,
 ): Promise<PostPersonalScheduleResponse> => {
   try {
     const response = await AxiosInstance.post<PostPersonalScheduleResponse>(
@@ -44,7 +42,7 @@ export const addPersonalSchedule = async (
       scheduleData,
       {
         params: { userId }, // userId를 쿼리 파라미터로 전달
-      }
+      },
     );
     return response.data;
   } catch (error) {

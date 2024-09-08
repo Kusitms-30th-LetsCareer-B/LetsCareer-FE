@@ -1,9 +1,9 @@
 /** API 연동 관련 모듈, 변수 가져오기 */
-import { AxiosError } from 'axios';
-import { AxiosInstance, BASE_URL } from '../../../shared/api/axiosInstance';
+import { AxiosError } from "axios";
+import { AxiosInstance, BASE_URL } from "../../../shared/api/axiosInstance";
 
 /** 에러 처리 관련 */
-import { handleApiError } from './errorHandler';
+import { handleApiError } from "./errorHandler";
 import {
   URL,
   URLAllCompany,
@@ -20,14 +20,17 @@ import {
   PatchTodoResponse,
   CheckTodoResponse,
   DelayTodoResponse,
-} from './todoType';
+} from "./todoType";
 
 // GET /todos
 export const getTodos = async (
-  params: GetTodosParams
+  params: GetTodosParams,
 ): Promise<GetTodosResponse> => {
   try {
-    const response = await AxiosInstance.get<GetTodosResponse>(`${BASE_URL}${URL}`, { params });
+    const response = await AxiosInstance.get<GetTodosResponse>(
+      `${BASE_URL}${URL}`,
+      { params },
+    );
     return response.data;
   } catch (error) {
     handleApiError(error as AxiosError);
@@ -39,7 +42,7 @@ export const getTodos = async (
 export const addTodo = async (
   userId: number,
   recruitmentId: string,
-  todoData: PostTodoRequest
+  todoData: PostTodoRequest,
 ): Promise<PostTodoResponse> => {
   try {
     const response = await AxiosInstance.post<PostTodoResponse>(
@@ -47,7 +50,7 @@ export const addTodo = async (
       todoData,
       {
         params: { userId, recruitmentId },
-      }
+      },
     );
     return response.data;
   } catch (error) {
@@ -58,10 +61,13 @@ export const addTodo = async (
 
 // GET /todos/groupedByCompany
 export const getGroupedByCompanyTodos = async (
-  params: GetGroupedByCompanyParams
+  params: GetGroupedByCompanyParams,
 ): Promise<GetGroupedByCompanyResponse> => {
   try {
-    const response = await AxiosInstance.get<GetGroupedByCompanyResponse>(`${BASE_URL}${URL}${URLAllCompany}`, { params });
+    const response = await AxiosInstance.get<GetGroupedByCompanyResponse>(
+      `${BASE_URL}${URL}${URLAllCompany}`,
+      { params },
+    );
     return response.data;
   } catch (error) {
     handleApiError(error as AxiosError);
@@ -71,10 +77,12 @@ export const getGroupedByCompanyTodos = async (
 
 // DELETE /todos/{todoId}
 export const deleteTodo = async (
-  todoId: number
+  todoId: number,
 ): Promise<DeleteTodoResponse> => {
   try {
-    const response = await AxiosInstance.delete<DeleteTodoResponse>(`${BASE_URL}${URL}/${todoId}`);
+    const response = await AxiosInstance.delete<DeleteTodoResponse>(
+      `${BASE_URL}${URL}/${todoId}`,
+    );
     return response.data;
   } catch (error) {
     handleApiError(error as AxiosError);
@@ -85,10 +93,13 @@ export const deleteTodo = async (
 // PATCH /todos/{todoId}
 export const updateTodo = async (
   todoId: number,
-  todoData: PatchTodoRequest
+  todoData: PatchTodoRequest,
 ): Promise<PatchTodoResponse> => {
   try {
-    const response = await AxiosInstance.patch<PatchTodoResponse>(`${BASE_URL}${URL}/${todoId}`, todoData);
+    const response = await AxiosInstance.patch<PatchTodoResponse>(
+      `${BASE_URL}${URL}/${todoId}`,
+      todoData,
+    );
     return response.data;
   } catch (error) {
     handleApiError(error as AxiosError);
@@ -97,11 +108,11 @@ export const updateTodo = async (
 };
 
 // PATCH /todos/{todoId}/check
-export const checkTodo = async (
-  todoId: number
-): Promise<CheckTodoResponse> => {
+export const checkTodo = async (todoId: number): Promise<CheckTodoResponse> => {
   try {
-    const response = await AxiosInstance.patch<CheckTodoResponse>(`${BASE_URL}${URL}/${todoId}${URLCheck}`);
+    const response = await AxiosInstance.patch<CheckTodoResponse>(
+      `${BASE_URL}${URL}/${todoId}${URLCheck}`,
+    );
     return response.data;
   } catch (error) {
     handleApiError(error as AxiosError);
@@ -110,11 +121,11 @@ export const checkTodo = async (
 };
 
 // PATCH /todos/{todoId}/delay
-export const delayTodo = async (
-  todoId: number
-): Promise<DelayTodoResponse> => {
+export const delayTodo = async (todoId: number): Promise<DelayTodoResponse> => {
   try {
-    const response = await AxiosInstance.patch<DelayTodoResponse>(`${BASE_URL}${URL}/${todoId}${URLDelay}`);
+    const response = await AxiosInstance.patch<DelayTodoResponse>(
+      `${BASE_URL}${URL}/${todoId}${URLDelay}`,
+    );
     return response.data;
   } catch (error) {
     handleApiError(error as AxiosError);
