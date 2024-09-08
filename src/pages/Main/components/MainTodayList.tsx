@@ -13,7 +13,6 @@ import {userInfo} from "../../../shared/api/loginInstance.ts"
 import { TodoListProps, formatDate2 } from "../../../components/ToDoListTool.ts"
 // 부모 컴포로부터 최종 입력받을 Probs 합체
 interface CombinedProps extends userInfo, TodoListProps {}
-
   
 /* 리스트로 각 기업에 대한 일정 정보들을 받기:  API 연동 */
 // 샘플 기업 데이터 (API에서 받아온다고 가정)

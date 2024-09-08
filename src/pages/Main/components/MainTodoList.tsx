@@ -27,7 +27,7 @@ import { GetParamsMainTodayType, GetRequestMainTodayType } from "../api/mainToda
 
 /* 리스트로 각 기업에 대한 일정 정보들을 받기:  API 연동 */
 // 샘플 기업 데이터 (API에서 받아온다고 가정)
-const sampleCompanies1 = [
+const sampleCompanies = [
     { id: 1, name: "네이버", schedules: ["면접 준비", "서류 제출"], completed: [false, true] },
     { id: 2, name: "카카오", schedules: ["코딩 테스트", "최종 발표"], completed: [true, false] },
     { id: 3, name: "현대자동차", schedules: ["코딩 테스트", "최종 발표"], completed: [true, true] },

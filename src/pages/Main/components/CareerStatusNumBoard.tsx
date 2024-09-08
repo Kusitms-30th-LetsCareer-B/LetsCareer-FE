@@ -45,7 +45,7 @@ const CareerStatusNumBoard = ({userId}: GetParamsStatusNumType) => {
 
 
     // 3. 정상 상태 렌더링
-    const { total, progress, passed, failed } = statusData.data; // API로 받은 데이터 구조에 맞게 사용
+    const { total, progress, passed, failed } = statusData; // API로 받은 데이터 구조에 맞게 사용
 
     return (
         <div className="grid grid-cols-4 gap-2 rounded-md text-center text-neutral-50 bg-static-100 border-2 border-neutral-80 py-3">
