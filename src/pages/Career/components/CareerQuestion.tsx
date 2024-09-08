@@ -8,7 +8,7 @@ interface CareerQuestionProps {
 export const CareerQuestion = ({title, firstName, content, guide}: CareerQuestionProps) => {
     return(
         <>
-        <div className="flex flex-col items-start gap-[20px] self-stretch border-b-2 border-b-neutral-60">
+        <div className="flex flex-col items-start gap-[20px] self-stretch border-b-1.5 border-b-neutral-60">
                     <div className="flex justify-between items-center self-stretch">
                         <span className="text-small20 font-bold text-neutral-10 tracking-[-0.4px]">
                             {title}
@@ -66,7 +66,7 @@ export const CareerAnswer = () => {
                 </div>
             </div>
             <div className="flex items-center gap-[13px] self-stretch">
-                <button className="flex w-1/2 bg-neutral-80 px-[20px] py-[12px] justify-center items-center gap-[8px] rounded-md">
+                <button className="flex w-1/2 bg-neutral-90 px-[20px] py-[12px] justify-center items-center gap-[8px] rounded-md">
                     <span className="text-small18 font-medium tracking-[-0.022px] text-neutral-45">
                         초기화하기
                     </span>
