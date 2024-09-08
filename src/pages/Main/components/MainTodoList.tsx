@@ -12,17 +12,19 @@ import {useTodoList} from '../../../shared/hooks/useTodoList.ts';
 import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
   InterviewScheduleChip, OtherScheduleChip, PersonalScheduleChip, } from "../../../components/chips/TodoListChip"
 
-
-  
-/* API 연동 부분 */
-import {userInfo} from "../../../shared/api/loginInstance.ts" /* 로그인 정보 받기 */
-// ToDo 관련 Tools 임포트
+/* 사용자 로그인 정보 가져오기 */
+import {userInfo} from "../../../shared/api/loginInstance.ts"
+/* 달력에서 선택한 일정 정보 가져오기 */
 // 채용일정, 개인일정, 투두리스트 중 채용일정만
 import { RecruitmentScheduleListProps, formatDate2 } from "../../../components/ToDoListTool.ts"
-// 부모 컴포로부터 최종 입력받을 Probs 합체
+/* 부모 컴포로부터 최종 입력받을 Probs 합체 */
 interface CombinedProps extends userInfo, RecruitmentScheduleListProps {}
 
-  
+
+// API 연동 타입
+import { GetParamsMainTodayType, GetRequestMainTodayType } from "../api/mainTodayType.ts"
+
+
 /* 리스트로 각 기업에 대한 일정 정보들을 받기:  API 연동 */
 // 샘플 기업 데이터 (API에서 받아온다고 가정)
 const sampleCompanies = [
@@ -33,20 +35,18 @@ const sampleCompanies = [
 
 
 // TodoList 컴포넌트
-const TodoList = ({userId, userName, selectedDate, setSelectedDate}: CombinedProps) => {
-
+const MainTodoList = ({userId, userName, selectedDate, setSelectedDate}: CombinedProps) => {
     // 커스텀 훅에서 상태와 핸들러 가져오기
     const { 
         handlePrevDay, 
         handleNextDay, 
         useCompletedImage,
     } = useTodoList({selectedDate, setSelectedDate});
-
-
+    
     // 기업별 일정 데이터
     const [companies, setCompanies] = useState(sampleCompanies); // 기업 데이터
 
-  
+
     // API 연동하여 기업 리스트 가져오는 부분
     useEffect(() => {
         // 예시를 위해 sampleCompanies 사용
@@ -96,10 +96,10 @@ const TodoList = ({userId, userName, selectedDate, setSelectedDate}: CombinedPro
             
 
             {/* 두 번째 헤더 파트 */}
-            {/**key: {company.id} ->  더 유니크한 날짜로 변경 */}
+            {/**<div key={selectedDate ? selectedDate.toISOString() : company.id} className="mb-4">*/}
             <div className="px-7">
               {sampleCompanies.map((company) => (
-                <div key={selectedDate ? selectedDate.toISOString() : company.id} className="mb-4">
+                <div key={company.id} className="mb-4">
                   {/* 회사 이름 칩 */}
                   <div className="py-3">
                     <CompanyNameChip companyName={company.name}/>
@@ -124,13 +124,15 @@ const TodoList = ({userId, userName, selectedDate, setSelectedDate}: CombinedPro
                           updateBackend(company.id, newCompleted);
                         }
                       );
-
-
+                      
+                      //////////////////////////////////////////////////////
                       // 특정 기업의 스케줄 목록
                       return (
                         <>
-                          {/**key: index -> 더 유니크한 날짜로 변경 */}
-                          <li key={selectedDate ? selectedDate.toISOString() : index} className="flex items-center mb-2">
+                          {/** <li key={selectedDate ? selectedDate.toISOString() : index} className="flex items-center mb-2">
+                          */}
+                          
+                          <li key={`${company.id}-${index}`} className="flex items-center mb-2">
                             {/* 상태 이미지 */}
                             <img src={imageSrc} alt={`Schedule status for ${schedule}`} className="w-4 h-4 mr-2" />
 
@@ -154,4 +156,4 @@ const TodoList = ({userId, userName, selectedDate, setSelectedDate}: CombinedPro
     );
 };
 
-export default TodoList;
+export default MainTodoList;

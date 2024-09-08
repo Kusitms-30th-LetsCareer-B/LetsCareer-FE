@@ -38,11 +38,16 @@ export const PassInterviewChip = () => {
   );
 };
 
-export const JobTestChip = () => {
+
+interface OtherStatusChipProps {
+  contents : string;
+}
+
+export const OtherStatusChip = ({contents}: OtherStatusChipProps) => {
   return (
     <div className="inline-flex h-[36px] items-center justify-center rounded-sm bg-teritory-light px-[12px] py-[8px]">
       <div className="text-center text-xsmall14 font-semibold tracking-[-0.21px] text-teritory-normal">
-        직무테스트 준비
+        {contents}
       </div>
     </div>
   );
