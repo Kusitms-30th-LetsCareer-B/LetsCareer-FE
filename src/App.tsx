@@ -16,7 +16,7 @@ import ArchivingPage from "./pages/Status/ArchivingPage";
 import {userInfo} from "./shared/api/loginInstance.ts" /* 로그인 정보 받기 */
 
 const testUser: userInfo = {
-  userId: 3,
+  userId: 1,
   userName: "오민지"
 };
 
