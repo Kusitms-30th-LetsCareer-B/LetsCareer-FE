@@ -1,6 +1,8 @@
-export const URLMainTodayURL = "/todos/groupedByCompany";
+/** 메인 홈: 오늘 채용(기업) 일정 현황 */
+export const MainToday_URL = "/todos/groupedByCompany";
 
-/** 메인 홈, 채용 일정 현황 API Type */
+
+/** API Type */
 // GET 파라미터
 export interface GetParamsMainTodayType {
   userId: number;

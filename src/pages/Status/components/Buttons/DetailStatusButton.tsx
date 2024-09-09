@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "../../../../components/DatePicker";
+import { getFormattedDate2, getFormattedDate3 } from "../../../../shared/hooks/useDate.ts";
 import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
@@ -91,28 +92,15 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
   };
 
   const handleDateSelect = (date: Date) => {
-    const formattedDisplayDate = `${date.getFullYear() % 100}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
-    const formattedApiDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식
-
-    setSelectedDate(formattedDisplayDate);
-    setApiDate(formattedApiDate);
+    setSelectedDate(getFormattedDate2(date)); // YYYY.MM.DD 형식
+    setApiDate(getFormattedDate3(date)); // YYYY-MM-DD 형식
     setIsDatePickerOpen(false);
   };
 
   const handleSubmit = async () => {
-    let mappedStatus = "";
-    if (selectedStatus === "진행중") {
-      mappedStatus = "준비중";
-    } else if (selectedStatus === "합격") {
-      mappedStatus = "합격";
-    } else if (selectedStatus === "불합격") {
-      mappedStatus = "불합격";
-    }
-
     const requestBody = {
       stageName: selectedType === "기타" ? inputValue : selectedType,
       endDate: apiDate,
-      status: mappedStatus,
       isFinal: isFinalStage,
     };
 
@@ -359,24 +347,22 @@ interface UpdateTypeModalProps {
 
 export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null); // 선택된 전형명 상태
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(""); // 선택된 상태 (준비중, 합격, 불합격)
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(""); // 선택된 상태 (진행중, 합격, 불합격)
   const [isFinalStage, setIsFinalStage] = useState(false); // 최종 단계 체크박스 상태
   const [inputValue, setInputValue] = useState<string>(""); // 기타 항목 입력 값
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false); // DatePicker 열림 상태
   const [selectedDate, setSelectedDate] = useState<string | null>(null); // 선택된 날짜
   const [apiDate, setApiDate] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false); // 전형명 입력 필드 포커스 상태
+  
 
   const handleFinalStageChange = () => {
     setIsFinalStage(!isFinalStage);
   };
 
   const handleDateSelect = (date: Date) => {
-    const formattedDisplayDate = `${date.getFullYear() % 100}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
-    const formattedApiDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식
-
-    setSelectedDate(formattedDisplayDate); // 화면에 표시할 yy.mm.dd 형식
-    setApiDate(formattedApiDate); // API에 보낼 yyyy-mm-dd 형식
+    setSelectedDate(getFormattedDate2(date)); // 화면에 표시할 yy.mm.dd 형식
+    setApiDate(getFormattedDate3(date)); // API에 보낼 yyyy-mm-dd 형식
     setIsDatePickerOpen(false);
   };
 
@@ -389,13 +375,13 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
         const stageData = response.data.data;
 
         setSelectedType(stageData.stageName);
-        setSelectedStatus(stageData.status);
+        setSelectedStatus(mapStatusToDisplay(stageData.status));
         setIsFinalStage(stageData.isFinal);
 
         if (stageData.stageName !== "서류" || stageData.stageName !== "면접") {
           setInputValue(stageData.stageName);
         }
-        const formattedDate = formatDateForDisplay(stageData.endDate);
+        const formattedDate = getFormattedDate3(stageData.endDate);
         setSelectedDate(formattedDate);
         setApiDate(stageData.endDate); // API에 보낼 원본 날짜는 유지
       } catch (error) {
@@ -408,10 +394,31 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
     }
   }, [stageId]);
 
-  // API로 날짜를 보낼 때는 yyyy-mm-dd 형식으로 변환
-  const formatDateForDisplay = (apiDate: string) => {
-    const date = new Date(apiDate);
-    return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+  const mapStatusToDisplay = (status: string) => {
+    switch (status) {
+      case "PROGRESS":
+        return "진행중";
+      case "PASSED":
+        return "합격";
+      case "FAILED":
+        return "불합격";
+      default:
+        return "";
+    }
+  };
+
+  // 상태를 '진행중', '합격', '불합격'에서 API에 맞는 'PROGRESS', 'PASSED', 'FAILED'로 변환
+  const mapStatusToApi = (status: string) => {
+    switch (status) {
+      case "준비중":
+        return "PROGRESS";
+      case "합격":
+        return "PASSED";
+      case "불합격":
+        return "FAILED";
+      default:
+        return "";
+    }
   };
 
   const handleUpdate = async () => {
@@ -419,11 +426,10 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
       stageName: selectedType === "기타" ? inputValue : selectedType,
       endDate: apiDate,
       status: selectedStatus,
-      isFinal: isFinalStage,
     };
 
     try {
-      await axios.patch(`${BASE_URL}/stages?stageId=${stageId}`, requestBody);
+      await axios.put(`${BASE_URL}/stages?stageId=${stageId}`, requestBody);
       onClose();
     } catch (error) {
       console.error("Error updating stage:", error);
@@ -555,11 +561,11 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
             <div className="flex items-center gap-[8px]">
               <button
                 className={`flex w-[60px] items-center justify-center rounded-sm border px-[10px] py-[8px] ${
-                  selectedStatus === "준비중"
+                  selectedStatus === "진행중"
                     ? "border-primary bg-primary-10 text-primary"
                     : "border-neutral-80 text-neutral-45"
                 }`}
-                onClick={() => setSelectedStatus("준비중")}
+                onClick={() => setSelectedStatus("진행중")}
               >
                 <span className="text-xsmall14 font-medium tracking-[-0.21px]">
                   진행중
