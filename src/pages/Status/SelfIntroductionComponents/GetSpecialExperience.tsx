@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ColoredTap } from "../../../components/Tabs/Tab";
 import { SelectExperienceBlackButton, SelectExperienceDeepButton, SelectExperienceLightButton } from "../components/Buttons/SelfIntroduceButton";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -84,105 +85,126 @@ interface ExperienceData {
     };
 }
 
-export const GetExperience = () => {
-      const [selectedTab, setSelectedTab] = useState<string>("성공/도전 경험");
-      const [experienceData, setExperienceData] = useState<ApiResponse | null>(null);
-      const [selectedExperienceId, setSelectedExperienceId] = useState<number | null>(null);
+interface GetExperienceProps {
+    onSelectExperience: (experience: ExperienceData) => void;
+    onTabChange: (tab: string) => void;
+}
 
-      useEffect(() => {
-          axios
-              .get(`${BASE_URL}/careers/special-skills?userId=1`)
-              .then((response) => {
-                  setExperienceData(response.data);
-              })
-              .catch((error) => {
-                  console.error("Error fetching data:", error);
-              });
-      }, []);
-  
-      const handleTabClick = (tab: string) => {
-          setSelectedTab(tab);
-          setSelectedExperienceId(null);
-      };
+export const GetExperience: React.FC<GetExperienceProps> = ({ onSelectExperience, onTabChange }) => {
+    const navigate = useNavigate();
 
-      const handleExperienceClick = (id: number) => {
-        setSelectedExperienceId(id);
-      };
-  
-      const getTabData = () => {
-          if (!experienceData) return [];
-  
-          if (selectedTab === "성공/도전 경험") {
-            return experienceData?.data.success || [];
-        } else if (selectedTab === "직무 경험") {
-            return experienceData?.data.job || [];
-        } else if (selectedTab === "협업 경험") {
-            return experienceData?.data.collaboration || [];
-        }
-          return [];
-      };
-  
-      const tabData = getTabData();
-  
-      return (
-          <div className="ml-[20px] flex w-[363px] flex-col items-start rounded-md border border-neutral-80 bg-static-100 p-[24px]">
-              <span className="mb-[20px] flex text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
-                  내 필살기 경험
-              </span>
-              <div className="flex flex-col items-start self-stretch">
-                  <div className="flex items-center mb-[16px]">
-                      {selectedTab === "성공/도전 경험" ? (
-                          <ColoredTab
-                              tabType="성공/도전 경험"
-                              onClick={() => handleTabClick("성공/도전 경험")}
-                          />
-                      ) : (
-                          <BasicTab
-                              tabType="성공/도전 경험"
-                              onClick={() => handleTabClick("성공/도전 경험")}
-                          />
-                      )}
-  
-                      {selectedTab === "직무 경험" ? (
-                          <ColoredTab
-                              tabType="직무 경험"
-                              onClick={() => handleTabClick("직무 경험")}
-                          />
-                      ) : (
-                          <BasicTab
-                              tabType="직무 경험"
-                              onClick={() => handleTabClick("직무 경험")}
-                          />
-                      )}
-  
-                      {selectedTab === "협업 경험" ? (
-                          <ColoredTab
-                              tabType="협업 경험"
-                              onClick={() => handleTabClick("협업 경험")}
-                          />
-                      ) : (
-                          <BasicTab
-                              tabType="협업 경험"
-                              onClick={() => handleTabClick("협업 경험")}
-                          />
-                      )}
-                  </div>
-                    {tabData.length > 0 ? (
-                        tabData.map((experience) => (
-                            <div className="flex flex-col gap-[12px]">
-                                <SelectExperienceButton
-                                    experience={experience.title}
-                                    isSelected={selectedExperienceId === experience.id}
-                                    onClick={() => handleExperienceClick(experience.id)}
-                                />                     
-                            </div>
-                        ))
+    const [selectedTab, setSelectedTab] = useState<string>("성공/도전 경험");
+    const [experienceData, setExperienceData] = useState<ApiResponse | null>(null);
+    const [selectedExperienceId, setSelectedExperienceId] = useState<number | null>(null);
+
+    useEffect(() => {
+        axios
+            .get(`${BASE_URL}/careers/special-skills?userId=1`)
+            .then((response) => {
+                setExperienceData(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    }, []);
+
+    const handleTabClick = (tab: string) => {
+        setSelectedTab(tab);
+        setSelectedExperienceId(null);
+        onTabChange(tab);
+    };
+
+    const handleExperienceClick = (id: number, experience: ExperienceData) => {
+    setSelectedExperienceId(id);
+    onSelectExperience(experience);
+    };
+
+    const getTabData = () => {
+        if (!experienceData) return [];
+
+        if (selectedTab === "성공/도전 경험") {
+        return experienceData?.data.success || [];
+    } else if (selectedTab === "직무 경험") {
+        return experienceData?.data.job || [];
+    } else if (selectedTab === "협업 경험") {
+        return experienceData?.data.collaboration || [];
+    }
+        return [];
+    };
+
+    const handleButtonClick = () => {
+    navigate("/setting");
+    };
+
+    const tabData = getTabData();
+
+    return (
+        <div className="ml-[20px] flex w-[363px] flex-col items-start rounded-md border border-neutral-80 bg-static-100 p-[24px]">
+            <div className="mb-[20px] flex w-full justify-between">
+                <span className="flex text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
+                    내 필살기 경험
+                </span>
+                <button 
+                 onClick={handleButtonClick}
+                 className="flex items-center justify-center rounded-md bg-primary text-static-100 text-xsmall14 font-regular px-[15px] py-[5px] tracking-[-0.022px]"
+                 >
+                    필살기 경험 작성하기
+                </button>
+            </div>
+            <div className="flex flex-col items-start self-stretch">
+                <div className="flex items-center mb-[16px]">
+                    {selectedTab === "성공/도전 경험" ? (
+                        <ColoredTab
+                            tabType="성공/도전 경험"
+                            onClick={() => handleTabClick("성공/도전 경험")}
+                        />
                     ) : (
-                        <span className="mt-[48px] self-stretch text-center text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-45">
-                            아직 저장된 내용이 없어요!
-                        </span>
+                        <BasicTab
+                            tabType="성공/도전 경험"
+                            onClick={() => handleTabClick("성공/도전 경험")}
+                        />
+                    )}
+
+                    {selectedTab === "직무 경험" ? (
+                        <ColoredTab
+                            tabType="직무 경험"
+                            onClick={() => handleTabClick("직무 경험")}
+                        />
+                    ) : (
+                        <BasicTab
+                            tabType="직무 경험"
+                            onClick={() => handleTabClick("직무 경험")}
+                        />
+                    )}
+
+                    {selectedTab === "협업 경험" ? (
+                        <ColoredTab
+                            tabType="협업 경험"
+                            onClick={() => handleTabClick("협업 경험")}
+                        />
+                    ) : (
+                        <BasicTab
+                            tabType="협업 경험"
+                            onClick={() => handleTabClick("협업 경험")}
+                        />
                     )}
                 </div>
+                {tabData.length > 0 ? (
+                    tabData.map((experience) => (
+                        <div className="flex flex-col gap-[12px]">
+                            <SelectExperienceButton
+                                experience={experience.title}
+                                isSelected={selectedExperienceId === experience.id}
+                                onClick={() => handleExperienceClick(experience.id, experience)}
+                            />                     
+                        </div>
+                    ))
+                ) : (
+                    <span className="mt-[48px] self-stretch text-center text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-45">
+                        아직 저장된 내용이 없어요!
+                    </span>
+                )}
             </div>
-      );
-  };
+        </div>
+    );
+};
