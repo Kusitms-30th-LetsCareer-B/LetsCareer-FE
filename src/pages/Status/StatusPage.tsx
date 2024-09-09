@@ -39,6 +39,7 @@ function StatusPage() {
   const navigate = useNavigate();
   // const { userId } = useParams<{ userId: string }>(); URL에서 userId 받아오기
   const itemsPerPage = 6;
+  const pageRange = 6;
   const [statusCounts, setStatusCounts] = useState({
     total: 0,
     progress: 0,
@@ -48,7 +49,9 @@ function StatusPage() {
 
   const { activeTab, tabClick } = useStatusTab();
 
-  const [recruitments, setRecruitments] = useState<Recruitment[]>([]);
+  const [recruitments, setRecruitments] = useState<{
+    [key: number]: Recruitment[];
+  }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteMode, setDeleteMode] = useState<boolean>(false);
   const [selectedStage, setSelectedStage] = useState("전체");
@@ -58,32 +61,69 @@ function StatusPage() {
   const [selectedRecruitment, setSelectedRecruitment] =
     useState<Recruitment | null>(null);
 
-  const filteredRecruitments = recruitments.filter((recruitment) => {
-    if (selectedStage === "전체") return true;
-    if (selectedStage === "서류") return recruitment.stageName === "서류";
-    if (selectedStage === "면접") return recruitment.stageName === "면접";
-    return recruitment.stageName !== "서류" && recruitment.stageName !== "면접";
-  });
+  const [filteredItemCount, setFilteredItemCount] = useState(0);
 
-  const fetchRecruitments = async (
-    type: "progress" | "consequence",
-    pageId: number,
-  ) => {
+  const fetchRecruitments = async (type: string, pageId: number) => {
     try {
       const response = await axios.get(
         `${BASE_URL}/recruitments/status?type=${type}&userId=1&page=${pageId}`,
       );
-      setRecruitments(response.data.data.recruitments);
-      setTotalItems(totalItems || 0);
+      const { recruitments: newRecruitments, totalElementsCount } =
+        response.data.data;
+
+      setRecruitments((prev) => ({
+        ...prev,
+        [pageId]: newRecruitments,
+      }));
+      setTotalItems(totalElementsCount);
     } catch (error) {
       console.error("Error fetching recruitments", error);
     }
   };
 
+  const filteredRecruitments = (recruitments[currentPage] || []).filter(
+    (recruitment) => {
+      if (selectedStage === "전체") return true;
+      if (selectedStage === "서류") return recruitment.stageName === "서류";
+      if (selectedStage === "면접") return recruitment.stageName === "면접";
+      return (
+        recruitment.stageName !== "서류" && recruitment.stageName !== "면접"
+      );
+    },
+  );
+
+  useEffect(() => {
+    setFilteredItemCount(filteredRecruitments.length);
+  }, [filteredRecruitments]);
+
+  const loadSurroundingPages = async (type: string) => {
+    const pageStart = Math.max(1, currentPage - Math.floor(pageRange / 2));
+    const pageEnd = Math.min(
+      totalPages,
+      currentPage + Math.floor(pageRange / 2),
+    );
+
+    for (let i = pageStart; i <= pageEnd; i++) {
+      await fetchRecruitments(type, i);
+    }
+  };
+
   useEffect(() => {
     const type = activeTab === "prepare" ? "progress" : "consequence";
-    fetchRecruitments(type, currentPage);
-  }, [activeTab]);
+
+    console.log("Active tab:", activeTab, "Type:", type); // 확인 로그 추가
+
+    // 첫 페이지와 마지막 페이지를 우선적으로 불러오기
+    fetchRecruitments(type, 1);
+    fetchRecruitments(type, totalPages);
+
+    // 현재 페이지를 기준으로 필요한 페이지들 불러오기
+    loadSurroundingPages(type);
+  }, [currentPage, activeTab, filteredItemCount]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page); // 현재 페이지 변경
+  };
 
   useEffect(() => {
     const fetchStatusCounts = async () => {
@@ -112,11 +152,24 @@ function StatusPage() {
             recruitmentId: selectedRecruitment.recruitmentId,
           },
         });
-        setRecruitments(
-          recruitments.filter(
+        // 페이지별로 데이터를 필터링하여 새로운 상태를 설정
+        setRecruitments((prevRecruitments) => {
+          const updatedRecruitments = { ...prevRecruitments };
+
+          // 현재 탭이 준비 현황인지 지원 결과인지 확인
+          const type = activeTab === "prepare" ? "progress" : "consequence";
+
+          // 현재 페이지의 배열에서 삭제된 항목을 필터링
+          const filteredPageData = updatedRecruitments[currentPage].filter(
             (rec) => rec.recruitmentId !== selectedRecruitment.recruitmentId,
-          ),
-        );
+          );
+
+          // 필터링된 데이터를 다시 해당 페이지에 설정
+          updatedRecruitments[currentPage] = filteredPageData;
+
+          return updatedRecruitments;
+        });
+
         setIsDeletePopupOpen(false);
       } catch (error) {
         console.error("Error deleting recruitment", error);
@@ -163,66 +216,65 @@ function StatusPage() {
         </div>
       </div>
       <div className="grid w-full grid-cols-2 gap-[20px]">
-        {filteredRecruitments
-          .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-          .map((recruitment: Recruitment) => {
-            let StatusComponent;
-            switch (recruitment.status) {
-              case "PROGRESS":
-                StatusComponent = (
-                  <ApplyStatus
-                    company={recruitment.companyName}
-                    day={recruitment.daysUntilEnd}
-                    department={recruitment.task}
-                    stageName={recruitment.stageName}
-                    endDate={recruitment.endDate}
-                    deleteMode={deleteMode}
-                    onDelete={() => handleDeleteClick(recruitment)}
-                    onClick={() =>
-                      navigate(`/status/${recruitment.recruitmentId}`)
-                    }
-                  />
-                );
-                break;
-              case "PASSED":
-                StatusComponent = (
-                  <ConsequenceSuccessStatus
-                    company={recruitment.companyName}
-                    department={recruitment.task}
-                    recruitmentId={recruitment.recruitmentId}
-                    deleteMode={deleteMode}
-                    onDelete={() => handleDeleteClick(recruitment)}
-                    onClick={() =>
-                      navigate(`/status/${recruitment.recruitmentId}`)
-                    }
-                  />
-                );
-                break;
-              case "FAILED":
-                StatusComponent = (
-                  <ConsequenceFailedStatus
-                    company={recruitment.companyName}
-                    department={recruitment.task}
-                    stageName={recruitment.stageName}
-                    recruitmentId={recruitment.recruitmentId}
-                    deleteMode={deleteMode}
-                    onDelete={() => handleDeleteClick(recruitment)}
-                    onClick={() =>
-                      navigate(`/status/${recruitment.recruitmentId}`)
-                    }
-                  />
-                );
-                break;
-              default:
-                StatusComponent = null;
-            }
+        {filteredRecruitments.map((recruitment: Recruitment) => {
+          let StatusComponent;
 
-            return (
-              <div key={recruitment.recruitmentId} className="relative">
-                {StatusComponent}
-              </div>
-            );
-          })}
+          switch (recruitment.status) {
+            case "PROGRESS":
+              StatusComponent = (
+                <ApplyStatus
+                  company={recruitment.companyName}
+                  day={recruitment.daysUntilEnd}
+                  department={recruitment.task}
+                  stageName={recruitment.stageName}
+                  endDate={recruitment.endDate}
+                  deleteMode={deleteMode}
+                  onDelete={() => handleDeleteClick(recruitment)}
+                  onClick={() =>
+                    navigate(`/status/${recruitment.recruitmentId}`)
+                  }
+                />
+              );
+              break;
+            case "PASSED":
+              StatusComponent = (
+                <ConsequenceSuccessStatus
+                  company={recruitment.companyName}
+                  department={recruitment.task}
+                  recruitmentId={recruitment.recruitmentId}
+                  deleteMode={deleteMode}
+                  onDelete={() => handleDeleteClick(recruitment)}
+                  onClick={() =>
+                    navigate(`/status/${recruitment.recruitmentId}`)
+                  }
+                />
+              );
+              break;
+            case "FAILED":
+              StatusComponent = (
+                <ConsequenceFailedStatus
+                  company={recruitment.companyName}
+                  department={recruitment.task}
+                  stageName={recruitment.stageName}
+                  recruitmentId={recruitment.recruitmentId}
+                  deleteMode={deleteMode}
+                  onDelete={() => handleDeleteClick(recruitment)}
+                  onClick={() =>
+                    navigate(`/status/${recruitment.recruitmentId}`)
+                  }
+                />
+              );
+              break;
+            default:
+              StatusComponent = null;
+          }
+
+          return (
+            <div key={recruitment.recruitmentId} className="relative">
+              {StatusComponent}
+            </div>
+          );
+        })}
       </div>
       {/* 삭제 팝업 */}
       {isDeletePopupOpen && selectedRecruitment && (
@@ -240,8 +292,8 @@ function StatusPage() {
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page) => setCurrentPage(page)}
+          totalPages={Math.ceil(filteredItemCount / itemsPerPage)}
+          onPageChange={handlePageChange}
         />
       </div>
     </div>

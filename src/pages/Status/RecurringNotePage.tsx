@@ -505,8 +505,8 @@ function RecurringNotePage() {
                     interviewId: q.interviewId ?? null,
                     question: q.question,
                     answer: q.answer,
-                    order: q.order,  // 추가된 order 필드
-                    type: q.type,    // 추가된 type 필드
+                    order: q.order, // 추가된 order 필드
+                    type: q.type, // 추가된 type 필드
                   }))}
                   onQuestionClick={(index) => handleQuestionSelect(index + 1)} // 질문 선택 처리
                   onReactionSave={handleReactionSave}

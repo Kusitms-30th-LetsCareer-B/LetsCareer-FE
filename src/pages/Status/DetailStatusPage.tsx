@@ -156,7 +156,7 @@ function DetailStatusPage() {
 
   return (
     <div className="mb-[100px] px-[48px] pt-[40px]">
-      <div className="flex w-[1128px] items-start justify-between">
+      <div className="flex items-start justify-between">
         <GoBackButton text="기업별 진행현황" />
         <button
           onClick={handleDeleteClick}
@@ -171,7 +171,7 @@ function DetailStatusPage() {
       {StatusComponent && <div className="flex">{StatusComponent}</div>}
 
       <div className="mb-[20px] flex items-center rounded-md bg-neutral-100">
-        <div className="inline-flex items-center overflow-x-auto whitespace-nowrap" >  
+        <div className="inline-flex items-center overflow-x-auto whitespace-nowrap">
           {stages.map((stage) => {
             const endDateFormatted = formatDate(new Date(stage.endDate));
             if (stage.status === "PROGRESS") {

@@ -18,6 +18,10 @@ export default {
         xxsmall11: ["0.67rem", { lineHeight: "1rem" }],
       },
 
+      borderWidth: {
+        1.5: "1.5px",
+      },
+
       screens: {
         xs: "390px",
         sm: "640px",

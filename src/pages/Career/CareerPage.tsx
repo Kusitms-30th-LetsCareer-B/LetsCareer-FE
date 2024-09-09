@@ -4,11 +4,7 @@ import {
 } from "../Status/components/Helpers/RecurringNoteHelper";
 
 function CareerPage() {
-  return (
-    <>
-      <h1>커리어관리 페이지</h1>
-    </>
-  );
+  return <div className="flex items-start gap-[40px]"></div>;
 }
 
 export default CareerPage;
