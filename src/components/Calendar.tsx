@@ -5,10 +5,10 @@ import nextButtonIcon from "../shared/assets/calendar-next.png";
 import filterButtonIcon from "../shared/assets/filter.png";
 import addButtonIcon from "../shared/assets/add.png";
 
-// 커스텀 훅 임포트
+// 커스텀 캘린더 훅 임포트
 import useCalendar from "../shared/hooks/useCalendar";
 
-// 칩스
+// 캘린더 칩스
 import {
   filterState,
   DefaultDocumentChip,
@@ -26,19 +26,47 @@ import {
 } from "./chips/CalendarChip";
 
 
+// 투두 칩스
+import {
+  // 서류 칩
+  DocumentScheduleChip,
+  // 면접 칩
+  InterviewScheduleChip,
+  // 기타 칩
+  OtherScheduleChip,
+  // 개인 일정 칩
+  PersonalScheduleChip
+
+} from "./chips/TodoListChip";
+
+
+
+
 /* Date 관련 hook 임포트 */
 import { getYearMonthDay, getStringYear, getStringMonth, getFormattedDate3 } from "../shared/hooks/useDate.ts";
 
 
-/** API 연동 관련 이벤트 */
+/** 기업 채용 일정 API 연동 관련 이벤트 */
 import { getResponseCalendarMonthRecruitmentsList } from '../pages/Calendar/api/calendarMonthRecruitmentsApiService.ts';
 import { GetRequestCalendarMonthRecruitmentsType } from '../pages/Calendar/api/calendarMonthRecruitmentsType.ts';
+
+
+/** 개인 일정 API 연동 관련 이벤트 */
+import { getResponseCalendarMonthPersonalWorksList } from '../pages/Calendar/api/calendarMonthPersonalWorksApiService.ts';
+import { GetRequestCalendarMonthPersonalWorksType } from '../pages/Calendar/api/calendarMonthPersonalWorksType.ts';
+
 
 /** Props */
 interface CalendarComponentProps {
   userId: number;
-  // 부모 컴포에게 selectedDate값을 넘기기위한 Props
-  onDateSelected: (date: Date) => void;
+
+  // 부모 컴포에게 전달할 변수/함수들
+  // 1. selectedDate:  캘린더에 선택된 날짜
+  // 2. recruitmentScheduleChips:  선택된 날짜에 대한 기업 채용 일정 칩스 (디자인: TodoListChip.tsx)
+  // 3. personalScheduleChips:     선택된 날짜에 대한 개인 일정 칩스 (디자인: TodoListChip.tsx)
+  onDateSelected: (date: Date, 
+                   recruitmentScheduleChips: JSX.Element[],
+                   personalScheduleChips: JSX.Element[]) => void;
 }
 
 
@@ -62,13 +90,6 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   } = useCalendar();
 
   
-  // handleDateSelected 발동시에
-  // 부모 컴포에게 selectedDate를 넘기기 위한 훅 정의
-  const handleDateSelect = (date: Date) => {
-    handleDateClick(date);   // 기존 훅 업뎃
-    onDateSelected(date);    // 부모에게 선택된 데이터 전송
-  };
-
   // 달력 헤더에 표시할 컬럼명 배열 선언
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -76,18 +97,52 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   const dates = getDates();
 
 
+
   /**---------------------------------------------------*/
-  /** 연동 데이터 관련 변수, 함수 */
-  /** API에서 연동받을 데이터를 저장 및 관리하는 상태 변수 */
-  // 기업 채용 일정 데이터
+  /** API 연동 데이터 관련 변수, 함수 */
+
+  // 기업 채용 일정 원본 데이터
   const [recruitmentsDataList, setRecruitmentsDataList] = useState<GetRequestCalendarMonthRecruitmentsType[]>([]);
-  
-  // 기업 채용 일정 필터별 개수 상태
+
+  // 기업 채용 일정 파싱 데이터:  필터별 개수 상태
   const [documentCount, setDocumentCount] = useState(0); // 서류
   const [interviewCount, setInterviewCount] = useState(0); // 면접
   const [otherCount, setOtherCount] = useState(0); // 기타
 
-  // 개인 일정 데이터
+
+  /** 💗 기업 채용 일정 연동
+   *  특정 날짜의 기업 채용 일정 데이터를 가져오는 함수 */
+  const getRecruitmentsSchedulesForDate = (date: Date) => {
+    return recruitmentsDataList.filter((data) => {
+      const dataDate = new Date(data.date); // data.date는 'YYYY-MM-DD' 형식의 문자열이므로 Date 객체로 변환
+      
+      return (
+        dataDate.getFullYear() === date.getFullYear() &&
+        dataDate.getMonth() === date.getMonth() &&
+        dataDate.getDate() === date.getDate()
+      );
+    });
+  };
+
+  
+  
+  // 개인 일정 원본 데이터
+  const [personalWorksDataList, setPersonalWorksDataList] = useState<GetRequestCalendarMonthPersonalWorksType[]>([]);
+  
+  /** 💗 개인 일정 연동 
+   *  특정 날짜의 개인 일정 데이터를 가져오는 함수 */
+  const getPersonalWorksForDate = (date: Date) => {
+    return personalWorksDataList.filter((data) => {
+      const workDate = new Date(data.date);
+
+      return (
+        workDate.getFullYear() === date.getFullYear() &&
+        workDate.getMonth() === date.getMonth() &&
+        workDate.getDate() === date.getDate()
+      );
+    });
+  };
+
 
 
   // 컴포넌트가 렌더링될 때 API 호출
@@ -100,39 +155,50 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
       const year  = getStringYear(currentDate);
       const month = getStringMonth(currentDate);
 
-      const fetchCompanyRecruitmentList = async () => {
+      // 기업 채용 일정 + 개인 일정 연동
+      const fetchAllCalendarScheduleList = async () => {
         try {
           // 상태 제어
           setLoading(true); // 로딩 상태 시작
           setError(null);   // 에러 초기화
 
-          // 요청 및 응답받기
-          const response = await getResponseCalendarMonthRecruitmentsList({ userId, year, month });
-          console.log("📫 캘린더쨩~");
-          
-          // 백엔드로부터 받은 순수 DB 확인
-          console.log(response);
+          // 기업 채용 일정 요청 및 응답받기
+          const responseRecruitments = await getResponseCalendarMonthRecruitmentsList({ userId, year, month });
+          console.log("📫 캘린더쨩 기업 채용 일정 샤랄라~");
+          console.log(responseRecruitments); // 백엔드로부터 응답받은 DB 확인
+          setRecruitmentsDataList(responseRecruitments.data);  // 원본 DB 저장
 
-         /**
+          // 개인 일정 요청 및 응답받기
+          const responsePersonalWorks = await getResponseCalendarMonthPersonalWorksList({ userId, year, month });
+          console.log("📫 캘린더쨩 개인 일정 샤랄라~");
+          console.log(responsePersonalWorks); // 백엔드로부터 응답받은 DB 확인
+          setPersonalWorksDataList(responsePersonalWorks.data);  // 원본 DB 저장
+
+          /** 참고
           * response는 다음과 같은 형식으로 들어온다. 그 중 data 부분만 저장
           * code: 200
           * data:
           * message:
           */
-          // 1. Response 원본 DB 저장
-          setRecruitmentsDataList(response.data);
-          
 
-          // 2. Response 파싱 DB: 필터별 개수 계산
-          const documentItems = response.data.filter(item => item.filter === filterState.START || filterState.FINISH || filterState.WRITTEN); // "서류"
-          const interviewItems = response.data.filter(item => item.filter === filterState.INTERVIEW); // "면접"
-          const otherItems = response.data.filter(item => item.filter === filterState.OTHER); // 기타 일정
           
-          // 3. Response 파싱 DB: 필더별 개수 저장
+          ////////////////////////////////////////////////////////////////
+          // 데이터 파싱:  Response 파싱 DB 저장
+
+          /** 1. 기업 채용 일정 파싱 */
+          // 필터별 기업 채용 일정 개수 계산
+          const documentItems = responseRecruitments.data.filter(item => item.filter === filterState.START || filterState.FINISH || filterState.WRITTEN); // "서류"
+          const interviewItems = responseRecruitments.data.filter(item => item.filter === filterState.INTERVIEW); // "면접"
+          const otherItems = responseRecruitments.data.filter(item => item.filter === filterState.OTHER); // 기타 일정
+          
+          // 필더별 기업 채용 일정 개수 저장
           setDocumentCount(documentItems.length);
           setInterviewCount(interviewItems.length);
           setOtherCount(otherItems.length);
 
+
+          /** 2. 개인 일정 개수 파싱 */
+          
 
         } catch (error) {
           console.error('월별 채용 일정을 불러오는 중 오류가 발생했습니다:', error);
@@ -143,7 +209,9 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           setLoading(false); // 로딩 상태 종료
         }
       };
-      fetchCompanyRecruitmentList();
+
+      
+      fetchAllCalendarScheduleList();
     }
 
   // userId 또는 selecetedDate 또는 currentDate 값이 바뀔 때마다
@@ -151,18 +219,126 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   }, [userId, selectedDate, currentDate]);
 
 
-  /** 특정 날짜의 기업 채용 일정 데이터를 가져오는 함수 */
-  const getRecruitmentsSchedulesForDate = (date: Date) => {
-    return recruitmentsDataList.filter((data) => {
-      const dataDate = new Date(data.date); // data.date는 'YYYY-MM-DD' 형식의 문자열이므로 Date 객체로 변환
 
+  /** API 연동 정보를 부모에게 반환 
+   * 부모 컴포넌트로 선택된 날짜 및 스케줄 칩스를 전달하는 함수
+   *  선택된 날짜에 대한 스케줄 정보를 TodoList Chips로 반환하는 함수
+   */
+  /* Method1. 투두 칩 반환 함수 */
+  const handleDateSelect = (date: Date) => {
+    // 캘린더 기존 UI 훅 업뎃
+    handleDateClick(date);
+
+    // 연동받은 기업 일정 정보
+    const recruitmentsSchedulesForDate = getRecruitmentsSchedulesForDate(date);
+
+    // 연동받은 개인 일정 정보
+    const personalSchedulesForDate = getPersonalWorksForDate(date);
+
+
+    // 기업 일정 칩스 생성
+    // recruitmentsData:  위에서 response 받고 저장한 데이터
+    const recruitmentScheduleChips = recruitmentsSchedulesForDate.map((recruitmentsData) => {
+      // 서류 칩
+      const documentStatus = recruitmentsData.filter === filterState.START? "시작":
+                             recruitmentsData.filter === filterState.FINISH? "마감": "";
+
+      const documentScheduleChip =
+        <DocumentScheduleChip
+          key={recruitmentsData.scheduleId}
+          companyName={recruitmentsData.companyName}
+          status={documentStatus}
+        />;
+      
+      // 면접 칩
+      const interviewScheduleChip =
+        <InterviewScheduleChip
+          key={recruitmentsData.scheduleId}
+          companyName={recruitmentsData.companyName}
+        />;
+      
+      // 기타 칩
+      const otherScheduleChip =
+        <OtherScheduleChip
+          key={recruitmentsData.scheduleId}
+          companyName={recruitmentsData.companyName}
+          contents=""
+        />;
+      
+
+      // 일정 종류에 맞는 칩을 반환
       return (
-        dataDate.getFullYear() === date.getFullYear() &&
-        dataDate.getMonth() === date.getMonth() &&
-        dataDate.getDate() === date.getDate()
+        recruitmentsData.filter === filterState.INTERVIEW ? interviewScheduleChip :
+        recruitmentsData.filter === filterState.OTHER ? otherScheduleChip :
+        documentScheduleChip
       );
     });
+
+
+    
+    // 개인 일정 칩스 생성
+    // personalScheduleData:  위에서 response 받고 저장한 데이터
+    const personalScheduleChips = personalSchedulesForDate.map((personalScheduleData) => (
+      <>
+      {/* 디버깅 완료
+      {console.log(personalScheduleData)}
+      {console.log('믜야!!')}
+      */}
+      <PersonalScheduleChip key={personalScheduleData.personalScheduleId} contents={personalScheduleData.content} />
+      </>
+    ));
+
+    
+    
+    // 부모 컴포넌트로 선택된 날짜와 칩스 전달  (칩스에는 선택된 날짜에 대한 일정 정보가 명시됨)
+    onDateSelected(date, recruitmentScheduleChips, personalScheduleChips);
   };
+  
+  // 현재 선택된 날짜에 대한 스케줄 정보를 Calendar Chips로 반환하는 함수
+  /* Method2. 캘린더 칩 반환 함수 */
+  /*
+  const handleDateSelect = (date: Date) => {
+    // 캘린더 기존 UI 훅 업뎃
+    handleDateClick(date);
+    const recruitmentsSchedulesForDate = getRecruitmentsSchedulesForDate(date);
+
+    const recruitmentScheduleChips = recruitmentsSchedulesForDate.map((recruitmentsData) => {
+      // 서류 칩스
+      const documentScheduleChip =
+        <DefaultDocumentChip
+          key={recruitmentsData.scheduleId}
+          companyName={recruitmentsData.companyName}
+          filter={recruitmentsData.filter}
+        />;
+      
+      // 면접 칩스
+      const interviewScheduleChip =
+        <DefaultInterviewChip
+          key={recruitmentsData.scheduleId}
+          companyName={recruitmentsData.companyName}
+        />;
+      
+      // 기타 칩스
+      const otherScheduleChip =
+        <DefaultOtherChip
+          key={recruitmentsData.scheduleId}
+          companyName={recruitmentsData.companyName}
+        />;
+      
+
+      // 일정 종류에 맞는 칩을 반환
+      return (
+        recruitmentsData.filter === filterState.INTERVIEW ? interviewScheduleChip :
+        recruitmentsData.filter === filterState.OTHER ? otherScheduleChip :
+        documentScheduleChip
+      );
+    });
+    
+    
+    // 부모 컴포넌트로 선택된 날짜와 그에 대한 일정 칩스를 전달하는 함수 호출
+    onDateSelected(date, recruitmentScheduleChips);
+  };
+  */
 
 
   /**---------------------------------------------------*/
@@ -199,16 +375,6 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
         <button onClick={handleNextMonth} className="px-4">
           <img src={nextButtonIcon} alt="다음 달" />
         </button>
-
-        {/* 네모 박스 
-        
-        
-        //enum('START','FINISH','WRITTEN','INTERVIEW','OTHER')
-  //띄워서 굳이 안 그래도 괜찮았는디 시、 끝、 면、 기 이렇게 오는군。。。 처리 완료¡
-
-  
-        */}
-
 
         {/* 캘린더 상태 보더: 필터별 일정 개수 표시  */}
         <div className="font-regular mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-secondary-100 text-xxsmall11 text-secondary-0" />
@@ -322,7 +488,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           // 각 날짜 셀에 대한 기업 일정만 가져오기
           const recruitmentsSchedulesForDate = getRecruitmentsSchedulesForDate(date);
 
-          {/** 기업 일정 칩스 추가:  API 연동 부분 */}
+          {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
           const companySchedules = recruitmentsSchedulesForDate.map((recruitmentsData) => {
             // 서류 칩스
             const documentScheduleChip = 
@@ -330,23 +496,23 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               isSelected ?
               <ClickedDocumentChip 
                 key={recruitmentsData.scheduleId}
+                filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
-                filter={recruitmentsData.filter} 
               />
               :
               // 셀 호버 상태
               isHovered?
               <HoveredDocumentChip 
                 key={recruitmentsData.scheduleId}
+                filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
-                filter={recruitmentsData.filter} 
               /> 
               :
               // 셀 기본 상태
               <DefaultDocumentChip
                 key={recruitmentsData.scheduleId}
+                filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName}
-                filter={recruitmentsData.filter} 
               />
             
             // 면접 칩스
@@ -409,9 +575,50 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               documentScheduleChip
             );
           });
+
+          
+          
+          // 현재 보이는 월의 전체 개인 일정 중에서
+          // 각 날짜 셀에 대한 개인 일정만 가져오기
+          const personalSchedulesForDate = getPersonalWorksForDate(date);
+
+          {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
+          const personalSchedules = personalSchedulesForDate.map((personalScheduleForDate) => {
+            // 개인 일정칩스
+            const personalScheduleChip = 
+              // 셀 선택 상태
+              isSelected ?
+              <ClickedPersonalChip
+                key={personalScheduleForDate.personalScheduleId}
+                personalSchedule={personalScheduleForDate.content}
+              />
+              :
+              // 셀 호버 상태
+              isHovered?
+              <HoveredPersonalChip
+                key={personalScheduleForDate.personalScheduleId}
+                personalSchedule={personalScheduleForDate.content}
+              /> 
+              :
+              // 셀 기본 상태
+              <DefaultPersonalChip
+                key={personalScheduleForDate.personalScheduleId}
+                personalSchedule={personalScheduleForDate.content}
+              />
+
+            return (
+              // 개인 일정 칩 반환
+              personalScheduleChip
+            );
+          });
+
+          
+          {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 개인 일정 칩스 추가 */}
+
+
                   
           {
-            /** 일단 임시로 15일이면 칩 추가함. */
+            /** 임시로 매월 15일마다 칩을 추가한 코드 */
           }
           { /**
           const companySchedules = isFifteenth ? (
@@ -448,6 +655,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               {companySchedules}
 
               {/** 개인 일정 칩스 출력 */}
+              {personalSchedules}
             </div>
           );
         })}

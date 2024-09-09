@@ -14,7 +14,7 @@ interface CompanyContentsProps {
 }
 interface PersonalChipProps {
   contents: string;
-  onDelete: () => void; // 부모로부터 전달받는 삭제 핸들러
+  //onDelete: () => void; // 부모로부터 전달받는 삭제 핸들러
 }
 
 export const CompanyNameChip = ({ companyName }: CompanyNameProps) => {
@@ -45,13 +45,13 @@ export const DocumentScheduleChip = ({
   status,
 }: CompanyStatusProps) => {
   return (
-    <div className="inline-flex h-[40px] items-center justify-center">
+    <div className="inline-flex h-[40px] items-center justify-center ">
       {/* 왼쪽 영역 */}
       {/* 줄무늬 */}
       <div className="flex h-full w-[6px] items-center justify-center rounded-l-xs bg-secondary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full min-w-[80px] items-center justify-start rounded-r-xs bg-secondary-10 px-[10px]">
+      <div className="flex h-full items-center justify-start rounded-r-xs bg-secondary-10 px-[10px]">
         {/* 내용 */}
         <div className="mr-[12px] flex items-center justify-center text-xsmall14 font-semibold tracking-[-0.21px] text-secondary-100">
           {companyName} 서류 {status}
@@ -96,7 +96,7 @@ export const OtherScheduleChip = ({
       <div className="flex h-full min-w-[80px] items-center justify-start rounded-r-xs bg-teritory-light px-[10px]">
         {/* 내용 */}
         <div className="mr-[12px] flex items-center justify-center text-xsmall14 font-semibold tracking-[-0.21px] text-teritory-normal">
-          {companyName} {contents}
+          {companyName} {contents==""? "기타" : contents}
         </div>
       </div>
     </div>
@@ -106,7 +106,7 @@ export const OtherScheduleChip = ({
 // 개인 스케줄
 export const PersonalScheduleChip = ({
   contents,
-  onDelete,
+  //onDelete,
 }: PersonalChipProps) => {
   return (
     <div className="inline-flex h-[40px] items-center justify-start rounded-xs bg-neutral-90">
@@ -126,7 +126,7 @@ export const PersonalScheduleChip = ({
         {/* 마이너스 버튼 */}
         <img
           src={deletionButtonIcon}
-          onClick={onDelete}
+          //onClick={onDelete}
           alt="Delete"
           className="cursor-pointer px-[10px]"
         />

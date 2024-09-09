@@ -25,6 +25,10 @@ import checkRoundedSquareBlankedIcon from "../../../shared/assets/checkRoundedSq
 import checkRoundedSquareCheckedIcon from "../../../shared/assets/checkRoundedSquareChecked.png";
 
 
+/* 일정 추가 버튼 디자인 컴포넌트 */
+// 개인 스케줄 추가 버튼 임포트
+import { ScheduleButton } from "./ScheduleButton.tsx"
+
 /** Probs 인터페이스 */
 /*
 // 1) 로그인 정보 Probs
@@ -178,38 +182,20 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
     return (
         /* 컴포넌트 전체 윤곽 컨테이너 스타일 */
         <div>
-        {/*<div className="font-sans rounded-lg border border-neutral-80 w-[247px]"> {/* width를 360px로 고정함. w-[360px] 삭제하면 반응형으로 됨 */}
-            {/* 첫 번째 헤더 파트 */}
-            <div className="flex items-center justify-center mb-4 py-5">
-                {/* 이전달 이동 버튼 */}
-                {/* 월 이동 버튼 */}
-                <button onClick={handlePrevDay} className="px-4">
-                    <img src={prevButtonIcon} alt='이전 달'/>
-                </button>
-
-                {/* 날짜 출력: 년도.월.일 */}
-                {/* 선택된 날짜가 있으면 선택된 날짜 관련 데이터: selectedDate */}
-                {/* 선택된 날짜가 없으면 오늘 날짜 관련 데이터:  (new Date) */}
-                <div className="text-lg font-bold text-neutral-30">
-                    {selectedDate ? getFormattedDate2(selectedDate) : getFormattedDate2(new Date())}
-                </div>
-                
-                {/* 다음달 이동 버튼 */}
-                <button onClick={handleNextDay} className="px-4">
-                    <img src={nextButtonIcon} alt='다음 달'/>
-                </button>
-            </div>
-            
-
             {/* 두 번째 헤더 파트 */}
-            <div>   
-              {/* 완료되지 않은 할 일 수를 출력 */}
-              {/*
-              <h1 className="text-xsmall16 font-semibold text-neutral-30">완료되지 않은 할 일: {incompleteTodosCount}</h1>
-              */}
-              <h1 className="text-xsmall16 font-semibold text-neutral-30">아직 {incompleteTodosCount}건의 TODO가 남았어요</h1>
+            <div>
+              
+              {/* 타이틀 */}
+              {/* TODO 개수가 1개 이상이면 완료되지 않은 할 일 개수를 렌더링 */}
+              {
+                incompleteTodosCount > 0 ? (
+                  <div className="font-semibold text-small18 text-neutral-30 py-3">
+                    아직 {incompleteTodosCount}건의 TODO가 남았어요
+                  </div>
+                ): ""
+              }
 
-              {/* 회사별 일정 리스트 */}     
+              {/* 회사별 일정 리스트 */}
               {companyTodoList.length > 0 ? (
                 companyTodoList.map((companyTodo) => (
                   <div key={companyTodo.companyName} className="py-3">
@@ -238,29 +224,36 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
                             />
                             {/* 할 일 내용 */}
                             <div className="px-2 font-medium text-xsmall14 text-neutral-40">
-                              {todo.content}💗
+                              {todo.content}
                             </div>
-                          
-                            {/* 날짜 출력 */}
-                            {/*
-                            <div>
-                              <small>{new Date(todo.date).toLocaleDateString()}</small>
-                            </div>
-                            */}
                           </div>
 
-                          {/* 구분선 출력: 기업별로 분리 */}
+                          {/* 구분선 출력: 기업별로 분리
                           <hr className="mt-4 p-1" />
-
+                           */}
                         </li>
                       ))}
                     </ul>
-
                   </div>
           ))
         ) : (
-          <div>등록된 일정이 없습니다.</div>
+          <div className="rounded-sm bg-neutral-100 text-xsmall16 text-neutral-40 p-4">
+            {getFormattedDate1(selectedDate)}에는 등록된 투두 리스트가 없어요!
+          </div>
         )}
+
+        
+                    
+        {/* 구분선 출력 */}
+        <hr className="mt-4 p-1" />
+
+        {/* 투두리스트 추가하기 */}
+        <div className="justify-between items-center text-center mb-5">
+            {/* 추가하기 버튼 */}
+            <button >
+                <ScheduleButton contents='투두리스트 추가하기' />
+            </button>
+        </div>
       </div>
     </div>
   );
