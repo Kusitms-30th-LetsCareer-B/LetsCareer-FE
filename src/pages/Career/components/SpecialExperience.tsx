@@ -39,7 +39,7 @@ function SpecialExperience() {
               content="님이 이룬 가장 큰 성취/도전 경험이나 실패 경험에 대해 작성해보세요."
               guide="무엇을 달성하기 위해, 구체적으로 어떻게 노력을 했으며, 성공/실패 경험이 자신에게 어떤 영향을 주었는지 구체적으로 적어주세요."
             />
-            <ExperienceSection title="성공/도전 경험" data={experienceData.success} />
+            <ExperienceSection data={experienceData.success} experienceType="성공" />
         </div>
         </div>
         <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
@@ -50,7 +50,7 @@ function SpecialExperience() {
               content="님이 지원할 직무/분야에 대한 핵심역량을 위해 한 노력과 열정에 대하여 작성해보세요."
               guide="지원 분야를 위해 노력한 점(전공, 직무 관련 경험)과 이를 통해 확보된 역량을 프로젝트명, 담당 업무, 기간, 역할등을 포함해 구체적으로 적어보세요. "
             />
-            <ExperienceSection title="직무 경험" data={experienceData.job} />
+            <ExperienceSection data={experienceData.job} experienceType="직무"/>
         </div>
         </div>
         <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
@@ -61,17 +61,16 @@ function SpecialExperience() {
               content="민지님이 공동의 목표를 달성하기 위해 다른 사람들과 힘을 합쳐 노력했던 경험에 대해 작성해보세요."
               guide="팀 내에서 자신이 수행한 역할,어떤 점을 배웠는지, 협업 과정 중 갈등 상황, 소통 방법등 기억에 남는 에피소드를 중심으로 구체적으로 작성해보세요."
             />
-            <ExperienceSection title="협업 경험" data={experienceData.collaboration} />
+            <ExperienceSection data={experienceData.collaboration} experienceType="협업" />
           </div>
         </div>
       </div>
   );
 }
 
-function ExperienceSection({ title, data }) {
+function ExperienceSection({ data, experienceType }) {
     const [state, setState] = useState([]);
 
-    // 데이터가 업데이트될 때마다 상태를 동기화
     useEffect(() => {
       setState(Array(data.length).fill('hide'));
     }, [data]);
@@ -81,6 +80,20 @@ function ExperienceSection({ title, data }) {
         prevState.map((item, i) => (i === index ? newState : item)) // 클릭한 항목만 상태를 변경
       );
     };
+
+    const handleUpdate = async (specialSkillId, title, content) => {
+        try {
+          await axios.patch(`${BASE_URL}/careers/special-skills?specialSkillId=${specialSkillId}`, {
+            experienceType,
+            title,
+            content,
+          });
+          alert('수정이 완료되었습니다.');
+        } catch (error) {
+          console.error('Error updating special skill:', error);
+          alert('수정 중 오류가 발생했습니다.');
+        }
+      };
   
     return (
       <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
@@ -107,6 +120,7 @@ function ExperienceSection({ title, data }) {
                   key={item.id}
                   title={item.title}
                   content={item.content}
+                  onSave={(newTitle, newContent) => handleUpdate(item.id, newTitle, newContent)} 
                 />
               )
             ))
