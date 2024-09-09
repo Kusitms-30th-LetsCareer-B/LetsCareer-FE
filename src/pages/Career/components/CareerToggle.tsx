@@ -1,4 +1,7 @@
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
+
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 interface HideAnswerToggleProps {
   title: string;
@@ -33,12 +36,25 @@ export const HideAnswerToggle = ({ title, onToggle }: HideAnswerToggleProps) => 
 interface ShowAnswerToggleProps {
   title: string;
   content: string;
+  skillId: string; 
   onToggle: () => void;  
   onUpdate: () => void;  
+  onDeleteSuccess: () => void; 
 }
 
-export const ShowAnswerToggle = ({ title, content, onToggle, onUpdate }: ShowAnswerToggleProps) => {
-  return (
+export const ShowAnswerToggle = ({ title, content, skillId, onToggle, onUpdate, onDeleteSuccess }: ShowAnswerToggleProps) => {
+    const handleDelete = async () => {
+        try {
+          await axios.delete(`${BASE_URL}/careers/special-skills?skillId=${skillId}`);
+          alert("필살기 경험이 성공적으로 삭제되었습니다.");
+          onDeleteSuccess(); // 삭제 성공 후 콜백 호출 (데이터 갱신)
+        } catch (error) {
+          console.error("삭제 중 오류가 발생했습니다.", error);
+          alert("삭제 중 오류가 발생했습니다.");
+        }
+      };
+  
+    return (
     <div className="flex w-full flex-col rounded-b-md bg-neutral-100">
       <div className="flex h-[56px] items-center gap-[12px] rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[14px]">
         <svg
@@ -69,7 +85,7 @@ export const ShowAnswerToggle = ({ title, content, onToggle, onUpdate }: ShowAns
           </span>
         </div>
         <div className="flex items-center gap-[13px] self-stretch">
-          <button className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-neutral-90 px-[20px] py-[12px]">
+          <button onClick={handleDelete} className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-neutral-90 px-[20px] py-[12px]">
             <span className="text-small18 font-medium tracking-[-0.022px] text-neutral-45">
               삭제하기
             </span>

@@ -88,8 +88,8 @@ function ExperienceSection({ data, experienceType, showNewAnswer, userId }) {
     const [state, setState] = useState([]);
 
     useEffect(() => {
-      setState(Array(data.length).fill('hide'));
-    }, [data]);
+        setState(Array(data.length).fill('hide'));
+      }, [data]);
   
     const toggleView = (index, newState) => {
       setState((prevState) =>
@@ -114,6 +114,10 @@ function ExperienceSection({ data, experienceType, showNewAnswer, userId }) {
       const handleSaveSuccess = () => {
         window.scrollTo(0, 0);
       };
+
+      const handleDeleteSuccess = () => {
+        window.scrollTo(0, 0);
+      };
   
     return (
       <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
@@ -130,10 +134,12 @@ function ExperienceSection({ data, experienceType, showNewAnswer, userId }) {
               ) : state[index] === 'show' ? (
                 <ShowAnswerToggle
                   key={item.id}
+                  skillId={item.id}
                   title={item.title}
                   content={item.content}
                   onToggle={() => toggleView(index, 'hide')}  // 상태를 'hide'로 전환
                   onUpdate={() => toggleView(index, 'update')} // 상태를 'update'로 전환
+                  onDeleteSuccess={() => handleDeleteSuccess}
                 />
               ) : (
                 <UpdateAnswerToggle
