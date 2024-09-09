@@ -1,6 +1,3 @@
-import { useRef } from "react";
-import { ChangeLetterNumberButton } from "../Buttons/SelfIntroduceButton";
-
 interface AnswerTextProps {
   input: number;
   limit: number;
@@ -85,41 +82,6 @@ export const TextFilter = () => {
   );
 };
 
-export const QuestionTextField = () => {
-  const textarea = useRef<HTMLTextAreaElement>(null);
-
-  const handleResizeHeight = () => {
-    if (textarea.current) {
-      textarea.current.style.height = "auto";
-      textarea.current.style.height = textarea.current.scrollHeight + "px";
-    }
-  };
-
-  return (
-    <textarea
-      ref={textarea}
-      placeholder="질문을 입력하세요"
-      className="mb-[16px] flex w-[699px] resize-none items-center overflow-hidden rounded-sm border border-neutral-80 bg-primary-10 px-[20px] py-[14px] text-xsmall16 font-normal tracking-[-0.096px] text-neutral-30 placeholder:text-primary"
-      rows={1}
-      onChange={handleResizeHeight}
-    />
-  );
-};
-
-export const AnswerTextField = ({ input, limit }: AnswerTextProps) => {
-  return (
-    <div className="flex h-[362px] w-[699px] flex-col rounded-sm border border-neutral-80 bg-static-100 px-[20px] pb-[16px] pt-[14px]">
-      <textarea
-        placeholder="답변을 입력하세요"
-        className="mb-[16px] w-[657px] flex-grow resize-none bg-static-100 text-xsmall16 font-normal tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45 focus:outline-none"
-      />
-      <div className="flex justify-end">
-        <TextCounter input={input} limit={limit} />
-        <ChangeLetterNumberButton />
-      </div>
-    </div>
-  );
-};
 
 export const AboutExperience = ({ experience }: ExperienceProps) => {
   return (

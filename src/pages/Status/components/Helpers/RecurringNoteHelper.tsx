@@ -12,10 +12,9 @@ import {
   ButtonGroup2,
   InterviewDeleteButton,
 } from "../Buttons/RecurringNoteButton";
-import { SelfIntroductionQuestions } from "../Pagination/RecurringNotePagination";
-import { Pagination } from "../Pagination/SelfIntroducePagination";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { InterviewQuestions } from "../Pagination/RecurringNotePagination";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -578,7 +577,7 @@ export const DocumentRecurringNoteRightPart = ({
       </span>
       <div className="mb-[20px] flex flex-shrink-0 flex-col items-start self-stretch rounded-md">
         <div className="mb-[16px] flex items-center">
-          <SelfIntroductionQuestions
+          <InterviewQuestions
             questions={questions}
             selectedQuestion={selectedQuestion} // 현재 선택된 질문
             onQuestionClick={handleQuestionClick} // 질문 클릭 시 처리
@@ -895,7 +894,7 @@ export const InterviewRecurringNoteRightPart = ({
         <div className="flex items-center justify-between self-stretch">
           <div className="flex items-center">
             {/* 질문 리스트 컴포넌트 */}
-            <SelfIntroductionQuestions
+            <InterviewQuestions
               questions={interviewQuestions.map((_, index) => `${index + 1}`)} // 질문 번호
               selectedQuestion={selectedQuestion} // 현재 선택된 질문
               onQuestionClick={(index) => setSelectedQuestion(index)} // 질문 클릭 시 처리

@@ -39,18 +39,6 @@ export const SelectExperienceDeepButton = ({ experience }: ExperienceProps) => {
 };
 
 
-export const SelfIntroduceSaveButton = () => {
-  return (
-    <button className="flex h-[36px] w-[123px] items-center justify-center rounded-sm bg-primary px-[32px] py-[6px]">
-      <div className="text-center text-xsmall16 font-medium tracking-[-0.096px] text-static-100">
-        저장하기
-      </div>
-    </button>
-  );
-};
-
-
-
 export const ChangeLetterNumberButton = () => {
   return (
     <button className="flex h-[30px] w-[76px] items-center justify-center rounded-xxs border border-neutral-80 bg-static-100 px-[10px] py-[6px]">
