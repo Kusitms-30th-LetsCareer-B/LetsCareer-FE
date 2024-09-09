@@ -14,8 +14,19 @@ function SpecialExperience() {
       });
     const [loading, setLoading] = useState(true);
     const [showNewAnswer, setShowNewAnswer] = useState(false);
+    const [selectedTab, setSelectedTab] = useState("experience"); 
 
     useEffect(() => {
+        // 페이지 로드 시 localStorage에서 마지막 선택된 탭을 불러오기
+        const savedTab = localStorage.getItem("selectedTab");
+        if (savedTab) {
+          setSelectedTab(savedTab); // 저장된 탭을 불러옴
+        }
+        fetchExperienceData();
+      }, []);
+    
+      const fetchExperienceData = () => {
+        setLoading(true);
         axios
           .get(`${BASE_URL}/careers/special-skills?userId=1`)
           .then((response) => {
@@ -28,8 +39,21 @@ function SpecialExperience() {
           .finally(() => {
             setLoading(false);
           });
-      }, []);
+      };
 
+
+      const handleSaveSuccess = () => {
+        localStorage.setItem("selectedTab", selectedTab);
+        window.scrollTo(0, 0);
+        window.location.reload(); // 새로고침
+      };
+
+      const handleDeleteSuccess = () => {
+        localStorage.setItem("selectedTab", selectedTab);
+        window.scrollTo(0, 0);
+        window.location.reload(); // 새로고침
+      };
+    
       const addNewAnswer = () => {
         setShowNewAnswer(true);
       };
@@ -53,7 +77,8 @@ function SpecialExperience() {
               guide="무엇을 달성하기 위해, 구체적으로 어떻게 노력을 했으며, 성공/실패 경험이 자신에게 어떤 영향을 주었는지 구체적으로 적어주세요."
               onAddNew={addNewAnswer}
             />
-            <ExperienceSection data={experienceData.success} experienceType="성공" showNewAnswer={showNewAnswer} userId={1} />
+            <ExperienceSection data={experienceData.success} experienceType="성공" showNewAnswer={showNewAnswer} userId={1} onSaveSuccess={handleSaveSuccess} onDeleteSuccess={handleDeleteSuccess} 
+            />
         </div>
         </div>
         <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
@@ -65,7 +90,8 @@ function SpecialExperience() {
               guide="지원 분야를 위해 노력한 점(전공, 직무 관련 경험)과 이를 통해 확보된 역량을 프로젝트명, 담당 업무, 기간, 역할등을 포함해 구체적으로 적어보세요. "
               onAddNew={addNewAnswer}
             />
-            <ExperienceSection data={experienceData.job} experienceType="직무" showNewAnswer={showNewAnswer} userId={1}/>
+            <ExperienceSection data={experienceData.job} experienceType="직무" showNewAnswer={showNewAnswer} userId={1} onSaveSuccess={handleSaveSuccess} onDeleteSuccess={handleDeleteSuccess} 
+            />
         </div>
         </div>
         <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
@@ -77,14 +103,15 @@ function SpecialExperience() {
               guide="팀 내에서 자신이 수행한 역할,어떤 점을 배웠는지, 협업 과정 중 갈등 상황, 소통 방법등 기억에 남는 에피소드를 중심으로 구체적으로 작성해보세요."
               onAddNew={addNewAnswer}
             />
-            <ExperienceSection data={experienceData.collaboration} experienceType="협업" showNewAnswer={showNewAnswer} userId={1}/>
+            <ExperienceSection data={experienceData.collaboration} experienceType="협업" showNewAnswer={showNewAnswer} userId={1} onSaveSuccess={handleSaveSuccess} onDeleteSuccess={handleDeleteSuccess} 
+            />
           </div>
         </div>
       </div>
   );
 }
 
-function ExperienceSection({ data, experienceType, showNewAnswer, userId }) {
+function ExperienceSection({ data, experienceType, showNewAnswer, userId, onSaveSuccess, onDeleteSuccess }) {
     const [state, setState] = useState([]);
 
     useEffect(() => {
@@ -110,14 +137,6 @@ function ExperienceSection({ data, experienceType, showNewAnswer, userId }) {
           alert('수정 중 오류가 발생했습니다.');
         }
       };
-
-      const handleSaveSuccess = () => {
-        window.scrollTo(0, 0);
-      };
-
-      const handleDeleteSuccess = () => {
-        window.scrollTo(0, 0);
-      };
   
     return (
       <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
@@ -139,7 +158,7 @@ function ExperienceSection({ data, experienceType, showNewAnswer, userId }) {
                   content={item.content}
                   onToggle={() => toggleView(index, 'hide')}  // 상태를 'hide'로 전환
                   onUpdate={() => toggleView(index, 'update')} // 상태를 'update'로 전환
-                  onDeleteSuccess={() => handleDeleteSuccess}
+                  onDeleteSuccess={onDeleteSuccess}
                 />
               ) : (
                 <UpdateAnswerToggle
@@ -151,9 +170,9 @@ function ExperienceSection({ data, experienceType, showNewAnswer, userId }) {
               )
             ))
           ) : (
-            showNewAnswer ? null : <CareerAnswer experienceType={experienceType} userId={userId} onSaveSuccess={handleSaveSuccess} />
+            showNewAnswer ? null : <CareerAnswer experienceType={experienceType} userId={userId} onSaveSuccess={onSaveSuccess} />
         )}
-          {showNewAnswer && <CareerAnswer experienceType={experienceType} userId={userId} onSaveSuccess={handleSaveSuccess} /> }
+          {showNewAnswer && <CareerAnswer experienceType={experienceType} userId={userId} onSaveSuccess={onSaveSuccess} /> }
         </div>
       </div>
     );
