@@ -1,17 +1,35 @@
+import { useEffect, useState } from "react";
 import { CareerHeader } from "./CareerHeader";
 import { CareerAnswer, CareerQuestion } from "./CareerQuestion";
 import { HideAnswerToggle, ShowAnswerToggle, UpdateAnswerToggle } from "./CareerToggle";
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 function SpecialExperience() {
-  return (
-    <div className="mb-[70px] ml-[48px] mt-[40px] flex w-full flex-col gap-[40px]">
-      <div className="flex flex-col items-start gap-[6px]">
-        <CareerHeader name="오민지" />
-        <span className="self-stretch text-xsmall16 font-medium tracking-[-0.096px] text-neutral-50">
-          필살기 경험을 정리해보세요! 저장된 내용은 기업별 자기소개서 작성 시
-          불러올 수 있어요
-        </span>
-      </div>
+    const [experienceData, setExperienceData] = useState({
+        success: [],
+        job: [],
+        collaboration: [],
+      });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        axios
+          .get(`${BASE_URL}/careers/special-skills?userId=1`)
+          .then((response) => {
+            const { success, job, collaboration } = response.data.data;
+            setExperienceData({ success, job, collaboration });
+          })
+          .catch((error) => {
+            console.error("Error fetching data: ", error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }, []);
+      
+    return (
       <div className="inline-flex flex-col items-start gap-[60px]">
         <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
           <div className="flex w-full flex-col items-start gap-[24px]">
@@ -21,8 +39,8 @@ function SpecialExperience() {
               content="님이 이룬 가장 큰 성취/도전 경험이나 실패 경험에 대해 작성해보세요."
               guide="무엇을 달성하기 위해, 구체적으로 어떻게 노력을 했으며, 성공/실패 경험이 자신에게 어떤 영향을 주었는지 구체적으로 적어주세요."
             />
-            <CareerAnswer />
-          </div>
+            <ExperienceSection title="성공/도전 경험" data={experienceData.success} />
+        </div>
         </div>
         <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
           <div className="flex w-full flex-col items-start gap-[24px]">
@@ -32,8 +50,8 @@ function SpecialExperience() {
               content="님이 지원할 직무/분야에 대한 핵심역량을 위해 한 노력과 열정에 대하여 작성해보세요."
               guide="지원 분야를 위해 노력한 점(전공, 직무 관련 경험)과 이를 통해 확보된 역량을 프로젝트명, 담당 업무, 기간, 역할등을 포함해 구체적으로 적어보세요. "
             />
-            <CareerAnswer />
-          </div>
+            <ExperienceSection title="직무 경험" data={experienceData.job} />
+        </div>
         </div>
         <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
           <div className="flex w-full flex-col items-start gap-[24px]">
@@ -43,15 +61,49 @@ function SpecialExperience() {
               content="민지님이 공동의 목표를 달성하기 위해 다른 사람들과 힘을 합쳐 노력했던 경험에 대해 작성해보세요."
               guide="팀 내에서 자신이 수행한 역할,어떤 점을 배웠는지, 협업 과정 중 갈등 상황, 소통 방법등 기억에 남는 에피소드를 중심으로 구체적으로 작성해보세요."
             />
-            <CareerAnswer />
-            <UpdateAnswerToggle title="협업 경험" content="민지님이 공동의 목표를 달성하기 위해 다른 사람들과 힘을 합쳐 노력했던 경험에 대해 작성해보세요."
-            />
-            <ShowAnswerToggle title="협업 경험" content="민지님이 공동의 목표를 달성하기 위해 다른 사람들과 힘을 합쳐 노력했던 경험에 대해 작성해보세요."/>
+            <ExperienceSection title="협업 경험" data={experienceData.collaboration} />
           </div>
         </div>
       </div>
-    </div>
   );
 }
+
+function ExperienceSection({ title, data }) {
+    const [isHidden, setIsHidden] = useState(Array(data.length).fill(true));
+
+    const toggleView = (index) => {
+        setIsHidden((prevState) =>
+          prevState.map((item, i) => (i === index ? !item : item))
+        );
+      };
+      
+    return (
+        <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
+        <div className="flex w-full flex-col items-start gap-[24px]">
+          {data.length > 0 ? (
+            data.map((item, index) => (
+              isHidden[index] ? (
+                <HideAnswerToggle
+                  key={item.id}
+                  title={item.title}
+                  content={item.content}
+                  onToggle={() => toggleView(index)}
+                />
+              ) : (
+                <ShowAnswerToggle
+                  key={item.id}
+                  title={item.title}
+                  content={item.content}
+                  onToggle={() => toggleView(index)}
+                />
+              )
+            ))
+          ) : (
+            <CareerAnswer />
+          )}
+        </div>
+      </div>
+    );
+  }
 
 export default SpecialExperience;
