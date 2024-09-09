@@ -25,10 +25,8 @@ import {
   ClickedPersonalChip,
 } from "./chips/CalendarChip";
 
-
 /* Date 관련 hook 임포트 */
 import { getYearMonthDay, getStringYear, getStringMonth, getFormattedDate3 } from "../shared/hooks/useDate.ts";
-
 
 /** API 연동 관련 이벤트 */
 import { getResponseCalendarMonthRecruitmentsList } from '../pages/Calendar/api/calendarMonthRecruitmentsApiService.ts';
@@ -279,6 +277,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
             date &&
             date.getDay() === 0 &&
             date.getMonth() === currentDate.getMonth(); // 이번 달 일요일만 가져오기
+            
           const isNextMonth = date && date.getMonth() > currentDate.getMonth();
           const isFifteenth = date && date.getDate() === 15; // 15일인지 확인
 

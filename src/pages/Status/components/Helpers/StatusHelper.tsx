@@ -131,6 +131,7 @@ export const FailedStatus = ({ name, recruitmentId }: RecurringNoteProps) => {
   );
 };
 
+
 export const SuccessStatus = ({ recruitmentId }: RecurringNoteProps2) => {
   const navigate = useNavigate();
 
@@ -171,6 +172,7 @@ export const SuccessStatus = ({ recruitmentId }: RecurringNoteProps2) => {
     </div>
   );
 };
+
 
 export const DetailOnGoingStatus = ({
   name,
@@ -297,6 +299,7 @@ export const DetailSuccessStatus = ({
   );
 };
 
+
 export const DetailFailedStatus = ({
   name,
   company,
@@ -365,6 +368,7 @@ export const DetailFailedStatus = ({
     </div>
   );
 };
+
 
 export const ProgressCard = ({ name, endDate }: CardProps) => {
   return (
@@ -610,6 +614,7 @@ interface TodoCheckboxProps {
   onChange: () => void;
 }
 
+
 export const TodoCheckbox: React.FC<TodoCheckboxProps> = ({
   checked,
   onChange,
@@ -758,6 +763,7 @@ export const CreateTodo = () => {
   );
 };
 
+
 export const CreateRoutine = ({ onClose }: { onClose: () => void }) => {
   const [routineName, setRoutineName] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -868,6 +874,7 @@ export const CreateRoutine = ({ onClose }: { onClose: () => void }) => {
             <div className="flex items-center gap-[8px]">
               <button
                 className={`flex w-[94px] items-center justify-center rounded-sm border border-neutral-80 bg-neutral-100 px-[10px] py-[8px] ${
+
                   frequency === "매일" ? "border-primary text-primary" : ""
                 }`}
                 onClick={() => handleFrequencyChange("매일")}

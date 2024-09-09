@@ -17,6 +17,7 @@ export const StatusDeleteButton: React.FC<StatusDeleteButtonProps> = ({
       className="flex h-[36px] cursor-pointer items-center justify-center gap-[10px] rounded-sm border border-neutral-80 bg-neutral-100 px-[20px] py-[12px]"
       onClick={toggleDeleteMode}
     >
+
       <span className="text-center text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
         목록 삭제
       </span>
