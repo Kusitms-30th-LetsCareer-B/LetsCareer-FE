@@ -202,13 +202,7 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
             
 
             {/* 두 번째 헤더 파트 */}
-            <div>   
-              {/* 완료되지 않은 할 일 수를 출력 */}
-              {/*
-              <h1 className="text-xsmall16 font-semibold text-neutral-30">완료되지 않은 할 일: {incompleteTodosCount}</h1>
-              */}
-              <h1 className="text-xsmall16 font-semibold text-neutral-30">아직 {incompleteTodosCount}건의 TODO가 남았어요</h1>
-
+            <div>
               {/* 회사별 일정 리스트 */}     
               {companyTodoList.length > 0 ? (
                 companyTodoList.map((companyTodo) => (
@@ -234,7 +228,7 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
                             />
                             {/* 할 일 내용 */}
                             <div className="px-2 font-medium text-xsmall14 text-neutral-40">
-                              {todo.content}💗
+                              {todo.content}
                             </div>
                           
                             {/* 날짜 출력 */}

@@ -18,21 +18,36 @@ import { getYearMonthDay, getYear, getMonth, getFormattedDate3 } from "../../sha
 import {userInfo} from "../../shared/api/loginInstance.ts"
 
 import TestCalendar from "../../components/TestCalendar.tsx" // 이건 캘린더에 띄우기
-import TestCalendarTodoList from "./TestCalendarTodoList.tsx" // 이건 우측 Todo에 띄우기
 
 function CalendarPage({userId, userName} : userInfo) {
-  // 날짜 변수 생성
-  const [selectedDate, setSelectedDate]= useState<Date | null>(new Date());
 
-  // 날짜가 선택되면 호출되는 함수
-  const handleDateSelected = (date: Date) => {
-    setSelectedDate(date); // 상태를 업데이트합니다.
-  };
+  /** 캘린더 컴포완 연동:  캘린더로부터 반환받는 데이터 관리 */
+  // 선택된 날짜를 저장할 상태 변수
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
+  // 선택된 날짜에 대한 기업 채용 일정 칩스를 저장할 상태 변수 
+  const [recruitmentScheduleChips, setRecruitmentScheduleChips] = useState<JSX.Element[]>([]);
+
+  // 선택된 날짜에 대한 개인 일정 칩스를 저장할 상태 변수 
+  const [personalScheduleChips, setPersonalScheduleChips] = useState<JSX.Element[]>([]);
   
-  // 캘린더 컴포 테스트용
-  const companyName="네이버";
-  const personalSchedule="개인일정";
+  // 캘린더에서 셀 선택시마다 반환받은 데이터를 처리하는 콜백 함수
+  const handleDateSelected = (date: Date, recruitmentScheduleChips: JSX.Element[], personalScheduleList: JSX.Element[]) => {
+    // 캘린더에서 선택된 날짜 반환받고 상태에 저장
+    setSelectedDate(date);
 
+    // 캘린더에서 선택된 날짜에 대한 기업 일정 칩스를 보냄
+    // 그걸 받아서 상태에 저장
+    setRecruitmentScheduleChips(recruitmentScheduleChips);
+
+    // 캘린더에서 선택된 날짜에 대한 개인 일정 칩스를 보냄
+    // 그걸 받아서 상태에 저장
+    setPersonalScheduleChips(personalScheduleList)
+  };
+
+
+
+  /** 렌더링 */
   return (
       <div className="px-10">
       {/** 타이틀 */}
@@ -52,10 +67,16 @@ function CalendarPage({userId, userName} : userInfo) {
           <Calender userId={userId} onDateSelected={handleDateSelected}/>
           {String(selectedDate)}
         </div>
-
+        
         {/* 2번째 열:  일정 리스트 */}
         <div>
-          <CalendarList userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+          <CalendarList userId={userId} 
+                        userName={userName} 
+                        selectedDate={selectedDate} 
+                        setSelectedDate={setSelectedDate} 
+                        recruitmentScheduleChips={recruitmentScheduleChips}
+                        personalScheduleChips={personalScheduleChips}
+          />
         </div>
 
         {/* 3번째 열: 테스트 & 디버깅용 컴포*/}

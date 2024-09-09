@@ -16,7 +16,7 @@ export const ScheduleButton = ({ contents }: ScheduleButtonProbs) => {
       </div>
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start text-xsmall14 font-medium text-neutral-40">
+      <div className="flex h-full items-center justify-start text-xsmall14 font-medium text-neutral-40 hover:text-primary-100">
         {contents}
       </div>
     </div>
