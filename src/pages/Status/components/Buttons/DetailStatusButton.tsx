@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "../../../../components/DatePicker";
-import { getFormattedDate2, getFormattedDate3 } from "../../../../shared/hooks/useDate.ts";
+import {
+  getFormattedDate2,
+  getFormattedDate3,
+} from "../../../../shared/hooks/useDate.ts";
 import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
@@ -354,7 +357,6 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null); // 선택된 날짜
   const [apiDate, setApiDate] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false); // 전형명 입력 필드 포커스 상태
-  
 
   const handleFinalStageChange = () => {
     setIsFinalStage(!isFinalStage);

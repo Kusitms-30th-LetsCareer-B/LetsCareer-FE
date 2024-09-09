@@ -45,7 +45,7 @@ export const DocumentScheduleChip = ({
   status,
 }: CompanyStatusProps) => {
   return (
-    <div className="inline-flex h-[40px] items-center justify-center ">
+    <div className="inline-flex h-[40px] items-center justify-center">
       {/* 왼쪽 영역 */}
       {/* 줄무늬 */}
       <div className="flex h-full w-[6px] items-center justify-center rounded-l-xs bg-secondary-100" />
@@ -96,7 +96,7 @@ export const OtherScheduleChip = ({
       <div className="flex h-full min-w-[80px] items-center justify-start rounded-r-xs bg-teritory-light px-[10px]">
         {/* 내용 */}
         <div className="mr-[12px] flex items-center justify-center text-xsmall14 font-semibold tracking-[-0.21px] text-teritory-normal">
-          {companyName} {contents==""? "기타" : contents}
+          {companyName} {contents == "" ? "기타" : contents}
         </div>
       </div>
     </div>

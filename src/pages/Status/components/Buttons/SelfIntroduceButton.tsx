@@ -38,7 +38,6 @@ export const SelectExperienceDeepButton = ({ experience }: ExperienceProps) => {
   );
 };
 
-
 export const ChangeLetterNumberButton = () => {
   return (
     <button className="flex h-[30px] w-[76px] items-center justify-center rounded-xxs border border-neutral-80 bg-static-100 px-[10px] py-[6px]">

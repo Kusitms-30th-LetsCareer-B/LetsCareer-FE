@@ -6,7 +6,11 @@ interface UserProps {
   setSelectedTab: (tab: "resume" | "experience") => void;
 }
 
-export const CareerHeader = ({ name, selectedTab, setSelectedTab }: UserProps) => {
+export const CareerHeader = ({
+  name,
+  selectedTab,
+  setSelectedTab,
+}: UserProps) => {
   const isResumeSelected = selectedTab === "resume";
   const isExperienceSelected = selectedTab === "experience";
 

@@ -306,7 +306,7 @@ function DetailStatusPage() {
             <button
               onClick={handleClick}
               className="flex items-center justify-center rounded-full bg-primary-10"
-             >
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"

@@ -597,7 +597,7 @@ export const ExistArchiving = () => {
   };
 
   return (
-    <div className="h-full items-starat flex flex-col self-stretch">
+    <div className="items-starat flex h-full flex-col self-stretch">
       <div className="flex items-center self-stretch rounded-sm bg-primary-10">
         <div
           className="flex cursor-pointer justify-between px-[16px] py-[12px]"

@@ -18,7 +18,10 @@ export const DdayScheduleChip = ({ schedule, day }: DdayScheduleChipProps) => {
   );
 };
 
-export const DdayScheduleEndChip = ({ schedule, day }: DdayScheduleChipProps) => {
+export const DdayScheduleEndChip = ({
+  schedule,
+  day,
+}: DdayScheduleChipProps) => {
   return (
     <div className="inline-flex h-[28px] items-center justify-center gap-[10px] rounded-sm bg-primary px-[12px] py-[4px]">
       <div className="whitespace-nowrap text-center text-xsmall14 font-bold tracking-[-0.21px] text-static-100">

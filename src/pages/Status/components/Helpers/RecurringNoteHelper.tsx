@@ -679,7 +679,7 @@ interface InterviewQuestion {
 interface InterviewRecurringNoteRightPartProps {
   questions: InterviewQuestion[];
   onQuestionClick: (index: number) => void;
-  recruitmentId: string; 
+  recruitmentId: string;
 }
 
 interface InterviewQuestion {

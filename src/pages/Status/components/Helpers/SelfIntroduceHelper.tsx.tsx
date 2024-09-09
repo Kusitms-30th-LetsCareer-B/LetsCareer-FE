@@ -82,7 +82,6 @@ export const TextFilter = () => {
   );
 };
 
-
 export const AboutExperience = ({ experience }: ExperienceProps) => {
   return (
     <div className="self-stretch">

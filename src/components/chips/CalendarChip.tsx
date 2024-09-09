@@ -1,35 +1,34 @@
-
-/*** 칩스 매뉴얼 
+/*** 칩스 매뉴얼
  * -----------------------------------------------------
  *** 채용 일정 칩스 종류
- * 
+ *
  * 종류:
  * enum('START','FINISH','WRITTEN','INTERVIEW','OTHER')
  * 시작, 끝, 서류, 면접, 기타
- * 
+ *
  * 실제 들어오는 Response 값:
  * 시, 끝, 서, 면, 기
- * 
+ *
  * 각각 Default, Clicked, Hovered 상태별로 필요
  * 총 5*3 = 15개 칩스
- * 
+ *
  * -----------------------------------------------------
  *** 기타 일정 칩스는 1종
  *
  * 각각 Default, Clicked, Hovered 상태별로 필요
  * 총 1*3 = 3개 칩스
  */
- export const filterState = {
+export const filterState = {
   START: "시",
   FINISH: "끝",
   WRITTEN: "서",
   INTERVIEW: "면",
-  OTHER: "기"
+  OTHER: "기",
 };
 
 interface CompanyDocumentChipProps {
   companyName: string;
-  filter: string;   // 서류, 시작, 종료 총 3가지 상태
+  filter: string; // 서류, 시작, 종료 총 3가지 상태
 }
 
 interface CompanyChipProps {
@@ -40,13 +39,14 @@ interface PersonalChipProps {
   personalSchedule: string;
 }
 
-
 /* 재사용: 네모 박스 컴포넌트 */
 // 기본/호버 상태 : bg-secondary-0, text-secondary-100
 // 클릭 상태      : bg-secondary-100, text-secondary-0
 const SquareBox = ({ filter, bg, txtColor }) => (
   //<div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs  text-xxsmall11 font-semibold text-secondary-0">
-  <div className={`mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs text-xxsmall11 font-semibold ${bg} ${txtColor}`}>
+  <div
+    className={`mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs text-xxsmall11 font-semibold ${bg} ${txtColor}`}
+  >
     {filter}
   </div>
 );
@@ -54,16 +54,20 @@ const SquareBox = ({ filter, bg, txtColor }) => (
 /* 제사용: 기업명 컴포넌트 */
 // 기본/호버 상태 : text-secondary-100
 // 클릭 상태      : text-secondary-0
-const CompanyBox = ({companyName, txtColor}) => (
+const CompanyBox = ({ companyName, txtColor }) => (
   //<div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ">
-  <div className={`mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ${txtColor}`}>
+  <div
+    className={`mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ${txtColor}`}
+  >
     <span>{companyName}</span>
   </div>
 );
 
-
 /** 시작 & 종료 & 서류 칩스 */
-export const DefaultDocumentChip = ({ companyName, filter }: CompanyDocumentChipProps) => {
+export const DefaultDocumentChip = ({
+  companyName,
+  filter,
+}: CompanyDocumentChipProps) => {
   return (
     <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
       {/* 왼쪽 영역 */}
@@ -74,17 +78,31 @@ export const DefaultDocumentChip = ({ companyName, filter }: CompanyDocumentChip
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
-            <SquareBox filter={filter} bg="bg-secondary-0" txtColor="text-secondary-100" />
+            <SquareBox
+              filter={filter}
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
+            />
             {/* 기업명 */}
-            <CompanyBox companyName={companyName} txtColor="text-secondary-100" />
+            <CompanyBox
+              companyName={companyName}
+              txtColor="text-secondary-100"
+            />
           </>
         ) : (
           // 종료칩스의 경우 두 컴포의 위치가 바뀜
           <>
             {/* 기업명 */}
-            <CompanyBox companyName={companyName} txtColor="text-secondary-100" />
+            <CompanyBox
+              companyName={companyName}
+              txtColor="text-secondary-100"
+            />
             {/* 네모 박스 */}
-            <SquareBox filter={filter} bg="bg-secondary-0" txtColor="text-secondary-100" />
+            <SquareBox
+              filter={filter}
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
+            />
           </>
         )}
       </div>
@@ -92,7 +110,10 @@ export const DefaultDocumentChip = ({ companyName, filter }: CompanyDocumentChip
   );
 };
 
-export const HoveredDocumentChip = ({ companyName, filter }: CompanyDocumentChipProps) => {
+export const HoveredDocumentChip = ({
+  companyName,
+  filter,
+}: CompanyDocumentChipProps) => {
   return (
     /* border 추가 */
     <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-secondary-100">
@@ -104,17 +125,31 @@ export const HoveredDocumentChip = ({ companyName, filter }: CompanyDocumentChip
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
-            <SquareBox filter={filter} bg="bg-secondary-0" txtColor="text-secondary-100" />
+            <SquareBox
+              filter={filter}
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
+            />
             {/* 기업명 */}
-            <CompanyBox companyName={companyName} txtColor="text-secondary-100" />
+            <CompanyBox
+              companyName={companyName}
+              txtColor="text-secondary-100"
+            />
           </>
         ) : (
           // 종료칩스의 경우 두 컴포의 위치가 바뀜
           <>
             {/* 기업명 */}
-            <CompanyBox companyName={companyName} txtColor="text-secondary-100" />
+            <CompanyBox
+              companyName={companyName}
+              txtColor="text-secondary-100"
+            />
             {/* 네모 박스 */}
-            <SquareBox filter={filter} bg="bg-secondary-0" txtColor="text-secondary-100" />
+            <SquareBox
+              filter={filter}
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
+            />
           </>
         )}
       </div>
@@ -122,8 +157,10 @@ export const HoveredDocumentChip = ({ companyName, filter }: CompanyDocumentChip
   );
 };
 
-
-export const ClickedDocumentChip = ({ companyName, filter }: CompanyDocumentChipProps) => {
+export const ClickedDocumentChip = ({
+  companyName,
+  filter,
+}: CompanyDocumentChipProps) => {
   return (
     <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
       {/* 왼쪽 영역 */}
@@ -134,7 +171,11 @@ export const ClickedDocumentChip = ({ companyName, filter }: CompanyDocumentChip
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
-            <SquareBox filter={filter} bg="bg-secondary-100" txtColor="text-secondary-0" />
+            <SquareBox
+              filter={filter}
+              bg="bg-secondary-100"
+              txtColor="text-secondary-0"
+            />
             {/* 기업명 */}
             <CompanyBox companyName={companyName} txtColor="text-secondary-0" />
           </>
@@ -144,15 +185,17 @@ export const ClickedDocumentChip = ({ companyName, filter }: CompanyDocumentChip
             {/* 기업명 */}
             <CompanyBox companyName={companyName} txtColor="text-secondary-0" />
             {/* 네모 박스 */}
-            <SquareBox filter={filter} bg="bg-secondary-100" txtColor="text-secondary-0" />
+            <SquareBox
+              filter={filter}
+              bg="bg-secondary-100"
+              txtColor="text-secondary-0"
+            />
           </>
         )}
       </div>
     </div>
   );
 };
-
-
 
 /** 면접 칩스 */
 export const DefaultInterviewChip = ({ companyName }: CompanyChipProps) => {
@@ -176,7 +219,6 @@ export const DefaultInterviewChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-
 export const HoveredInterviewChip = ({ companyName }: CompanyChipProps) => {
   return (
     /* border 추가 */
@@ -199,7 +241,6 @@ export const HoveredInterviewChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-
 export const ClickedInterviewChip = ({ companyName }: CompanyChipProps) => {
   return (
     <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
@@ -220,8 +261,6 @@ export const ClickedInterviewChip = ({ companyName }: CompanyChipProps) => {
     </div>
   );
 };
-
-
 
 /** 기타 칩스 */
 export const DefaultOtherChip = ({ companyName }: CompanyChipProps) => {
@@ -245,7 +284,6 @@ export const DefaultOtherChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-
 export const HoveredOtherChip = ({ companyName }: CompanyChipProps) => {
   return (
     /* border 추가 */
@@ -268,7 +306,6 @@ export const HoveredOtherChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-
 export const ClickedOtherChip = ({ companyName }: CompanyChipProps) => {
   return (
     <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
@@ -289,8 +326,6 @@ export const ClickedOtherChip = ({ companyName }: CompanyChipProps) => {
     </div>
   );
 };
-
-
 
 /** 개인 일정 Chip */
 export const DefaultPersonalChip = ({

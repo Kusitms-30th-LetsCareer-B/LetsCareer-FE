@@ -1,8 +1,5 @@
 function Resume() {
-    return(
-        <>
-        </>
-    );
-};
+  return <></>;
+}
 
 export default Resume;

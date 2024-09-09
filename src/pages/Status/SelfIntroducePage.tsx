@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { GoBackButton } from "../../components/Buttons/Button";
 import { GetExperience } from "./SelfIntroductionComponents/GetSpecialExperience";
 import { WriteSelfIntroduction } from "./SelfIntroductionComponents/WriteSelfIntroduction";
-import { BringExperience, NewExperience, ShowExperience } from "./SelfIntroductionComponents/ShowSpecialExperience";
+import {
+  BringExperience,
+  NewExperience,
+  ShowExperience,
+} from "./SelfIntroductionComponents/ShowSpecialExperience";
 import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
@@ -20,9 +24,16 @@ interface ApiResponse {
 }
 
 function SelfIntroducePage() {
-  const [experienceData, setExperienceData] = useState<ApiResponse | null>(null); 
-  const [selectedTab, setSelectedTab] = useState<string>("성공/도전 경험"); 
-  const [selectedExperience, setSelectedExperience] = useState<ExperienceData | null>(null); 
+  const [experienceData, setExperienceData] = useState<ApiResponse | null>(
+    null,
+  );
+  const [selectedTab, setSelectedTab] = useState<string>("성공/도전 경험");
+  const [selectedExperience, setSelectedExperience] =
+    useState<ExperienceData | null>(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     axios
@@ -49,17 +60,20 @@ function SelfIntroducePage() {
       <div className="flex">
         <div className="flex flex-col">
           <WriteSelfIntroduction />
-            {selectedExperience ? (
-              <ShowExperience
+          {selectedExperience ? (
+            <ShowExperience
               tabType={selectedTab}
               title={selectedExperience.title}
               content={selectedExperience.content}
             />
           ) : (
             <BringExperience />
-          )}         
+          )}
         </div>
-        <GetExperience onSelectExperience={handleSelectExperience}  onTabChange={handleTabChange}/>
+        <GetExperience
+          onSelectExperience={handleSelectExperience}
+          onTabChange={handleTabChange}
+        />
       </div>
     </div>
   );

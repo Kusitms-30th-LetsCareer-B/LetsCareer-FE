@@ -42,7 +42,10 @@ export const CareerQuestion = ({
                   stroke-linejoin="round"
                 />
               </svg>
-              <span onClick={onAddNew} className="text-xsmall14 font-medium tracking-[-0.21px] text-primary cursor-pointer">
+              <span
+                onClick={onAddNew}
+                className="cursor-pointer text-xsmall14 font-medium tracking-[-0.21px] text-primary"
+              >
                 항목 추가하기
               </span>
             </div>
@@ -75,41 +78,48 @@ export const CareerQuestion = ({
 };
 
 interface CareerAnswerProps {
-    experienceType: string;
-    userId: string;
-    onSaveSuccess: () => void;
-  }
+  experienceType: string;
+  userId: string;
+  onSaveSuccess: () => void;
+}
 
-  
-export const CareerAnswer = ({ experienceType, userId, onSaveSuccess }: CareerAnswerProps) => {
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-  
-    const handleSave = async () => {
+export const CareerAnswer = ({
+  experienceType,
+  userId,
+  onSaveSuccess,
+}: CareerAnswerProps) => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  const handleSave = async () => {
     //   if (!title || !content) {
     //     alert("제목과 내용을 모두 입력해주세요.");
     //     return;
     //   }
-  
-      try {
-        await axios.post(`${BASE_URL}/careers/special-skills`, {
+
+    try {
+      await axios.post(
+        `${BASE_URL}/careers/special-skills`,
+        {
           experienceType,
           title,
           content,
-        }, {
+        },
+        {
           params: {
-            userId, 
+            userId,
           },
-        });
-        alert("필살기 경험이 성공적으로 저장되었습니다.");
-        onSaveSuccess();
-      } catch (error) {
-        console.error("저장 중 오류 발생:", error);
-        alert("저장 중 오류가 발생했습니다.");
-      }
-    };
-  
-    return (
+        },
+      );
+      alert("필살기 경험이 성공적으로 저장되었습니다.");
+      onSaveSuccess();
+    } catch (error) {
+      console.error("저장 중 오류 발생:", error);
+      alert("저장 중 오류가 발생했습니다.");
+    }
+  };
+
+  return (
     <div className="flex flex-col items-start gap-[24px] self-stretch">
       <div className="flex flex-col items-start gap-[10px] self-stretch rounded-md bg-neutral-100 p-[20px]">
         <div className="flex flex-col items-start gap-[16px] self-stretch">
@@ -128,20 +138,20 @@ export const CareerAnswer = ({ experienceType, userId, onSaveSuccess }: CareerAn
         </div>
       </div>
       <div className="flex items-center gap-[13px] self-stretch">
-        <button 
-            className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-neutral-90 px-[20px] py-[12px]"
-            onClick={() => {
-                setTitle("");
-                setContent("");
-            }}
+        <button
+          className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-neutral-90 px-[20px] py-[12px]"
+          onClick={() => {
+            setTitle("");
+            setContent("");
+          }}
         >
           <span className="text-small18 font-medium tracking-[-0.022px] text-neutral-45">
             초기화하기
           </span>
         </button>
-        <button 
-            className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-primary px-[20px] py-[12px]"
-            onClick={handleSave}
+        <button
+          className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-primary px-[20px] py-[12px]"
+          onClick={handleSave}
         >
           <span className="w-1/2 text-small18 font-medium tracking-[-0.022px] text-static-100">
             저장하기
