@@ -651,7 +651,7 @@ const QuestionComponent = ({
           value={answer}
           placeholder="답변을 입력하세요"
           onChange={(e) => onAnswerChange(e.target.value)}
-          className="font-regular min-h-[465px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
+          className="font-regular h-full min-h-[465px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
         />
       </div>
     </div>
@@ -667,7 +667,7 @@ interface InterviewQuestion {
 interface InterviewRecurringNoteRightPartProps {
   questions: InterviewQuestion[];
   onQuestionClick: (index: number) => void;
-  recruitmentId: string; // 필요한 경우 받아옵니다.
+  recruitmentId: string;
 }
 
 interface InterviewQuestion {
@@ -679,7 +679,7 @@ interface InterviewQuestion {
 interface InterviewRecurringNoteRightPartProps {
   questions: InterviewQuestion[];
   onQuestionClick: (index: number) => void;
-  recruitmentId: string; // 필요한 경우 받아옵니다.
+  recruitmentId: string; 
 }
 
 interface InterviewQuestion {
@@ -1104,7 +1104,7 @@ export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
 
 export const NoGoodQuestion = () => {
   return (
-    <div className="mb-[20px] flex h-full w-full flex-col items-start rounded-md border border-neutral-80 bg-static-100 px-[24px] py-[24px] pt-[20px]">
+    <div className="flex h-[215px] w-full flex-col items-start rounded-md border border-neutral-80 bg-static-100 px-[24px] py-[24px] pt-[20px]">
       <div className="flex w-full flex-col gap-[20px]">
         <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
           한 번 더 보면 좋을 질문

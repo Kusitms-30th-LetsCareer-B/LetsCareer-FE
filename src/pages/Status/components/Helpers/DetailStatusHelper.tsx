@@ -532,7 +532,7 @@ export const NoExistTodo = ({ name }: NameProps) => {
 
 export const NoExistArchiving = () => {
   return (
-    <div className="flex h-[314px] flex-col justify-center self-stretch">
+    <div className="flex h-[330px] flex-col justify-center self-stretch">
       <span className="text-center text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-45">
         취업을 위한 자료와 정보들을 업로드해보세요
       </span>
@@ -597,7 +597,7 @@ export const ExistArchiving = () => {
   };
 
   return (
-    <div className="items-starat flex flex-col self-stretch">
+    <div className="h-full items-starat flex flex-col self-stretch">
       <div className="flex items-center self-stretch rounded-sm bg-primary-10">
         <div
           className="flex cursor-pointer justify-between px-[16px] py-[12px]"
