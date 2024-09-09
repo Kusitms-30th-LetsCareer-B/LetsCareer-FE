@@ -21,6 +21,8 @@ import {
   UpdateTypeModal,
 } from "../Buttons/DetailStatusButton";
 
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
+
 interface DetailStatusProps {
   day: number;
   name: string;
@@ -554,7 +556,7 @@ export const ExistArchiving = () => {
   const fetchArchives = async (page: number) => {
     try {
       const response = await axios.get(
-        `http://43.203.124.122:8080/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page - 1}&size=5`,
+        `${BASE_URL}/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page - 1}&size=5`,
       );
       console.log("API response:", response.data); // 응답 데이터 출력
       const archiveData = response.data.data;
@@ -631,7 +633,7 @@ export const ExistArchiving = () => {
               key={archive.id}
               title={archive.title}
               onDelete={() => handleDelete(archive.id)}
-              archiveLink={`/status/${recruitmentId}/archive/${archive.id}`}
+              archiveLink={`/status/${recruitmentId}/archivings/${archive.id}`}
             />
           ))}
 

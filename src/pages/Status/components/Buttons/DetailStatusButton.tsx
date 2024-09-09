@@ -21,7 +21,7 @@ export const ArchiveButton = ({
 
   return (
     <button
-      className="mt-[12px] flex items-center gap-[16px] rounded-sm bg-neutral-95 px-[16px] py-[12px]"
+      className="mt-[12px] flex items-center justify-between gap-[16px] rounded-sm bg-neutral-95 px-[16px] py-[12px]"
       onClick={() => navigate(archiveLink)}
     >
       <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">

@@ -11,7 +11,7 @@ import {
   ProgressCard,
   SuccessCard,
 } from "./components/Helpers/DetailStatusHelper";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { RecruitmentDeleteButton } from "./components/Buttons/StatusButton";
 import { AddTypeModal } from "./components/Buttons/DetailStatusButton";
@@ -32,6 +32,8 @@ function DetailStatusPage() {
   const isFinalStagePresent = stages.some((stage) => stage.isFinal);
 
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   const handleDeleteClick = () => {
     setIsDeletePopupOpen(true);
@@ -153,6 +155,22 @@ function DetailStatusPage() {
   const handleModalClose = () => {
     setIsAddModalOpen(false);
   };
+
+  const handleClick = () => {
+    navigate(`/status/${recruitmentId}/archivings`);
+  };
+
+  // const handleClick = async () => {
+  //   try {
+  //     // 새로운 아카이브 ID를 백엔드에서 생성하고 가져옴
+  //     const response = await axios.post(`${BASE_URL}/archivings`);
+  //     const newArchiveId = response.data.archiveId;
+  //     // 생성된 ID로 새로운 경로로 이동
+  //     navigate(`/status/${recruitmentId}/archiving/${newArchiveId}`);
+  //   } catch (error) {
+  //     console.error('Error creating new archive:', error);
+  //   }
+  // };
 
   return (
     <div className="mb-[100px] px-[48px] pt-[40px]">
@@ -285,7 +303,10 @@ function DetailStatusPage() {
             <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
               아카이빙
             </span>
-            <button className="flex items-center justify-center rounded-full bg-primary-10">
+            <button
+              onClick={handleClick}
+              className="flex items-center justify-center rounded-full bg-primary-10"
+             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
