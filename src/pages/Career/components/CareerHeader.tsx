@@ -2,15 +2,17 @@ import { useState } from "react";
 
 interface UserProps {
   name: string;
+  selectedTab: "resume" | "experience";
+  setSelectedTab: (tab: "resume" | "experience") => void;
 }
 
-export const CareerHeader = ({ name }: UserProps) => {
-  const [selectedButton, setSelectedButton] = useState<"resume" | "experience">(
-    "resume",
-  );
-
-  const isResumeSelected = selectedButton === "resume";
-  const isExperienceSelected = selectedButton === "experience";
+export const CareerHeader = ({
+  name,
+  selectedTab,
+  setSelectedTab,
+}: UserProps) => {
+  const isResumeSelected = selectedTab === "resume";
+  const isExperienceSelected = selectedTab === "experience";
 
   return (
     <div className="flex items-center gap-[32px]">
@@ -20,13 +22,13 @@ export const CareerHeader = ({ name }: UserProps) => {
       <div className="flex items-center gap-[24px]">
         <button
           className={`text-small18 tracking-[-0.022px] ${isResumeSelected ? "font-bold text-primary" : "font-regular text-neutral-40"}`}
-          onClick={() => setSelectedButton("resume")}
+          onClick={() => setSelectedTab("resume")}
         >
           기본 이력서
         </button>
         <button
           className={`text-small18 tracking-[-0.022px] ${isExperienceSelected ? "font-bold text-primary" : "font-regular text-neutral-40"}`}
-          onClick={() => setSelectedButton("experience")}
+          onClick={() => setSelectedTab("experience")}
         >
           필살기 경험
         </button>

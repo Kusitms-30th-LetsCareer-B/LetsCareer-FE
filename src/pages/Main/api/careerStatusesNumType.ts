@@ -4,13 +4,13 @@ export const StatusNum_URL = "/statuses";
 /** API Type */
 // GET 파라미터
 export interface GetParamsStatusNumType {
-    userId: number;
+  userId: number;
 }
 
 // GET 요청
 export interface GetRequestStatusNumType {
-    total: number;
-    document: number;
-    interview: number;
-    other: number;
+  total: number;
+  document: number;
+  interview: number;
+  other: number;
 }

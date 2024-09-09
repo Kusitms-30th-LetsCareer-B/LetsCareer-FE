@@ -12,10 +12,9 @@ import {
   ButtonGroup2,
   InterviewDeleteButton,
 } from "../Buttons/RecurringNoteButton";
-import { SelfIntroductionQuestions } from "../Pagination/RecurringNotePagination";
-import { Pagination } from "../Pagination/SelfIntroducePagination";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { InterviewQuestions } from "../Pagination/RecurringNotePagination";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -578,7 +577,7 @@ export const DocumentRecurringNoteRightPart = ({
       </span>
       <div className="mb-[20px] flex flex-shrink-0 flex-col items-start self-stretch rounded-md">
         <div className="mb-[16px] flex items-center">
-          <SelfIntroductionQuestions
+          <InterviewQuestions
             questions={questions}
             selectedQuestion={selectedQuestion} // 현재 선택된 질문
             onQuestionClick={handleQuestionClick} // 질문 클릭 시 처리
@@ -652,7 +651,7 @@ const QuestionComponent = ({
           value={answer}
           placeholder="답변을 입력하세요"
           onChange={(e) => onAnswerChange(e.target.value)}
-          className="font-regular min-h-[465px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
+          className="font-regular h-full min-h-[465px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
         />
       </div>
     </div>
@@ -668,7 +667,7 @@ interface InterviewQuestion {
 interface InterviewRecurringNoteRightPartProps {
   questions: InterviewQuestion[];
   onQuestionClick: (index: number) => void;
-  recruitmentId: string; // 필요한 경우 받아옵니다.
+  recruitmentId: string;
 }
 
 interface InterviewQuestion {
@@ -680,7 +679,7 @@ interface InterviewQuestion {
 interface InterviewRecurringNoteRightPartProps {
   questions: InterviewQuestion[];
   onQuestionClick: (index: number) => void;
-  recruitmentId: string; // 필요한 경우 받아옵니다.
+  recruitmentId: string;
 }
 
 interface InterviewQuestion {
@@ -895,7 +894,7 @@ export const InterviewRecurringNoteRightPart = ({
         <div className="flex items-center justify-between self-stretch">
           <div className="flex items-center">
             {/* 질문 리스트 컴포넌트 */}
-            <SelfIntroductionQuestions
+            <InterviewQuestions
               questions={interviewQuestions.map((_, index) => `${index + 1}`)} // 질문 번호
               selectedQuestion={selectedQuestion} // 현재 선택된 질문
               onQuestionClick={(index) => setSelectedQuestion(index)} // 질문 클릭 시 처리
@@ -1105,7 +1104,7 @@ export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
 
 export const NoGoodQuestion = () => {
   return (
-    <div className="mb-[20px] flex h-full w-full flex-col items-start rounded-md border border-neutral-80 bg-static-100 px-[24px] py-[24px] pt-[20px]">
+    <div className="flex h-[215px] w-full flex-col items-start rounded-md border border-neutral-80 bg-static-100 px-[24px] py-[24px] pt-[20px]">
       <div className="flex w-full flex-col gap-[20px]">
         <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
           한 번 더 보면 좋을 질문

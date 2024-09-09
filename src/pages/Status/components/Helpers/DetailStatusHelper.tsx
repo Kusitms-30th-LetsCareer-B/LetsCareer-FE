@@ -21,6 +21,8 @@ import {
   UpdateTypeModal,
 } from "../Buttons/DetailStatusButton";
 
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
+
 interface DetailStatusProps {
   day: number;
   name: string;
@@ -530,7 +532,7 @@ export const NoExistTodo = ({ name }: NameProps) => {
 
 export const NoExistArchiving = () => {
   return (
-    <div className="flex h-[314px] flex-col justify-center self-stretch">
+    <div className="flex h-[330px] flex-col justify-center self-stretch">
       <span className="text-center text-xsmall16 font-semibold tracking-[-0.096px] text-neutral-45">
         취업을 위한 자료와 정보들을 업로드해보세요
       </span>
@@ -554,7 +556,7 @@ export const ExistArchiving = () => {
   const fetchArchives = async (page: number) => {
     try {
       const response = await axios.get(
-        `http://43.203.124.122:8080/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page - 1}&size=5`,
+        `${BASE_URL}/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page - 1}&size=5`,
       );
       console.log("API response:", response.data); // 응답 데이터 출력
       const archiveData = response.data.data;
@@ -595,7 +597,7 @@ export const ExistArchiving = () => {
   };
 
   return (
-    <div className="items-starat flex flex-col self-stretch">
+    <div className="items-starat flex h-full flex-col self-stretch">
       <div className="flex items-center self-stretch rounded-sm bg-primary-10">
         <div
           className="flex cursor-pointer justify-between px-[16px] py-[12px]"
@@ -631,7 +633,7 @@ export const ExistArchiving = () => {
               key={archive.id}
               title={archive.title}
               onDelete={() => handleDelete(archive.id)}
-              archiveLink={`/status/${recruitmentId}/archive/${archive.id}`}
+              archiveLink={`/status/${recruitmentId}/archivings/${archive.id}`}
             />
           ))}
 

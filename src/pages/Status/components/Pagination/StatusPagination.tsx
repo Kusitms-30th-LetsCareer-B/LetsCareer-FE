@@ -18,11 +18,16 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const { handlePrevClick, handleNextClick, changePage, getVisiblePages } =
-    useStatusPagination(totalItems, itemsPerPage, currentPage, handlePageChange);
+    useStatusPagination(
+      totalItems,
+      itemsPerPage,
+      currentPage,
+      handlePageChange,
+    );
 
   function handlePageChange(page: number) {
     setCurrentPage(page);
-    onPageChange(page); 
+    onPageChange(page);
   }
 
   return (
@@ -32,7 +37,7 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
         className={`flex items-center justify-center rounded-xxs border bg-static-100 py-[4px] pl-[3px] pr-[5px] ${
           currentPage > 1 ? "border-primary-50" : "border-neutral-80"
         }`}
-        disabled={currentPage === 1} 
+        disabled={currentPage === 1}
       >
         {currentPage > 1 ? (
           <svg
@@ -91,11 +96,13 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
       <button
         onClick={handleNextClick}
         className={`flex items-center justify-center rounded-xxs border bg-static-100 py-[4px] pl-[5px] pr-[3px] ${
-          currentPage-1 < totalPages ? "border-primary-50" : "border-neutral-80"
+          currentPage - 1 < totalPages
+            ? "border-primary-50"
+            : "border-neutral-80"
         }`}
         disabled={currentPage === totalPages}
       >
-        {currentPage-1 < totalPages ? (
+        {currentPage - 1 < totalPages ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

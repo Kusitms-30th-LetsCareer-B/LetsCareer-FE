@@ -1,7 +1,6 @@
 /** 메인 홈: 오늘 채용(기업) 일정 현황 */
 export const MainToday_URL = "/todos/groupedByCompany";
 
-
 /** API Type */
 // GET 파라미터
 export interface GetParamsMainTodayType {

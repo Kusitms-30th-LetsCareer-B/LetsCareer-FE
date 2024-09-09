@@ -1,16 +1,16 @@
 import { useState } from "react";
 
-interface SelfIntroductionQuestionProps {
+interface InterviewQuestionProps {
   questions: string[];
   selectedQuestion: number;
   onQuestionClick: (index: number) => void;
 }
 
-export const SelfIntroductionQuestions = ({
+export const InterviewQuestions = ({
   questions,
   selectedQuestion,
   onQuestionClick,
-}: SelfIntroductionQuestionProps) => {
+}: InterviewQuestionProps) => {
   return (
     <div className="mt-[20px] flex items-center gap-[4px]">
       {questions.map((question, index) => (
