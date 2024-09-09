@@ -1,8 +1,14 @@
+import axios from "axios";
+import { useState } from "react";
+
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
+
 interface CareerQuestionProps {
   title: string;
   firstName: string;
   content: string;
   guide: string;
+  onAddNew: () => void;
 }
 
 export const CareerQuestion = ({
@@ -10,6 +16,7 @@ export const CareerQuestion = ({
   firstName,
   content,
   guide,
+  onAddNew,
 }: CareerQuestionProps) => {
   return (
     <>
@@ -35,7 +42,7 @@ export const CareerQuestion = ({
                   stroke-linejoin="round"
                 />
               </svg>
-              <span className="text-xsmall14 font-medium tracking-[-0.21px] text-primary">
+              <span onClick={onAddNew} className="text-xsmall14 font-medium tracking-[-0.21px] text-primary cursor-pointer">
                 항목 추가하기
               </span>
             </div>
@@ -67,28 +74,75 @@ export const CareerQuestion = ({
   );
 };
 
-export const CareerAnswer = () => {
-  return (
+interface CareerAnswerProps {
+    experienceType: string;
+    userId: string;
+    onSaveSuccess: () => void;
+  }
+
+  
+export const CareerAnswer = ({ experienceType, userId, onSaveSuccess }: CareerAnswerProps) => {
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+  
+    const handleSave = async () => {
+    //   if (!title || !content) {
+    //     alert("제목과 내용을 모두 입력해주세요.");
+    //     return;
+    //   }
+  
+      try {
+        await axios.post(`${BASE_URL}/careers/special-skills`, {
+          experienceType,
+          title,
+          content,
+        }, {
+          params: {
+            userId, 
+          },
+        });
+        alert("필살기 경험이 성공적으로 저장되었습니다.");
+        onSaveSuccess();
+      } catch (error) {
+        console.error("저장 중 오류 발생:", error);
+        alert("저장 중 오류가 발생했습니다.");
+      }
+    };
+  
+    return (
     <div className="flex flex-col items-start gap-[24px] self-stretch">
       <div className="flex flex-col items-start gap-[10px] self-stretch rounded-md bg-neutral-100 p-[20px]">
         <div className="flex flex-col items-start gap-[16px] self-stretch">
           <input
             placeholder="제목을 입력해주세요."
             className="placeholder:neutral-45 flex w-full items-center justify-between rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[14px] text-neutral-30"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             placeholder="내용을 입력해주세요."
             className="flex min-h-[310px] w-full resize-none items-start gap-[10px] self-stretch rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[14px] text-neutral-30 placeholder:text-neutral-45"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           />
         </div>
       </div>
       <div className="flex items-center gap-[13px] self-stretch">
-        <button className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-neutral-90 px-[20px] py-[12px]">
+        <button 
+            className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-neutral-90 px-[20px] py-[12px]"
+            onClick={() => {
+                setTitle("");
+                setContent("");
+            }}
+        >
           <span className="text-small18 font-medium tracking-[-0.022px] text-neutral-45">
             초기화하기
           </span>
         </button>
-        <button className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-primary px-[20px] py-[12px]">
+        <button 
+            className="flex w-1/2 items-center justify-center gap-[8px] rounded-md bg-primary px-[20px] py-[12px]"
+            onClick={handleSave}
+        >
           <span className="w-1/2 text-small18 font-medium tracking-[-0.022px] text-static-100">
             저장하기
           </span>
