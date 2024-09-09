@@ -42,7 +42,7 @@ function MainPage({userId, userName} : userInfo) {
           </div>
 
           {/** 달력 */}
-          <MainCalendar onDateSelected={setSelectedDate}/>
+          <MainCalendar userId={userId} onDateSelected={setSelectedDate}/>
         </div>
 
         <div>

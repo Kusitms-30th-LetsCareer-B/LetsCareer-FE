@@ -392,7 +392,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName}
               />
-              //console.log(recruitmentsData.filter) // 확인 완ㄹ요
+              //console.log(recruitmentsData.filter) // 확인 완료
 
             return (
               // 면접 칩 반환
