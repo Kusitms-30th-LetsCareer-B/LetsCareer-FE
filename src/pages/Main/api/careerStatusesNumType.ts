@@ -1,15 +1,16 @@
-export const URLStatusNumURL = "/statuses";
+/** 메인 홈: 채용 일정 현황 개수 */
+export const StatusNum_URL = "/statuses";
 
-/** 메인 홈, 채용 일정 현황 API Type */
+/** API Type */
 // GET 파라미터
 export interface GetParamsStatusNumType {
-  userId: number;
+    userId: number;
 }
 
 // GET 요청
 export interface GetRequestStatusNumType {
-  total: number;
-  progress: number;
-  passed: number;
-  failed: number;
+    total: number;
+    document: number;
+    interview: number;
+    other: number;
 }
