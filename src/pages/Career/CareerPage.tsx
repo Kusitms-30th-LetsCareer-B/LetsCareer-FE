@@ -7,6 +7,7 @@ import { CareerHeader } from "./components/CareerHeader";
 import SpecialExperience from "./components/SpecialExperience";
 import Resume from "./components/Resume";
 
+
 function CareerPage() {
   const [selectedTab, setSelectedTab] = useState<"resume" | "experience">("resume");
 
