@@ -69,32 +69,44 @@ function SpecialExperience() {
 }
 
 function ExperienceSection({ title, data }) {
-    const [isHidden, setIsHidden] = useState(Array(data.length).fill(true));
+    const [state, setState] = useState([]);
 
-    const toggleView = (index) => {
-        setIsHidden((prevState) =>
-          prevState.map((item, i) => (i === index ? !item : item))
-        );
-      };
-      
+    // 데이터가 업데이트될 때마다 상태를 동기화
+    useEffect(() => {
+      setState(Array(data.length).fill('hide'));
+    }, [data]);
+  
+    const toggleView = (index, newState) => {
+      setState((prevState) =>
+        prevState.map((item, i) => (i === index ? newState : item)) // 클릭한 항목만 상태를 변경
+      );
+    };
+  
     return (
-        <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
+      <div className="inline-flex w-[1128px] flex-col items-start gap-[60px]">
         <div className="flex w-full flex-col items-start gap-[24px]">
+          {/* 데이터가 있으면 모든 항목을 렌더링 */}
           {data.length > 0 ? (
             data.map((item, index) => (
-              isHidden[index] ? (
+              state[index] === 'hide' ? (
                 <HideAnswerToggle
                   key={item.id}
                   title={item.title}
-                  content={item.content}
-                  onToggle={() => toggleView(index)}
+                  onToggle={() => toggleView(index, 'show')}  // 상태를 'show'로 전환
                 />
-              ) : (
+              ) : state[index] === 'show' ? (
                 <ShowAnswerToggle
                   key={item.id}
                   title={item.title}
                   content={item.content}
-                  onToggle={() => toggleView(index)}
+                  onToggle={() => toggleView(index, 'hide')}  // 상태를 'hide'로 전환
+                  onUpdate={() => toggleView(index, 'update')} // 상태를 'update'로 전환
+                />
+              ) : (
+                <UpdateAnswerToggle
+                  key={item.id}
+                  title={item.title}
+                  content={item.content}
                 />
               )
             ))
@@ -105,5 +117,5 @@ function ExperienceSection({ title, data }) {
       </div>
     );
   }
-
+  
 export default SpecialExperience;
