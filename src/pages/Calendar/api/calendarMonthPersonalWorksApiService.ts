@@ -10,7 +10,7 @@ import { CalendarMonthPersonalWorks_URL,
 
 /** 조회 */
 // GET 요청 및 응답받기 (백엔드와 API 연동)
-export const getResponseCalendarMonthWorksList = async ({ userId, year, month }: GetParamsCalendarMonthPersonalWorksType) => {
+export const getResponseCalendarMonthPersonalWorksList = async ({ userId, year, month }: GetParamsCalendarMonthPersonalWorksType) => {
   try {
     const response = await AxiosInstance.get(`${BASE_URL}${CalendarMonthPersonalWorks_URL}`, {
       // 쿼리 파라미터 전달
@@ -31,11 +31,11 @@ export const getResponseCalendarMonthWorksList = async ({ userId, year, month }:
 
 /** 추가 */
 // POST 요청 및 응답받기 (백엔드와 API 연동)
-export const postResponseCalendarMonthWorksList = async ({userId, date, contents}: PostCalendarMonthPersonalWorksType) => {
+export const postResponseCalendarPersonalWorksList = async ({userId, date, content}: PostCalendarMonthPersonalWorksType) => {
   try {
     const response = await AxiosInstance.post(`${BASE_URL}${CalendarMonthPersonalWorks_URL}`, {
       // 쿼리 파라미터 전달
-      params: { userId, date, contents },
+      params: { userId, date, content },
     });
     
     // 백엔드 서버로부터 API의 응답 데이터 받은 후 반환

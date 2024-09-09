@@ -13,7 +13,7 @@ export interface GetParamsCalendarMonthPersonalWorksType {
 export interface GetRequestCalendarMonthPersonalWorksType {
     personalScheduleId: number;
     date: Date;
-    contents: string;
+    content: string;
 }
 
 
@@ -26,7 +26,7 @@ export interface PostParamsCalendarMonthPersonalWorksType {
 // POST 요청
 export interface PostRequestCalendarMonthPersonalWorksType {
     date: Date;
-    contents: string;
+    content: string;
 }
 
 export interface PostCalendarMonthPersonalWorksType extends PostParamsCalendarMonthPersonalWorksType, PostRequestCalendarMonthPersonalWorksType {}
