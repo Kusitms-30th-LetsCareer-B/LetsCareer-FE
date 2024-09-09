@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { PATHS } from "../../../Path.ts";
 import { useNavigate } from "react-router-dom"; // 페이지 전환을 위한 useNavigate 훅
 import { Ddayh24Chip } from "../../../components/chips/DdayChip.tsx";
 import { getCareerList } from "../api/careerRecruitmentsStatusApiService.ts"; // API 모듈에서 함수 임포트
@@ -97,23 +98,28 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
   useEffect(() => {
     const fetchCareerList = async () => {
       try {
-        const data = await getCareerList({ userId, page });
-        setCareerList(data.data.recruitments); // API 응답 데이터 중 recruitments 저장
+        const response = await getCareerList({ userId, page });
+        setCareerList(response.data.recruitments); // API 응답 데이터 중 recruitments 저장
+        console.log("📫 status(기업 일정 메인보드) 데이터 배송완료!!");
+        console.log(response.data)
+
       } catch (error) {
         console.error("데이터를 가져오는 데 실패했습니다:", error);
       }
     };
 
     fetchCareerList();
-  }, [userId]); // userId가 변경될 때마다 다시 호출
+  // userId가 변경될 때마다 다시 호출 (백엔드와 API 연동)
+  }, [userId]);
 
   // 더보기 버튼 클릭 핸들러
   const handleMoreButtonClick = () => {
-    navigate(page); // 더 많은 정보를 출력하는 StatusPage로 전환
+    // 지원 현황 페이지로 이동
+    navigate(PATHS.STATUS_PATH); // 더 많은 정보를 출력하는 StatusPage로 전환
   };
 
   return (
-    <div className="mx-auto max-w-2xl p-4">
+    <div className="mx-auto min-w-[700px] p-4">
       {/* 커리어 현황 헤더 */}
       <div className="flex justify-between py-7">
         <div className="text-small20 font-semibold text-neutral-10">
@@ -122,6 +128,7 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
         <div>
           <img
             src={nextButtonIcon}
+            className="cursor-pointer"
             onClick={handleMoreButtonClick}
             alt="more button"
           />
@@ -143,7 +150,6 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
           className="flex grid grid-cols-4 justify-center gap-2 py-2 text-xsmall14 text-neutral-30"
         >
           <div className="flex gap-2 px-2">
-            음{career.companyName}
             <Ddayh24Chip day={career.daysUntilEnd} /> {career.endDate}
           </div>
           <div className="px-2">{career.companyName}</div>

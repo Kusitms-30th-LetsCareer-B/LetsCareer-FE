@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {PATHS} from "./Path";
 import Footer from "./components/Layout/Footer";
 import Header from "./components/Layout/Header";
 import NavBar from "./components/Layout/NavBar";
 import PlannerSideBar from "./components/Layout/PlannerSideBar";
 import MainPage from "./pages/Main/MainPage";
 import CalendarPage from "./pages/Calendar/CalendarPage";
-import ScheduleEnvPage from "./pages/ScheduleEnv/ScheduleEnvPage.tsx";
+import RecruScheduleEnvPage from "./pages/RecruScheduleEnv/RecruScheduleEnvPage.tsx";
 import StatusPage from "./pages/Status/StatusPage";
 import CareerPage from "./pages/Career/CareerPage";
 import SelfIntroducePage from "./pages/Status/SelfIntroducePage";
@@ -30,13 +31,13 @@ function App() {
       <PlannerSideBar>
         <Routes>
           <Route
-            path="/home"
+            path={PATHS.HOME_PATH}
             element={
               <MainPage userId={testUser.userId} userName={testUser.userName} />
             }
           />
           <Route
-            path="/calendar"
+            path={PATHS.CALENDAR_PATH}
             element={
               <CalendarPage
                 userId={testUser.userId}
@@ -44,28 +45,28 @@ function App() {
               />
             }
           />
-          <Route path="/calendar/schedule" element={<ScheduleEnvPage />} />
-          <Route path="/status/" element={<StatusPage />} />
-          <Route path="/status/:recruitmentId" element={<DetailStatusPage />} />
+          <Route path={PATHS.RECRU_SCHEDULE_ENV_PATH} element={<RecruScheduleEnvPage />} />
+          <Route path={PATHS.STATUS_PATH} element={<StatusPage />} />
+          <Route path={PATHS.DETAIL_STATUS_PATH} element={<DetailStatusPage />} />
           <Route
-            path="/status/:recruitmentId/self-introduce"
+            path={PATHS.SELF_INTRODUCE_PATH}
             element={<SelfIntroducePage />}
           />
           <Route
-            path="/status/:recruitmentId/recurring-note"
+            path={PATHS.RECURRING_NOTE_PATH}
             element={<RecurringNotePage />}
           />
           <Route
-            path="/status/:recruitmentId/archivings"
+            path={PATHS.NEW_ARCHIVING_PATH}
             element={<NewArchivingPage />}
           />
           <Route
-            path="/status/:recruitmentId/archivings/:archiveId"
+            path={PATHS.ARCHIVING_PATH}
             element={<ArchivingPage />}
           />
-          <Route path="/setting" element={<CareerPage />} />
+          <Route path={PATHS.CAREER_PATH} element={<CareerPage />} />
           <Route
-            path="/setting/special-experience"
+            path={PATHS.SPECIAL_EXPERIENCE_PATH}
             element={<SpecialExperience />}
           />
         </Routes>
