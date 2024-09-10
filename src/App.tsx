@@ -17,6 +17,7 @@ import ArchivingPage from "./pages/Status/ArchivingPage";
 import { userInfo } from "./shared/api/loginInstance.ts"; /* 로그인 정보 받기 */
 import SpecialExperience from "./pages/Career/components/SpecialExperience.tsx";
 import NewArchivingPage from "./pages/Status/NewArchivingPage.tsx";
+import LoginHeader from "./components/Layout/LoginHeader.tsx";
 
 const testUser: userInfo = {
   userId: 1,
