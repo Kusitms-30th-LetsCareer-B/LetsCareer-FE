@@ -12,6 +12,9 @@ import prevButtonIcon from "../../shared/assets/calendar-prev.png";
 import favoriteStarIconEmpty from "../../shared/assets/favoriteStarEmpty.png";
 import favoriteStarIconFilled from "../../shared/assets/favoriteStarFilled.png";
 
+// Date 관련 훅
+import { getFormattedDate3 } from "../../shared/hooks/useDate"
+
 // 컴포넌트
 const ScheduleEnvPage = () => {
   const [companyName, setCompanyName] = useState('');
@@ -104,7 +107,7 @@ const ScheduleEnvPage = () => {
               alt="favorite icon"
             />
             <div
-              className="px-4 cursor-pointer"
+              className="px-4 cursor-pointer min-w-[200px]"
               onClick={() => setIsFavorite(!isFavorite)}  // 클릭 시 토글
             >
               {isFavorite ? "관심기업으로 등록됨" : "관심기업으로 등록하기"}
@@ -134,13 +137,16 @@ const ScheduleEnvPage = () => {
         </div>
         <div className="flex justify-start items-center">
           <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[248px]" onClick={handleOpenStartDatePicker}>
-            {selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : '시작일'}
+            {/* 선택된 날짜 포매팅 후 출력 */}
+            {selectedStartDate ? getFormattedDate3(selectedStartDate) : '시작일'}
+            
             {/* 이미지 클릭 시 DatePicker 열기 */}
             <PopUpDatePicker onDateSelected={handleStartDateSelected}/>
           </div>
           <div className="px-5">~</div>
           <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[248px]" onClick={handleOpenEndDatePicker}>
-            {selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : '마감일'}
+            {/* 선택된 날짜 포매팅 후 출력 */}
+            {selectedEndDate ? getFormattedDate3(selectedEndDate) : '마감일'}
             
             {/* 이미지 클릭 시 DatePicker 열기 */}
             <PopUpDatePicker onDateSelected={handleEndDateSelected}/>
@@ -148,9 +154,9 @@ const ScheduleEnvPage = () => {
         </div>
 
         {/** 마감일 리마인드 */}
-        <div className="flex justify-start items-center"></div>
-        <div className="flex justify-start items-center">
-          <div className="text-start font-regular text-xsmall16 text-neutral-45 mx-2">
+        <div className="flex justify-start items-center"></div> {/* 1열: 빈칸셀 */}
+        <div className="flex justify-start items-center">       {/* 2열: 알림여부셀 */}
+          <div className="text-start font-regular text-xsmall16 text-neutral-45 mx-2 min-w-[250px]">
             마감일 리마인드 알림을 드릴까요?
           </div>
           <div className="mx-2">

@@ -56,6 +56,15 @@ import { getResponseCalendarMonthPersonalWorksList } from '../pages/Calendar/api
 import { GetRequestCalendarMonthPersonalWorksType } from '../pages/Calendar/api/calendarMonthPersonalWorksType.ts';
 
 
+// 캘린더에 띄울 스케줄 칩스 필터 Enum 정의
+enum ScheduleFilter {
+  ALL = "전체 일정 보기",
+  DOCUMENT = "서류 일정 보기" ,
+  INTERVIEW = "면접 일정 보기",
+  OTHER = "기타 일정 보기"
+}
+
+
 /** Props */
 interface CalendarComponentProps {
   userId: number;
@@ -97,10 +106,35 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   const dates = getDates();
 
 
+  /**---------------------------------------------------*/
+  /** 일정 칩스 필터 이벤트 */
+  // 달력에 표시할 일정 종류 상태
+  // 초기값은 "전체 일정 보기" 상태
+  const [scheduleStage, setScheduleStage] = useState<ScheduleFilter>(ScheduleFilter.ALL);
+  
+  // 필터 변경 핸들러
+  const handleScheduleStageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setScheduleStage(event.target.value as ScheduleFilter);
+  };
+
+  
+  // 기업 채용 일정 필터링 함수: 선택된 체크박스(전체/서류/면접/기타)에 대한 일정만 가져오기
+  const getFilteredRecruitmentDataByStageType = (recruitmentsData: GetRequestCalendarMonthRecruitmentsType[]) => {
+    switch (scheduleStage) {
+      case ScheduleFilter.DOCUMENT:
+        return recruitmentsData.filter((item) => item.filter === filterState.START || item.filter === filterState.FINISH || item.filter === filterState.WRITTEN);
+      case ScheduleFilter.INTERVIEW:
+        return recruitmentsData.filter((item) => item.filter === filterState.INTERVIEW);
+      case ScheduleFilter.OTHER:
+        return recruitmentsData.filter((item) => item.filter === filterState.OTHER);
+      default:
+        return recruitmentsData; // '전체 일정'인 경우 전체 데이터 반환
+    }
+  };
+
 
   /**---------------------------------------------------*/
   /** API 연동 데이터 관련 변수, 함수 */
-
   // 기업 채용 일정 원본 데이터
   const [recruitmentsDataList, setRecruitmentsDataList] = useState<GetRequestCalendarMonthRecruitmentsType[]>([]);
 
@@ -110,20 +144,27 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   const [otherCount, setOtherCount] = useState(0); // 기타
 
 
-  /** 💗 기업 채용 일정 연동
-   *  특정 날짜의 기업 채용 일정 데이터를 가져오는 함수 */
-  const getRecruitmentsSchedulesForDate = (date: Date) => {
-    return recruitmentsDataList.filter((data) => {
-      const dataDate = new Date(data.date); // data.date는 'YYYY-MM-DD' 형식의 문자열이므로 Date 객체로 변환
-      
+  // 기업 채용 일정 필터링 함수: 선택된 일정에 대한 일정만 가져오기
+  const getFilteredRecruitmentDataForDate = (date: Date) => {
+    // 기업 채용 일정만 가져와서 파싱
+    const recruitmentSchedulesForDate = recruitmentsDataList.filter((data) => {
+      // data.date는 'YYYY-MM-DD' 형식의 문자열이므로 Date 객체로 변환
+      const dataDate = new Date(data.date);
+
       return (
         dataDate.getFullYear() === date.getFullYear() &&
         dataDate.getMonth() === date.getMonth() &&
         dataDate.getDate() === date.getDate()
       );
     });
-  };
 
+    // <리턴1> 선택된 날짜에 대한 전체 기업 채용 일정 리턴
+    //return recruitmentSchedulesForDate;
+    
+    // <리턴2> 선택박스 필터링 추가 후 리턴
+    // 선택박스(전체/서류/면접/기타)에 체크된 기업 채용 일정만 리턴
+    return getFilteredRecruitmentDataByStageType(recruitmentSchedulesForDate); // 필터 적용
+  };
   
   
   // 개인 일정 원본 데이터
@@ -230,7 +271,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
     handleDateClick(date);
 
     // 연동받은 기업 일정 정보
-    const recruitmentsSchedulesForDate = getRecruitmentsSchedulesForDate(date);
+    const recruitmentsSchedulesForDate = getFilteredRecruitmentDataForDate(date);
 
     // 연동받은 개인 일정 정보
     const personalSchedulesForDate = getPersonalWorksForDate(date);
@@ -300,7 +341,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   const handleDateSelect = (date: Date) => {
     // 캘린더 기존 UI 훅 업뎃
     handleDateClick(date);
-    const recruitmentsSchedulesForDate = getRecruitmentsSchedulesForDate(date);
+    const recruitmentsSchedulesForDate = getFilteredRecruitmentDataForDate(date);
 
     const recruitmentScheduleChips = recruitmentsSchedulesForDate.map((recruitmentsData) => {
       // 서류 칩스
@@ -368,7 +409,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
         <button onClick={handlePrevMonth} className="px-4">
           <img src={prevButtonIcon} alt="이전 달" />
         </button>
-        <h2 className="text-small20 font-bold min-w-[105px]">
+        <h2 className="flex justify-center items-center text-small20 font-bold min-w-[125px]">
           {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월{" "}
           {/**영문: {monthNames[currentDate.getMonth()]}*/}
         </h2>
@@ -391,13 +432,16 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
         </div>
 
         {/* 전체 일정 보기 버튼 */}
-        <button
-          onClick={handleAllSchedule}
-          className="font-xxsmall12 flex h-9 w-36 items-center justify-start rounded-xs border border-neutral-80 bg-static-100 px-2 text-xxsmall12 text-neutral-45"
-        >
-          전체 일정 보기
-          <img className="px-2" src={filterButtonIcon} alt="전체 일정 보기" />
-        </button>
+        {/* 캘린더 필터 선택 박스 */}
+        <div className="font-xxsmall12 flex h-9 w-36 items-center justify-start rounded-xs border border-neutral-80 bg-static-100 px-2 text-xxsmall12 text-neutral-45">
+          <select className="cursor-pointer px-2" id="scheduleFilter" value={scheduleStage} onChange={handleScheduleStageChange}>
+            <option value={ScheduleFilter.ALL}>{ScheduleFilter.ALL}</option>
+            <option value={ScheduleFilter.DOCUMENT}>{ScheduleFilter.DOCUMENT}</option>
+            <option value={ScheduleFilter.INTERVIEW}>{ScheduleFilter.INTERVIEW}</option>
+            <option value={ScheduleFilter.OTHER}>{ScheduleFilter.OTHER}</option>
+          </select>
+        </div>
+
 
         <p className="px-1.5" />
 
@@ -486,7 +530,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           
           // 현재 보이는 월의 전체 기업 일정 중에서
           // 각 날짜 셀에 대한 기업 일정만 가져오기
-          const recruitmentsSchedulesForDate = getRecruitmentsSchedulesForDate(date);
+          const recruitmentsSchedulesForDate = getFilteredRecruitmentDataForDate(date);
 
           {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
           const companySchedules = recruitmentsSchedulesForDate.map((recruitmentsData) => {
@@ -582,6 +626,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           // 각 날짜 셀에 대한 개인 일정만 가져오기
           const personalSchedulesForDate = getPersonalWorksForDate(date);
 
+          
           {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
           const personalSchedules = personalSchedulesForDate.map((personalScheduleForDate) => {
             // 개인 일정칩스
@@ -611,10 +656,6 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               personalScheduleChip
             );
           });
-
-          
-          {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 개인 일정 칩스 추가 */}
-
 
                   
           {

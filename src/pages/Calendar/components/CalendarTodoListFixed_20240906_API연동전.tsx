@@ -1,8 +1,13 @@
-/** 안 쓰는 컴포넌트 입니당
- *  해당 컴포 역할은 Calendar 폴더의 CalendarTodoListFixed.tsx 컴포로 바뀜 */
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // 백엔드와 통신하기 위한 axios 임포트
+/** 📌
+ * 안 쓰는 컴포넌트 입니당
+ * 안 쓰는 컴포넌트 입니당
+ * 안 쓰는 컴포넌트 입니당
+ * 안 쓰는 컴포넌트 입니당
+ * 안 쓰는 컴포넌트 입니당
+ * 안 쓰는 컴포넌트 입니당
+ * 해당 컴포 역할은 Calendar 폴더의 CalendarTodoListFixed.tsx 컴포로 바뀜
+ * 연동 전 디자인은 참고할만해서 냅둠 */
+import { useState } from 'react';
 
 // 아이콘 이미지 임포트
 import prevButtonIcon from "../../../shared/assets/calendar-prev.png"
@@ -14,20 +19,19 @@ import {useTodoList} from '../../../shared/hooks/useTodoList.ts';
 // ToDo 칩스 임포트
 import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
   InterviewScheduleChip, OtherScheduleChip, PersonalScheduleChip, } from "../../../components/chips/TodoListChip"
-
-/* 사용자 로그인 정보 가져오기 */
-import {userInfo} from "../../../shared/api/loginInstance.ts"
-/* 달력에서 선택한 일정 정보 가져오기 */
-// 채용일정, 개인일정, 투두리스트 중 채용일정만
-import { RecruitmentScheduleListProps } from "../../../components/ToDoListTool.ts"
-/* 부모 컴포로부터 최종 입력받을 Probs 합체 */
-interface CombinedProps extends userInfo, RecruitmentScheduleListProps {}
-
-/* Date 관련 hook 임포트 */
+  
+// Date 관련 hook 임포트
 import { getFormattedDate1, getFormattedDate2, getFormattedDate3 } from "../../../shared/hooks/useDate.ts";
 
-// API 연동 타입
-import { GetParamsMainTodayType, GetRequestMainTodayType } from "../api/mainTodayType.ts"
+
+/** Props */
+// 사용자 로그인 정보 가져오기
+import {userInfo} from "../../../shared/api/loginInstance.ts"
+// 달력에서 선택한 일정 정보 가져오기
+// 채용일정, 개인일정, 투두리스트 중 채용일정만
+import { RecruitmentScheduleListProps } from "../../../components/ToDoListTool.ts"
+// 부모 컴포로부터 최종 입력받을 Probs 합체
+interface CombinedProps extends userInfo, RecruitmentScheduleListProps {}
 
 
 /* 리스트로 각 기업에 대한 일정 정보들을 받기:  API 연동 */

@@ -1,18 +1,27 @@
 import { useState } from 'react';
 import MainTodayList from "./components/MainTodayList";
-import MainTodoList from "./components/MainTodoList";
-import CareerStatusNumBoard from "./components/CareerStatusNumBoard";
+import CareerStatusStageNumBoard from "./components/CareerStatusStageNumBoard";
 import CareerRecruitmentsStatus from "./components/CareerRecruitmentsStatus.tsx";
 import MainCalendar from "../../components/Calendar";
+import PopUpAlarmButton from "./components/PopUpAlarm.tsx"
 
-/* API 연동 부분 */
-import {userInfo} from "../../shared/api/loginInstance.ts" /* 로그인 정보 받기 */
+// 투두리스트
+import CompanyTodoListFixedComponent from "../Calendar/components/CalendarTodoListFixed.tsx"
+import CompanyTodoListFixedComponent_20240909_날짜별 from "../Calendar/components/CalendarTodoListFixed_20240909_날짜별.tsx"
 
-/** 투두리스트 */
-import CompanyTodoListComponent from "../Calendar/components/CalendarTodoListFixed"
-
-/* Date 관련 hook 임포트 */
+// Date 관련 hook 임포트
 import { getYearMonthDay, getYear, getMonth, getFormattedDate3 } from "../../shared/hooks/useDate.ts";
+
+
+/* Props */
+// 로그인 정보 받기
+import {userInfo} from "../../shared/api/loginInstance.ts"
+
+/**실험중
+ * 
+      <TodoComponent/>
+ */
+import TodoComponent from "../Status/components/Todo/TodoComponent";
 
 
 function MainPage({userId, userName} : userInfo) {
@@ -26,15 +35,23 @@ function MainPage({userId, userName} : userInfo) {
 
   return (
     <div className="p-[48px]">
-      {/** 타이틀 */}
+    {/** 타이틀 */}
+    <div className="flex justify-between">
       <div className="font-bold text-medium24 text-neutral-0 mb-10">
         {userName}님, 오늘도 커리어를 향해 함께 같이 달려봐요!
       </div>
+      {/** 알림창 */}
+      <PopUpAlarmButton userId={userId} userName={userName}/>
+    </div>
       
       <div className="flex justify-between gap-8">
         <div>
-          {/** 메인보드: 일정 현황 */}
-          <CareerStatusNumBoard userId={userId} />
+          {/** 메인보드: 합/불 일정 현황
+          <CareerStatusNumBoard userId={userId} /> */}
+          {/** 메인보드: 서/면/기 일정 현황 */}
+          <CareerStatusStageNumBoard userId={userId} />
+          
+          {/** 메인보드: 지원 현황 */}
           <CareerRecruitmentsStatus userId={userId} page={page} />
           
           <div className="font-semibold text-small20 text-neutral-10 mb-5">
@@ -54,7 +71,11 @@ function MainPage({userId, userName} : userInfo) {
           
           {/** 투두 리스트 */}
           <div className="font-sans rounded-lg border border-neutral-80 px-5">
-            <CompanyTodoListComponent  userId={userId} selectedDate={selectedDate} setSelectedDate={setSelectedDate}  selectedDateString ={getFormattedDate3(selectedDate)}  />
+            <CompanyTodoListFixedComponent  userId={userId} />
+            {/** 
+            <CompanyTodoListFixedComponent_20240909_날짜별  userId={userId} selectedDate={selectedDate} setSelectedDate={setSelectedDate}  selectedDateString ={getFormattedDate3(selectedDate)}  />
+            */}
+            <CompanyTodoListFixedComponent_20240909_날짜별  userId={userId} selectedDate={selectedDate} setSelectedDate={setSelectedDate}  selectedDateString ={getFormattedDate3(selectedDate)}  />
           </div>
         </div>
       </div>
