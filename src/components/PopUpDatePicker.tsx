@@ -5,7 +5,7 @@ import datePicker from "../shared/assets/datePicker.png";
 import DatePicker from "./DatePicker";
 import useDatePicker from "../shared/hooks/useDatePicker";
 
-// 부모 컴포에게 selectedDate값을 넘기기위한 Probs
+// 부모 컴포에게 selectedDate 값을 넘기기 위한 Prop
 interface PopUpDatePickerProps {
   onDateSelected: (date: Date) => void;
 }
@@ -15,7 +15,6 @@ const PopUpDatePicker = ({ onDateSelected }: PopUpDatePickerProps) => {
   // 사용할 훅 불러오기
   const {
     isDatePickerOpen,
-    selectedDate,
     handleOpenDatePicker,
     handleCloseDatePicker,
     handleDateSelected,
@@ -25,8 +24,8 @@ const PopUpDatePicker = ({ onDateSelected }: PopUpDatePickerProps) => {
   // 부모 컴포에게 selectedDate를 넘기기 위한 훅 정의
   const handleDateSelect = (date: Date) => {
     handleDateSelected(date); // 기존 훅 업뎃
-    onDateSelected(date); // 부모에게 선택된 데이터 전송
-    handleCloseDatePicker(); // 날짜 선택 후 DatePicker 닫기
+    onDateSelected(date);     // 부모에게 선택된 데이터 전송
+    handleCloseDatePicker();  // 날짜 선택 후 DatePicker 닫기
   };
 
   return (

@@ -124,7 +124,7 @@ export const getFormattedDate2 = (date: Date) => {
 /** 형식: YYYY-MM-DD */
 export const getFormattedDate3 = (date: Date) => {
   const formattedDate = date.toLocaleDateString("en-CA"); // method1
-  // const formattedDate = date.toISOString().split("T")[0] // method2. 오류났던 거 같음
+  // const formattedDate = date.toISOString().split("T")[0] // method2. 오류났던 거 같음 (-1만큼 일수 덜 불러와짐)
 
   return formattedDate;
 };
@@ -145,4 +145,20 @@ export const getFormattedDate5 = (date: Date) => {
   const day2 = daysOfWeekKor[date.getDay()];
 
   return `${month}월 ${day1}일 (${day2})`;
+};
+
+
+// 날짜 문자열을 받아서 두 날짜의 차이를 계산하는 함수
+export const geteDateDifference = (date1: string, date2: string): number => {
+  const dateFormat = 'YYYY.MM.DD';
+
+  // 문자열을 Date 객체로 변환
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  // 날짜 차이 계산 (밀리초 차이로 계산 후 일 단위로 변환)
+  const differenceInTime = d2.getTime() - d1.getTime();
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24); // 밀리초 -> 일 변환
+
+  return differenceInDays;
 };
