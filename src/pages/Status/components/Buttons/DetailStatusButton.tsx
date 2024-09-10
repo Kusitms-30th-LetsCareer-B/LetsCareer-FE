@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "../../../../components/DatePicker";
 import axios from "axios";
+import { getFormattedDate2, getFormattedDate3 } from "../../../../shared/hooks/useDate";
+import { DeleteButton } from "./StatusButton";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -17,39 +19,54 @@ export const ArchiveButton = ({
   archiveLink,
 }: ArchiveButtonProps) => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
+    <>
     <button
-      className="mt-[12px] flex items-center gap-[16px] rounded-sm bg-neutral-95 px-[16px] py-[12px]"
-      onClick={() => navigate(archiveLink)}
-    >
-      <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-        {title}
-      </span>
-      <button
-        className=""
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
+        className="mt-[12px] flex items-center justify-between gap-[16px] rounded-sm bg-neutral-95 px-[16px] py-[12px]"
+        onClick={() => navigate(archiveLink)}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
+       <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+          {title}
+        </span>
+        <button 
+          className=""
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOpenModal(); // 모달 열기
+          }}
         >
-          <path
-            d="M14.1673 5.83301L5.83398 14.1663M5.83398 5.83301L14.1673 14.1663"
-            stroke="#989BA2"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-    </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M14.1673 5.83301L5.83398 14.1663M5.83398 5.83301L14.1673 14.1663"
+              stroke="#989BA2"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </button>
+        <DeleteButton
+        title={title}
+        isOpen={isModalOpen}
+        onCancel={handleCloseModal}
+        onDelete={() => {
+          onDelete();
+          handleCloseModal(); // 삭제 후 모달 닫기
+        }}
+      />
+    </>
   );
 };
 
@@ -91,11 +108,8 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
   };
 
   const handleDateSelect = (date: Date) => {
-    const formattedDisplayDate = `${date.getFullYear() % 100}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
-    const formattedApiDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식
-
-    setSelectedDate(formattedDisplayDate);
-    setApiDate(formattedApiDate);
+    setSelectedDate(getFormattedDate2(date)); // YYYY.MM.DD 형식
+    setApiDate(getFormattedDate3(date)); // YYYY-MM-DD 형식
     setIsDatePickerOpen(false);
   };
 
@@ -372,11 +386,8 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
   };
 
   const handleDateSelect = (date: Date) => {
-    const formattedDisplayDate = `${date.getFullYear() % 100}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getDate().toString().padStart(2, "0")}`;
-    const formattedApiDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식
-
-    setSelectedDate(formattedDisplayDate); // 화면에 표시할 yy.mm.dd 형식
-    setApiDate(formattedApiDate); // API에 보낼 yyyy-mm-dd 형식
+    setSelectedDate(getFormattedDate2(date)); // 화면에 표시할 yy.mm.dd 형식
+    setApiDate(getFormattedDate3(date));
     setIsDatePickerOpen(false);
   };
 
@@ -395,7 +406,7 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
         if (stageData.stageName !== "서류" || stageData.stageName !== "면접") {
           setInputValue(stageData.stageName);
         }
-        const formattedDate = formatDateForDisplay(stageData.endDate);
+        const formattedDate = getFormattedDate3(stageData.endDate);
         setSelectedDate(formattedDate);
         setApiDate(stageData.endDate); // API에 보낼 원본 날짜는 유지
       } catch (error) {
