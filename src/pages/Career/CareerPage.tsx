@@ -26,7 +26,7 @@ function CareerPage() {
         </span>
       </div>
       {selectedTab === "resume" ? (
-        <Resume /> // 기본 이력서 컴포넌트
+        <Resume />
       ) : (
         <SpecialExperience />
       )}
