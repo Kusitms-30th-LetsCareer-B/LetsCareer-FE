@@ -1,4 +1,4 @@
-/** 메인 홈: 채용 일정 현황 개수 */
+/** 메인 홈: 채용 일정 상태별 현황 개수 */
 export const StatusNum_URL = "/statuses";
 
 /** API Type */
@@ -10,7 +10,7 @@ export interface GetParamsStatusNumType {
 // GET 요청
 export interface GetRequestStatusNumType {
     total: number;
-    document: number;
-    interview: number;
-    other: number;
+    progress: number;
+    passed: number;
+    failed: number;
 }

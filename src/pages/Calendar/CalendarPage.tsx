@@ -1,18 +1,8 @@
 import { useState } from 'react';
 import Calender from "../../components/Calendar"
-import DatePicker from "../../components/DatePicker"
-
-import { DefaultDocumentChip, HoveredDocumentChip, ClickedDocumentChip,
-         DefaultInterviewChip, HoveredInterviewChip, ClickedInterviewChip,
-         DefaultOtherChip, HoveredOtherChip, ClickedOtherChip,
-         DefaultPersonalChip, HoveredPersonalChip, ClickedPersonalChip } from "../../components/chips/CalendarChip"
-import useDatePicker from "../../shared/hooks/useDatePicker"
 
 /* 일정 리스트 */
 import CalendarList from "./components/CalendarList"
-
-/* Date 관련 hook 임포트 */
-import { getYearMonthDay, getYear, getMonth, getFormattedDate3 } from "../../shared/hooks/useDate.ts";
 
 /* 로그인 정보 받기 */
 import {userInfo} from "../../shared/api/loginInstance.ts"
@@ -35,7 +25,7 @@ function CalendarPage({userId, userName} : userInfo) {
   const handleDateSelected = (date: Date, recruitmentScheduleChips: JSX.Element[], personalScheduleList: JSX.Element[]) => {
     // 캘린더에서 선택된 날짜 반환받고 상태에 저장
     setSelectedDate(date);
-
+    
     // 캘린더에서 선택된 날짜에 대한 기업 일정 칩스를 보냄
     // 그걸 받아서 상태에 저장
     setRecruitmentScheduleChips(recruitmentScheduleChips);

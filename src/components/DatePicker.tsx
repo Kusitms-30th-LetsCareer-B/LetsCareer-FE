@@ -111,16 +111,19 @@ const DatePicker = ({ onCancel, onSelect, message }: DatePickerProps) => {
       {/* 달력 파트 */}
       <div className="grid grid-cols-7 gap-0">
         {/**요일 컬럼*/}
-        {daysOfWeekEng.map((day) => (
+        {daysOfWeekEng.map((day, index) => (
+          // 디버깅 완료: day를 key로 하면 오류남.
+          // day는 SAT/SUN 모두 'S'로 표현되고, 화/목도 'T'로 표현되어서 고유한 key가 아님.
+          // index를 조합하여 고유한 key 값 생성
           <div
-            key={day}
+            key={`${day}-${index}`}
             className="bg-transparent p-2 text-center text-xxsmall12 uppercase text-neutral-30"
           >
             {day}
           </div>
         ))}
-
-        {/**날짜 셀*/}
+        
+        {/** 특정 날짜 셀 UI */}
         {dates.map((date, index) => {
           const isToday =
             date && date.toDateString() === new Date().toDateString();
@@ -142,10 +145,7 @@ const DatePicker = ({ onCancel, onSelect, message }: DatePickerProps) => {
           const isFifteenth = date && date.getDate() === 15; // 15일인지 확인
 
           {
-            /** 특정 날짜 셀 UI */
-          }
-          {
-            /** 모든 셀이 동일한 UI인 캘린더네 */
+            /** 모든 셀이 동일한 UI인 캘린더 */
           }
           const calendarCellClassName = `flex justify-center items-center text-center bg-white text-xsmall16 text-neutral-30 cursor-pointer h-10`;
 
@@ -156,19 +156,18 @@ const DatePicker = ({ onCancel, onSelect, message }: DatePickerProps) => {
             /* 선택, 호버 상태인 셀에 동그라미 표시 */
             <span
               className={`flex items-center justify-center ${isSelected ? "border-5 h-10 w-10 rounded-full border-primary-100 bg-primary-100 text-white" : ""} ${isHovered ? "border-5 h-10 w-10 rounded-full border-primary-100 bg-primary-100 text-white" : ""}`}
-            >
+            > 
               {/* 날짜 셀에 들어갈 데이터 */}
               {date.getDate()}
             </span>
           ) : null;
 
-          {
-            /** 달력 셀에 출력 내용 + 이벤트 
-//              key={index}*/
-          }
+
+          // 디버깅 완료: uniqueKey를 index로만 하면 안 되고 date 값도 해줘야 충돌 안 남
+          const uniqueKey = date ? `${date.toISOString()}-${index}` : `empty-${index}`;
           return (
             <div
-              key={date ? date.toISOString() : index}
+              key={uniqueKey}
               className={calendarCellClassName}
               onClick={() => handleDateClick(date)}
               onMouseOver={() => handleDateMouseOver(date)}
