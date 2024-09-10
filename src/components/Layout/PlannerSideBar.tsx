@@ -9,9 +9,9 @@ function PlannerSideBar({ children }: PlannerSideBarProps) {
   const { getPath, getIcon, navigateTo } = usePlannerSideBar();
 
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen">
       <div className="flex">
-        <div className="w-[216px] gap-[12px] border-r border-r-neutral-80 bg-static-100 px-[20px] py-[28px]">
+        <div className="min-w-[216px] gap-[12px] border-r border-r-neutral-80 bg-static-100 px-[20px] py-[28px]">
           <div className={getPath("/home")} onClick={() => navigateTo("/home")}>
             <img
               className="h-[20px] w-[20px]"

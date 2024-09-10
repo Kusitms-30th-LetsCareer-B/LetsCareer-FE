@@ -27,7 +27,7 @@ function MainPage({userId, userName} : userInfo) {
   return (
     <div className="p-[48px]">
       {/** 타이틀 */}
-      <div className="font-bold text-medium24 text-neutral-0 mb-10">
+      <div className="font-bold text-medium24 tracking-[-0.576px] text-neutral-0 mb-10">
         {userName}님, 오늘도 커리어를 향해 함께 같이 달려봐요!
       </div>
       

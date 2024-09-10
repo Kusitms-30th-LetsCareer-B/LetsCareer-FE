@@ -182,7 +182,7 @@ function StatusPage() {
   };
 
   return (
-    <div className="flex flex-col p-[48px]">
+    <div className="pt-[44px] pb-[48px] pl-[48px] pr-[48px]">
       <div className="inline-flex min-w-[1128px] items-center justify-between gap-[186px]">
         <WelcomeMessage name="오민지" />
         <div className="flex gap-[12px]">

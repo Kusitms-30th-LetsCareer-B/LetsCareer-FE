@@ -30,7 +30,7 @@ function Header() {
           </a>
           <a
             className="hidden cursor-pointer text-small18 font-bold text-neutral-0 md:block"
-            href="/blog/planner"
+            href="/home"
           >
             커리어 플래너
           </a>
