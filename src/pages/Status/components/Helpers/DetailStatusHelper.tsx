@@ -550,19 +550,23 @@ export const ExistArchiving = () => {
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
 
   const [archives, setArchives] = useState<ArchiveItem[]>([]);
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
+  const [currentPage, setCurrentPage] = useState(1); // 1부터 시작
+  const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
 
   const fetchArchives = async (page: number) => {
     try {
       const response = await axios.get(
         `${BASE_URL}/archivings/recruitment?recruitmentId=${recruitmentId}&page=${page - 1}&size=5`,
       );
-      console.log("API response:", response.data); // 응답 데이터 출력
       const archiveData = response.data.data;
-      setArchives(archiveData); // API로 받은 데이터를 저장
-      setTotalPages(Math.max(1, Math.ceil(response.data.totalCount / 5) + 1)); // 페이지 수 계산
-      console.log(totalPages);
+      setArchives(archiveData);
+
+      // const totalCount = response.data.totalCount || 0;
+      const totalCount = response.data.data.length || 0;
+      console.log("Total Count:", totalCount); 
+      setTotalPages(Math.ceil(totalCount / 5)); 
+      console.log("Total Pages:", totalPages); 
+
     } catch (error) {
       console.error("Error fetching archives:", error);
     }
@@ -570,9 +574,9 @@ export const ExistArchiving = () => {
 
   useEffect(() => {
     if (recruitmentId) {
-      fetchArchives(currentPage); // 컴포넌트 마운트 시 현재 페이지에 맞는 데이터를 가져옴
+      fetchArchives(currentPage); // 현재 페이지에 맞는 데이터를 가져옴
     }
-  }, [recruitmentId, currentPage]); // recruitmentId 또는 currentPage가 변경될 때 데이터 가져옴
+  }, [recruitmentId, currentPage]);
 
   const handleDelete = async (id: number) => {
     try {
@@ -582,33 +586,17 @@ export const ExistArchiving = () => {
         },
       });
   
-      // 서버에서 삭제 성공 응답을 받은 경우 상태 업데이트
       if (response.status === 200) {
         setArchives((prevArchives) =>
           prevArchives.filter((archive) => archive.id !== id),
         );
         alert(response.data.message); // 성공 메시지 출력
+        fetchArchives(currentPage); // 삭제 후 현재 페이지 데이터 다시 가져오기
       }
     } catch (error) {
       console.error("Error deleting archiving:", error);
       alert("아카이빙 삭제에 실패했습니다.");
     }
-  }
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const goToPrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleClick = () => {
-    navigate(`/status/${recruitmentId}/self-introduce`);
   };
 
   return (
@@ -616,7 +604,7 @@ export const ExistArchiving = () => {
       <div className="flex items-center self-stretch rounded-sm bg-primary-10">
         <div
           className="flex cursor-pointer justify-between px-[16px] py-[12px]"
-          onClick={handleClick}
+          onClick={() => navigate(`/status/${recruitmentId}/self-introduce`)}
         >
           <div className="w-[534px] flex-shrink-0 flex-grow basis-0">
             <span className="text-xsmall16 font-medium tracking-[-0.096px] text-primary-100">
@@ -653,40 +641,17 @@ export const ExistArchiving = () => {
           ))}
 
           {/* 페이지네이션 버튼 */}
-          <div className="mt-4 flex justify-center">
-            {totalPages > 1 ? (
-              Array.from({ length: totalPages }, (_, idx) => (
-                <button
-                  key={idx}
-                  className="mx-1 flex items-center"
-                  onClick={() => setCurrentPage(idx + 1)}
-                >
-                  {currentPage === idx + 1 ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="8"
-                      height="8"
-                      viewBox="0 0 8 8"
-                      fill="none"
-                    >
-                      <circle cx="4" cy="4" r="4" fill="#757BFF" />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="8"
-                      height="8"
-                      viewBox="0 0 8 8"
-                      fill="none"
-                    >
-                      <circle cx="4" cy="4" r="4" fill="#E7E7E7" />
-                    </svg>
-                  )}
-                </button>
-              ))
-            ) : (
-              <div className="h-4"></div> // 페이지가 하나뿐일 경우 패딩 처리
-            )}
+          <div className="mt-4 flex justify-center gap-[8px]">
+            {Array.from({ length: totalPages }, (_, idx) => (
+              <button
+                key={idx}
+                className={`h-[8px] w-[8px]  rounded-full ${
+                  currentPage === idx + 1 ? "bg-primary-light" : "bg-neutral-80"
+                }`}
+                onClick={() => setCurrentPage(idx + 1)}
+              >
+              </button>
+            ))}
           </div>
         </>
       ) : (

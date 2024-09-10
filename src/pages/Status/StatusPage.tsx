@@ -198,12 +198,12 @@ function StatusPage() {
       <div className="mb-[4px] mt-[32px] flex items-center justify-between">
         <div className="flex items-center">
           <StatusTab
-            name="준비 현황"
+            name="진행 중인 기업"
             isActive={activeTab === "prepare"}
             onClick={() => tabClick("prepare")}
           />
           <StatusTab
-            name="지원 결과"
+            name="종료된 기업"
             isActive={activeTab === "result"}
             onClick={() => tabClick("result")}
           />
