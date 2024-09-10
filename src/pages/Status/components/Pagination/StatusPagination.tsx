@@ -100,7 +100,7 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
             ? "border-primary-50"
             : "border-neutral-80"
         }`}
-        disabled={currentPage === totalPages}
+        disabled={currentPage - 1 === totalPages}
       >
         {currentPage - 1 < totalPages ? (
           <svg

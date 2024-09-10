@@ -420,3 +420,68 @@ export const RecruitmentDeleteButton = ({
     </div>
   );
 };
+
+interface DeleteButtonProps {
+  isOpen: boolean;
+  title: string;
+  onDelete: () => void;
+  onCancel: () => void;
+}
+
+export const DeleteButton = ({
+  isOpen,
+  title,
+  onDelete,
+  onCancel,
+}: DeleteButtonProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="top-50% fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+      <div className="flex h-auto w-[418px] flex-col rounded-lg bg-static-100 shadow-lg">
+        <div className="flex items-center justify-between px-[24px] pb-[16px] pt-[24px]">
+          <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-10">
+            삭제 확인
+          </span>
+          <button onClick={onCancel}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M17 7L7 17M7 7L17 17"
+                stroke="#2A2D34"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="px-[24px]">
+          <span className="font-regular font-regular text-xsmall14 tracking-[-0.21px] text-neutral-45">
+            {title}을(를) 삭제하시겠습니까?
+          </span>
+        </div>
+        <div className="flex justify-end gap-[16px] p-[24px]">
+          <button
+            onClick={onCancel}
+            className="flex rounded-sm bg-neutral-90 px-[28px] py-[10px] text-neutral-45"
+          >
+            취소
+          </button>
+          <button
+            onClick={onDelete}
+            className="rounded-sm bg-system-error px-[28px] py-[10px] text-static-100"
+          >
+            삭제
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+

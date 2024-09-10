@@ -42,7 +42,7 @@ function CalendarPage({userId, userName} : userInfo) {
       <div className="p-[48px]">
       {/** 타이틀 */}
       <div className="mb-10">
-        <div className="font-bold text-medium24 text-neutral-0">
+        <div className="font-bold text-medium24 tracking-[-0.576px] text-neutral-0">
           {userName}님의 캘린더
         </div>
         <div className="font-medium text-xsmall16 text-neutral-50 py-2">

@@ -6,6 +6,7 @@ import {
   getFormattedDate3,
 } from "../../../../shared/hooks/useDate.ts";
 import axios from "axios";
+import { DeleteButton } from "./StatusButton.tsx";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -21,39 +22,53 @@ export const ArchiveButton = ({
   archiveLink,
 }: ArchiveButtonProps) => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
   return (
-    <button
-      className="mt-[12px] flex items-center justify-between gap-[16px] rounded-sm bg-neutral-95 px-[16px] py-[12px]"
-      onClick={() => navigate(archiveLink)}
-    >
-      <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-        {title}
-      </span>
+    <>
       <button
-        className=""
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
+        className="mt-[12px] flex items-center justify-between gap-[16px] rounded-sm bg-neutral-95 px-[16px] py-[12px]"
+        onClick={() => navigate(archiveLink)}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
+        <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+          {title}
+        </span>
+        <button
+          className=""
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOpenModal(); // 모달 열기
+          }}
         >
-          <path
-            d="M14.1673 5.83301L5.83398 14.1663M5.83398 5.83301L14.1673 14.1663"
-            stroke="#989BA2"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M14.1673 5.83301L5.83398 14.1663M5.83398 5.83301L14.1673 14.1663"
+              stroke="#989BA2"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </button>
-    </button>
+      <DeleteButton
+      title={title}
+      isOpen={isModalOpen}
+      onCancel={handleCloseModal}
+      onDelete={() => {
+        onDelete();
+        handleCloseModal(); // 삭제 후 모달 닫기
+      }}
+    />
+  </>
   );
 };
 

@@ -13,7 +13,7 @@ function CareerPage() {
   );
 
   return (
-    <div className="mb-[70px] ml-[48px] mt-[40px] flex w-full flex-col gap-[40px]">
+    <div className="mb-[70px] p-[48px] flex w-full flex-col gap-[40px]">
       <div className="flex flex-col items-start gap-[6px]">
         <CareerHeader
           name="오민지"
@@ -26,7 +26,7 @@ function CareerPage() {
         </span>
       </div>
       {selectedTab === "resume" ? (
-        <Resume /> // 기본 이력서 컴포넌트
+        <Resume />
       ) : (
         <SpecialExperience />
       )}

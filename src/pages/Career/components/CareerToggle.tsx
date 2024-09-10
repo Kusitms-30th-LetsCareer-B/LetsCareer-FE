@@ -122,18 +122,16 @@ interface UpdateAnswerToggleProps {
   title: string;
   content: string;
   onSave: (newTitle: string, newContent: string) => void;
-}
-
-interface UpdateAnswerToggleProps {
-  title: string;
-  content: string;
-  onSave: (newTitle: string, newContent: string) => void;
+  onUpdate: () => void;
+  onToggle: () => void;
 }
 
 export const UpdateAnswerToggle = ({
   title,
   content,
   onSave,
+  onUpdate,
+  onToggle
 }: UpdateAnswerToggleProps) => {
   const [newTitle, setNewTitle] = useState(title);
   const [newContent, setNewContent] = useState(content);
@@ -159,15 +157,22 @@ export const UpdateAnswerToggle = ({
     autoResizeTextarea(contentRef.current);
   }, []);
 
+  const handleBothFunctions = () => {
+    handleSave();
+    onUpdate();
+  };  
+
   return (
     <div className="flex w-full flex-col items-start rounded-b-md bg-neutral-100">
       <div className="flex h-[56px] w-full items-center gap-[12px] rounded-sm border border-neutral-80 bg-static-100 px-[20px] py-[14px]">
         <svg
+          onClick={onToggle}
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="13"
           viewBox="0 0 16 13"
           fill="none"
+          className="cursor-pointer"
         >
           <path
             d="M9.73205 12C8.96225 13.3333 7.03775 13.3333 6.26795 12L1.0718 3C0.301997 1.66667 1.26425 0 2.80385 0L13.1962 0C14.7358 0 15.698 1.66667 14.9282 3L9.73205 12Z"
@@ -201,7 +206,7 @@ export const UpdateAnswerToggle = ({
           />
         </div>
         <button
-          onClick={handleSave}
+          onClick={handleBothFunctions}
           className="w-full rounded-md bg-primary px-[20px] py-[12px] text-white"
         >
           수정완료
