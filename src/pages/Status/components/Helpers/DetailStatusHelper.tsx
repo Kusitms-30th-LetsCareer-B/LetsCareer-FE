@@ -574,11 +574,26 @@ export const ExistArchiving = () => {
     }
   }, [recruitmentId, currentPage]); // recruitmentId 또는 currentPage가 변경될 때 데이터 가져옴
 
-  const handleDelete = (id: number) => {
-    setArchives((prevArchives) =>
-      prevArchives.filter((archive) => archive.id !== id),
-    );
-  };
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/archivings`, {
+        params: {
+          archivingId: id, 
+        },
+      });
+  
+      // 서버에서 삭제 성공 응답을 받은 경우 상태 업데이트
+      if (response.status === 200) {
+        setArchives((prevArchives) =>
+          prevArchives.filter((archive) => archive.id !== id),
+        );
+        alert(response.data.message); // 성공 메시지 출력
+      }
+    } catch (error) {
+      console.error("Error deleting archiving:", error);
+      alert("아카이빙 삭제에 실패했습니다.");
+    }
+  }
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
