@@ -1,6 +1,7 @@
 /** 메인 홈: 총 채용 일정 현황 */
 export const RecruitmentStatus_URL = "/recruitments";
 
+
 /** API Type */
 // GET 파라미터
 export interface GetParamsRecruitmentStatusType {
