@@ -286,18 +286,23 @@ function RecurringNotePage() {
 
   // 저장 버튼 클릭 시 새로운 기타 항목 저장 로직 추가
   const handleSave = async () => {
-    if (newEtcData) {
-      const updatedEtcData = [
-        ...etcData,
-        { ...newEtcData, id: etcData.length + 1 },
-      ];
-      setEtcData(updatedEtcData); // 새로 추가된 기타 데이터 저장
-      setNewEtcData(null); // 템플릿 초기화
-      setActiveEtcId(updatedEtcData.length); // 새 항목 선택
+
+    const missingEtcReviewName = etcData.some((etc) => !etc.reviewName);
+    if (missingEtcReviewName) {
+      alert("전형명을 입력해주세요");
+      return; 
     }
 
-    // 추가적인 API 호출로 저장
+    if (newEtcData && !newEtcData.reviewName) {
+      alert("전형명을 입력해주세요");
+      return; 
+    }
+
     try {
+      const updatedEtcData = newEtcData
+      ? [...etcData, { ...newEtcData, id: etcData.length + 1 }]
+      : etcData;
+
       const requestBody = {
         document: documentData,
         interview: interviewData,
