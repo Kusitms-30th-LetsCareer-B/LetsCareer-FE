@@ -8,6 +8,7 @@ import {
   DetailSuccessStatus,
   ExistArchiving,
   FailedCard,
+  FinalSuccessStatus,
   ProgressCard,
   SuccessCard,
 } from "./components/Helpers/DetailStatusHelper";
@@ -26,7 +27,10 @@ function DetailStatusPage() {
   const [task, setTask] = useState<string>("");
   const [isFavorite, setIsFavorite] = useState(false);
   const [stages, setStages] = useState<any[]>([]);
+  const [stageName, setStageName] = useState<string>("");
   const [today, setToday] = useState(new Date());
+  const [daysUntilEnd, setDaysUntilEnd] = useState<number>(0);
+  const [status, setStatus] = useState<string>("PROGRESS");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 모달 상태
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const isFinalStagePresent = stages.some((stage) => stage.isFinal);
@@ -57,13 +61,16 @@ function DetailStatusPage() {
         const response = await axios.get(
           `${BASE_URL}/recruitments/${recruitmentId}`,
         );
-        const { companyName, task, announcementUrl, stages } =
+        const { companyName, task, announcementUrl, daysUntilEnd, stages, status, stageName} =
           response.data.data;
         setCompany(companyName);
         setTask(task);
         setAnnouncementUrl(announcementUrl);
         setStages(stages);
+        setStageName(stageName)
         setLoading(false);
+        setDaysUntilEnd(daysUntilEnd);
+        setStatus(status);
       } catch (error) {
         console.error("Error fetching recruitment details:", error);
         setLoading(false);
@@ -77,14 +84,6 @@ function DetailStatusPage() {
 
   const formatDate = (date: Date) => {
     return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
-  };
-
-  const calculateRemainingDays = (endDate: string) => {
-    const today = new Date();
-    const end = new Date(endDate);
-    const diff = end.getTime() - today.getTime();
-    const daysLeft = Math.ceil(diff / (1000 * 3600 * 24));
-    return daysLeft;
   };
 
   const getTopStage = () => {
@@ -108,15 +107,12 @@ function DetailStatusPage() {
   };
 
   let StatusComponent;
-  if (topStage) {
-    const daysLeft = calculateRemainingDays(topStage.endDate);
-
-    switch (topStage.status) {
+    switch (status) {
       case "PROGRESS":
         StatusComponent = (
           <DetailOnGoingStatus
-            name={topStage.stageName}
-            day={daysLeft}
+            name={stageName}
+            day={daysUntilEnd}
             company={company}
             department={task}
             announcementUrl={announcementUrl}
@@ -124,19 +120,30 @@ function DetailStatusPage() {
         );
         break;
       case "PASSED":
-        StatusComponent = (
-          <DetailSuccessStatus
-            name={topStage.stageName}
-            department={task}
-            company={company}
-            announcementUrl={announcementUrl}
-          />
-        );
+        if (topStage?.isFinal) {
+          StatusComponent = (
+            <FinalSuccessStatus
+              name={stageName}
+              department={task}
+              company={company}
+              announcementUrl={announcementUrl}
+            />
+          );
+        } else {
+          StatusComponent = (
+            <DetailSuccessStatus
+              name={stageName}
+              department={task}
+              company={company}
+              announcementUrl={announcementUrl}
+            />
+          );
+        }
         break;
       case "FAILED":
         StatusComponent = (
           <DetailFailedStatus
-            name={topStage.stageName}
+            name={stageName}
             department={task}
             company={company}
             announcementUrl={announcementUrl}
@@ -146,7 +153,6 @@ function DetailStatusPage() {
       default:
         StatusComponent = null;
     }
-  }
 
   const handleAddClick = () => {
     setIsAddModalOpen(true);
