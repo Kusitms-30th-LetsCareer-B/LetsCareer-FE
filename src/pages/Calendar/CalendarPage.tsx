@@ -42,7 +42,7 @@ function CalendarPage({userId, userName} : userInfo) {
       <div className="p-[48px]">
       {/** 타이틀 */}
       <div className="mb-10">
-        <div className="font-bold text-medium24 tracking-[-0.576px] text-neutral-0">
+        <div className="font-bold text-medium24 text-neutral-0">
           {userName}님의 캘린더
         </div>
         <div className="font-medium text-xsmall16 text-neutral-50 py-2">
@@ -55,7 +55,6 @@ function CalendarPage({userId, userName} : userInfo) {
         <div>
           {/* 캘린더 컴포 */}
           <Calender userId={userId} onDateSelected={handleDateSelected}/>
-          {String(selectedDate)}
         </div>
         
         {/* 2번째 열:  일정 리스트 */}
@@ -68,20 +67,6 @@ function CalendarPage({userId, userName} : userInfo) {
                         personalScheduleChips={personalScheduleChips}
           />
         </div>
-
-        {/* 3번째 열: 테스트 & 디버깅용 컴포*/}
-        {/*
-        <div>
-          <TestCalendar userId={userId} year={String(getYear(selectedDate))} month={String(getMonth(selectedDate))} selectedDate={getFormattedDate3(selectedDate)} />
-          <TestCalendarTodoList userId={userId} selectedDate={getFormattedDate3(selectedDate)} />
-          */}
-          
-          {/** 디버깅 선택된 날짜 확인용 코드
-          <p>{selectedDate ? selectedDate.toLocaleDateString() : ""}</p>
-          {String(getYear(selectedDate))}
-          {String(getMonth(selectedDate))}
-        </div>
-        */}
       </div>
     </div>
   );

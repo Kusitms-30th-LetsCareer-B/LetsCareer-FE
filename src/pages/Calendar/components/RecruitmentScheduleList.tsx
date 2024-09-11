@@ -1,12 +1,12 @@
 // 커스텀 캘린더 훅 임포트
-import useCalendar from "../../../shared/hooks/useCalendar";
+import useCalendar from "../../../shared/hooks/useCalendar.ts";
 
 // Date 관련 hook 임포트
 import { getFormattedDate1, getFormattedDate2, getFormattedDate3 } from "../../../shared/hooks/useDate.ts";
 
 /* 일정 추가 버튼 디자인 컴포넌트 */
 // 채용 스케줄 추가 버튼 임포트
-import { ScheduleButton } from "./ScheduleButton.tsx"
+import { ScheduleAddButton } from "./ScheduleAddButton.tsx"
 
 
 /** Props */
@@ -21,7 +21,7 @@ interface CalendarCareerListProps extends userInfo, RecruitmentScheduleListProps
 }
 
 /** 컴포넌트 */
-const CalendarCareerList = ({userId, userName, selectedDate, setSelectedDate, recruitmentScheduleChips} : CalendarCareerListProps) => {
+const RecruitmentSchedule = ({userId, userName, selectedDate, setSelectedDate, recruitmentScheduleChips} : CalendarCareerListProps) => {
     // 커스텀 캘린더 훅에서 필요한 상태와 핸들러 가져오기
     const {
         handleNewSchedule,
@@ -67,7 +67,7 @@ const CalendarCareerList = ({userId, userName, selectedDate, setSelectedDate, re
                     {/* 추가하기 버튼 */}
                     {/* 기업 채용 일정 추가 이벤트 부여 */}
                     <button onClick={handleNewSchedule}>
-                        <ScheduleButton contents='채용 일정 추가하기' />
+                        <ScheduleAddButton contents='채용 일정 추가하기' />
                     </button>
                 </div>
             </div>
@@ -77,4 +77,4 @@ const CalendarCareerList = ({userId, userName, selectedDate, setSelectedDate, re
     );
 };
 
-export default CalendarCareerList;
+export default RecruitmentSchedule;
