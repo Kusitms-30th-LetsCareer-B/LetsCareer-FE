@@ -889,32 +889,32 @@ export const InterviewRecurringNoteRightPart = ({
 
   return (
     <div className="flex w-full flex-col items-start">
-      <div className="flex w-full flex-col rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
-        <div className="flex items-center justify-between">
-          <span className="self-stretch text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
+      <div className="flex w-full flex-col items-end rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
+        <div className="flex items-center self-stretch justify-between">
+          <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
             면접 질문&답변 리스트
           </span>
-          <div className="flex self-stretch gap-[6px]">
-            <button
-                onClick={handleDeleteQuestion}
-                className="flex items-center justify-center rounded-sm border border-neutral-80 px-[10px] py-[6px] w-[100px]"
-              >
-                <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-                  질문 삭제
-                </span>
-              </button>
+          <div className="flex gap-[12px]">
             <button
                   onClick={() => handleSaveQuestion(selectedQuestion)}
-                  className="flex items-center justify-center rounded-sm border border-neutral-80 px-[10px] py-[6px] w-[100px]"
+                  className="flex bg-neutral-100 items-center justify-center rounded-sm border border-neutral-80 px-[10px] py-[6px] w-[100px]"
                 >
                   <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
                     질문 저장
                   </span>
             </button>
+            <button
+                onClick={handleDeleteQuestion}
+                className="flex bg-neutral-100 items-center justify-center rounded-sm border border-neutral-80 px-[10px] py-[6px] w-[100px]"
+              >
+                <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+                  질문 삭제
+                </span>
+              </button> 
           </div>
         </div>
         <div className="flex items-center justify-between self-stretch gap-[6px]">
-          <div className="flex items-center mt-[10px]">
+          <div className="flex items-center mt-[20px]">
             {/* 질문 리스트 컴포넌트 */}
             <SelfIntroductionQuestions
                 questions={interviewQuestions.map((_, index) => `${index + 1}`)} // 질문 번호
@@ -1001,7 +1001,7 @@ export const EtcRecurringNotePart = ({ etcData, setEtcData }) => {
         <RecurringNoteChipGroup
           selected={etcData.satisfaction}
           setSelected={(satisfaction) =>
-            setEtcData({ ...etcData, satisfaction: satisfaction || "" })
+            setEtcData({ ...etcData, satisfaction: satisfaction})
           }
         />
       </div>
