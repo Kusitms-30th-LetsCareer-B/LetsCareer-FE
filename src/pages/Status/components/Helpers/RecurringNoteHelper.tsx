@@ -14,8 +14,9 @@ import {
 } from "../Buttons/RecurringNoteButton";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { InterviewQuestions } from "../Pagination/RecurringNotePagination";
 import { GoBackButton, RecurringGoBackButton } from "../../../../components/Buttons/Button";
+import { SelfIntroductionQuestions } from "../Pagination/SelfIntroducePagination";
+import { InterviewQuestions } from "../Pagination/RecurringNotePagination";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -888,47 +889,43 @@ export const InterviewRecurringNoteRightPart = ({
 
   return (
     <div className="flex w-full flex-col items-start">
-      <div className="flex w-full flex-col items-end rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
-        <span className="self-stretch text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
-          면접 질문&답변 리스트
-        </span>
-        <div className="flex items-center justify-between self-stretch">
-          <div className="flex items-center">
-            {/* 질문 리스트 컴포넌트 */}
-            <InterviewQuestions
-              questions={interviewQuestions.map((_, index) => `${index + 1}`)} // 질문 번호
-              selectedQuestion={selectedQuestion} // 현재 선택된 질문
-              onQuestionClick={(index) => setSelectedQuestion(index)} // 질문 클릭 시 처리
-            />
-            {/* 추가하기 버튼 */}
+      <div className="flex w-full flex-col rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
+        <div className="flex items-center justify-between">
+          <span className="self-stretch text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
+            면접 질문&답변 리스트
+          </span>
+          <div className="flex self-stretch gap-[6px]">
             <button
-              onClick={handleAddQuestion} // 질문 추가 버튼 클릭
-              className="ml-[6px] mt-[18px] flex h-[28px] w-[70px] flex-shrink-0 flex-col items-center justify-center rounded-lg border border-neutral-80 bg-static-100"
-            >
-              <span className="text-xsmall14 font-medium tracking-[-0.21px] text-neutral-45">
-                추가하기
-              </span>
+                onClick={handleDeleteQuestion}
+                className="flex items-center justify-center rounded-sm border border-neutral-80 px-[10px] py-[6px] w-[100px]"
+              >
+                <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+                  질문 삭제
+                </span>
+              </button>
+            <button
+                  onClick={() => handleSaveQuestion(selectedQuestion)}
+                  className="flex items-center justify-center rounded-sm border border-neutral-80 px-[10px] py-[6px] w-[100px]"
+                >
+                  <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+                    질문 저장
+                  </span>
             </button>
           </div>
-          <div className="flex gap-[12px]">
-            {/* 질문 삭제 버튼 */}
-            <button
-              onClick={handleDeleteQuestion}
-              className="flex items-center justify-center gap-[10px] rounded-sm border border-neutral-80 px-[20px] py-[6px]"
-            >
-              <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-                질문 삭제
-              </span>
-            </button>
-            {/* 질문 등록 버튼 */}
-            <button
-              onClick={() => handleSaveQuestion(selectedQuestion)}
-              className="flex items-center justify-center gap-[10px] rounded-sm border border-neutral-80 px-[20px] py-[6px]"
-            >
-              <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-                질문 저장
-              </span>
-            </button>
+        </div>
+        <div className="flex items-center justify-between self-stretch gap-[6px]">
+          <div className="flex items-center mt-[10px]">
+            {/* 질문 리스트 컴포넌트 */}
+            <SelfIntroductionQuestions
+                questions={interviewQuestions.map((_, index) => `${index + 1}`)} // 질문 번호
+                selectedQuestion={selectedQuestion} // 현재 선택된 질문
+                onQuestionClick={(index) => setSelectedQuestion(index)} // 질문 클릭 시 처리
+                onQuestionAdd={handleAddQuestion} // 질문 추가 버튼 처리
+                totalItems={interviewQuestions.length} // 전체 질문 수
+                itemsPerPage={1} // 페이지 당 질문 수 (한 페이지에 하나의 질문만 표시)
+                initialPage={1} // 초기 페이지는 1
+                onPageChange={(page) => setSelectedQuestion(page - 1)} // 페이지 변경 시 처리
+            />
           </div>
         </div>
 
