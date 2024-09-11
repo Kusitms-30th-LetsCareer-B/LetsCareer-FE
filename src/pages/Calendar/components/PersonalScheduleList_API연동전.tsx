@@ -1,3 +1,4 @@
+/** 캘린더에서 수정 불가능한 칩 받아서 출력하는 version 1 */
 // 커스텀 캘린더 훅 임포트
 import useCalendar from "../../../shared/hooks/useCalendar";
 
@@ -6,7 +7,7 @@ import { getFormattedDate1, getFormattedDate2, getFormattedDate3 } from "../../.
 
 /* 일정 추가 버튼 디자인 컴포넌트 */
 // 개인 스케줄 추가 버튼 임포트
-import { ScheduleButton } from "./ScheduleButton.tsx"
+import { ScheduleAddButton } from "./ScheduleAddButton.tsx"
 
 
 /** Props */
@@ -32,7 +33,6 @@ const CalendarPersonalList = ({userId, userName, selectedDate, setSelectedDate, 
     /* 컴포넌트 렌더링 */
     return (
         <>
-        
             {/* 첫 번째 파트: 타이틀 */}
             <div className="text-neutral-30 text-xsmall14 py-1">
                 개인 일정
@@ -56,7 +56,7 @@ const CalendarPersonalList = ({userId, userName, selectedDate, setSelectedDate, 
             )}
 
 
-
+            
             {/* 백엔드에서 수정, 삭제 만들면 고고 
             {schedules === undefined ? (
                 <p>일정을 불러오는 중...</p> // 데이터를 불러오는 동안 보여줄 메시지
@@ -82,8 +82,8 @@ const CalendarPersonalList = ({userId, userName, selectedDate, setSelectedDate, 
                 <p>일정이 없습니다.</p> // 일정이 없을 경우 메시지
             )}
              */}
-
              
+                          
             {/* 구분선 출력 */}
             <hr className="mt-4 p-1" />
             
@@ -91,7 +91,7 @@ const CalendarPersonalList = ({userId, userName, selectedDate, setSelectedDate, 
             <div className="justify-between items-center text-center mb-5">
                 {/* 추가하기 버튼 */}
                 <button >
-                    <ScheduleButton contents='개인 일정 추가하기' />
+                    <ScheduleAddButton contents='개인 일정 추가하기' />
                 </button>
             </div>
         </>

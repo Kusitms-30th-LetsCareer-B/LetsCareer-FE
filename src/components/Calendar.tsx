@@ -8,6 +8,9 @@ import addButtonIcon from "../shared/assets/add.png";
 // 커스텀 캘린더 훅 임포트
 import useCalendar from "../shared/hooks/useCalendar";
 
+// 페이지 전환 훅 임포트
+import { useNavigationStatusByRecruitmentId } from "../Path.ts";
+
 // 캘린더 칩스
 import {
   filterState,
@@ -36,7 +39,6 @@ import {
   OtherScheduleChip,
   // 개인 일정 칩
   PersonalScheduleChip
-
 } from "./chips/TodoListChip";
 
 
@@ -131,6 +133,9 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
         return recruitmentsData; // '전체 일정'인 경우 전체 데이터 반환
     }
   };
+
+  // 칩 누르면 해당 기업 상세 페이지로 전환하는 훅
+  const navigateByRecruitmentId = useNavigationStatusByRecruitmentId();
 
 
   /**---------------------------------------------------*/
@@ -402,65 +407,75 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   // 정상 상태 처리, rendering
   return (
     /* 캘린더 전체 윤곽 컨테이너 스타일 */
-    <div className="bg-neutral-100 p-4 font-sans shadow-none">
+    /* 캘린더 칩스가 캘린더 date cell 밖으로 삐져나오지 않게 캘린더 min width 지정함 */
+    <div className="bg-neutral-100 p-4 font-sans shadow-none min-w-[900px]">
+
       {/* 달력 헤더 파트 */}
-      <div className="mb-4 flex items-center">
-        {/* 월 이동 버튼 */}
-        <button onClick={handlePrevMonth} className="px-4">
-          <img src={prevButtonIcon} alt="이전 달" />
-        </button>
-        <h2 className="flex justify-center items-center text-small20 font-bold min-w-[125px]">
-          {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월{" "}
-          {/**영문: {monthNames[currentDate.getMonth()]}*/}
-        </h2>
-        <button onClick={handleNextMonth} className="px-4">
-          <img src={nextButtonIcon} alt="다음 달" />
-        </button>
+      <div className="flex justify-between h-[full] w-[full]">
+        {/* 좌측 아이템: 달력 무빙, 현황 메인보드 */}
+        <div className="flex items-center mb-4">
+          {/* 캘린더 월 무빙 헤더 (월 이동 버튼) */}
+          <button onClick={handlePrevMonth} className="px-4">
+            <img src={prevButtonIcon} alt="이전 달" />
+          </button>
+          <h2 className="flex justify-center items-center text-small20 font-bold min-w-[125px]">
+            {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월{" "}
+            {/**영문: {monthNames[currentDate.getMonth()]}*/}
+          </h2>
+          <button onClick={handleNextMonth} className="px-4">
+            <img src={nextButtonIcon} alt="다음 달" />
+          </button>
 
-        {/* 캘린더 상태 보더: 필터별 일정 개수 표시  */}
-        <div className="font-regular mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-secondary-100 text-xxsmall11 text-secondary-0" />
-          <div className="font-xxsmall12 min-w-[60px] mr-2 flex items-center justify-center px-0.5 text-xxsmall12 text-neutral-30">
-            서류 {documentCount}건
+
+          {/* 캘린더 상태 보더: 필터별 일정 개수 표시  */}
+          <div className="font-regular mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-secondary-100 text-xxsmall11 text-secondary-0" />
+            <div className="font-xxsmall12 min-w-[60px] mr-2 flex items-center justify-center px-0.5 text-xxsmall12 text-neutral-30">
+              서류 {documentCount}건
+            </div>
+            <div className="font-regular mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 text-primary-0" />
+            <div className="font-xxsmall12 min-w-[60px] mr-2 flex items-center justify-center px-0.5 text-xxsmall12 text-neutral-30">
+              면접 {interviewCount}건
+            </div>
+            <div className="font-regular mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 text-teritory-0" />
+            <div className="font-xxsmall12 min-w-[60px] mr-2 flex items-center justify-center px-0.5 text-xxsmall12 text-neutral-30">
+              기타 {otherCount}건
           </div>
-          <div className="font-regular mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 text-primary-0" />
-          <div className="font-xxsmall12 min-w-[60px] mr-2 flex items-center justify-center px-0.5 text-xxsmall12 text-neutral-30">
-            면접 {interviewCount}건
-          </div>
-          <div className="font-regular mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 text-teritory-0" />
-          <div className="font-xxsmall12 min-w-[60px] mr-2 flex items-center justify-center px-0.5 text-xxsmall12 text-neutral-30">
-            기타 {otherCount}건
         </div>
 
-        {/* 전체 일정 보기 버튼 */}
-        {/* 캘린더 필터 선택 박스 */}
-        <div className="font-xxsmall12 flex h-9 w-36 items-center justify-start rounded-xs border border-neutral-80 bg-static-100 px-2 text-xxsmall12 text-neutral-45">
-          <select className="cursor-pointer px-2" id="scheduleFilter" value={scheduleStage} onChange={handleScheduleStageChange}>
-            <option value={ScheduleFilter.ALL}>{ScheduleFilter.ALL}</option>
-            <option value={ScheduleFilter.DOCUMENT}>{ScheduleFilter.DOCUMENT}</option>
-            <option value={ScheduleFilter.INTERVIEW}>{ScheduleFilter.INTERVIEW}</option>
-            <option value={ScheduleFilter.OTHER}>{ScheduleFilter.OTHER}</option>
-          </select>
+        
+        {/* 우측 아이템: 일정 선택박스, 일정 추가 버튼 */}
+        <div className="flex items-center mb-4 mr-4 h-[full] w-[full]">
+          {/* 전체 일정 보기 버튼 */}
+          {/* 캘린더 필터 선택 박스 */}
+          <div className="font-xxsmall12 flex h-9 w-36 items-center justify-start rounded-xs border border-neutral-80 bg-static-100 px-2 text-xxsmall12 text-neutral-45">
+            <select className="cursor-pointer px-2" id="scheduleFilter" value={scheduleStage} onChange={handleScheduleStageChange}>
+              <option value={ScheduleFilter.ALL}>{ScheduleFilter.ALL}</option>
+              <option value={ScheduleFilter.DOCUMENT}>{ScheduleFilter.DOCUMENT}</option>
+              <option value={ScheduleFilter.INTERVIEW}>{ScheduleFilter.INTERVIEW}</option>
+              <option value={ScheduleFilter.OTHER}>{ScheduleFilter.OTHER}</option>
+            </select>
+          </div>
+
+
+          <p className="px-1.5" />
+
+          {/* 새 채용 일정 추가하기 버튼 */}
+          <button
+            onClick={handleNewSchedule}
+            className="font-xxsmall12 flex h-[35px] w-[170px] items-center justify-start rounded-xs bg-primary-100 text-xxsmall12 text-static-100"
+          >
+            <img
+              className="px-3"
+              src={addButtonIcon}
+              alt="새 채용일정 추가하기"
+            />
+            새 채용일정 추가하기
+          </button>
         </div>
-
-
-        <p className="px-1.5" />
-
-        {/* 새 채용 일정 추가하기 버튼 */}
-        <button
-          onClick={handleNewSchedule}
-          className="font-xxsmall12 flex h-9 w-48 items-center justify-start rounded-xs bg-primary-100 text-xxsmall12 text-static-100"
-        >
-          <img
-            className="px-3"
-            src={addButtonIcon}
-            alt="새 채용일정 추가하기"
-          />
-          새 채용일정 추가하기
-        </button>
       </div>
 
       {/* 달력 파트 */}
-      <div className="grid grid-cols-7 gap-0">
+      <div className="grid grid-cols-7 gap-0 h-[full] w-[full]">
         {/**요일 컬럼*/}
         {daysOfWeek.map((day) => (
           <div
@@ -492,8 +507,10 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           const isNextMonth = date && date.getMonth() > currentDate.getMonth();
           const isFifteenth = date && date.getDate() === 15; // 15일인지 확인
 
-          {/** 특정 날짜 셀 UI */
-           /* 매뉴얼 *********************************************
+
+
+          {/** 특정 날짜 셀 UI 매뉴얼 */
+           /* ---------------------------------------------------------------
             * 오늘 셀:    ${isToday ? 'bg-blue-200' : ''}
             * 다음 달 셀: ${isNextMonth ? 'text-gray-400' : ''}
             * 선택된 셀:  ${isSelected ? 'bg-blue-500 text-white' : ''}
@@ -501,37 +518,42 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
             * 현재달과 다음달 셀 다르게:  ${isCurrentMonth ? 'bg-white text-gray-600 hover:bg-gray-200' : 'bg-white text-gray-300'}
             */
           }
+          
+          {/** 캘린더에 띄울 전체 날짜 '셀' 디자인: 셀 크기, 보더 등 */}
           const calendarCellClassName =
-            // 기본
+            // 기본 (전체 날짜 셀에 공용으로 들어갈 디자인)
             // 일요일
             // 다음달
             // 현재달
             // 이전달
             `
-            justify-start items-end text-left border-r border-b border-neutral-80 cursor-pointer bg-white h-36 p-2
+            justify-start items-end text-left border-r border-b border-neutral-80 cursor-pointer bg-white h-[120px] p-2
             ${isSunday ? "text-system-error" : ""}
             ${isNextMonth ? "text-neutral-70" : ""}
             ${isCurrentMonth ? "text-neutral-45" : "text-neutral-70"}
           `;
 
 
-          {/** 특정 날짜 셀 데이터 디자인 퍼블리싱 */}
+          {/** 특정 날짜 셀 '텍스트 데이터' 디자인 퍼블리싱 */}
           const dateContent = date ? (
             /* 호버 상태인 셀에 동그라미 표시 */
-            <span
-              className={`flex h-5 w-5 items-center justify-center text-xsmall16 ${isHovered ? "border-5 rounded-full border-primary-100 bg-primary-100 text-white" : ""}`}
-            >
-              {/* 날짜 셀에 들어갈 데이터 */}
-              {date.getDate()}
+            <span className={`flex h-6 w-6 justify-center items-center text-xsmall16 ${isHovered ? "border rounded-full border-primary-100 bg-primary-100 text-white" : ""}`}>
+
+              {/* 호버 상태인 날짜 셀에 들어갈 데이터 공용 디자인, mb-1: 날짜 텍스트 아래 조금 띄우기 */}
+              <div className="flex justify-center items-center mb-1">
+                {date.getDate()}
+              </div>
             </span>
           ) : null;
 
 
           
+          {/** 기업 채용 일정 칩 */}
           // 현재 보이는 월의 전체 기업 일정 중에서
           // 각 날짜 셀에 대한 기업 일정만 가져오기
           const recruitmentsSchedulesForDate = getFilteredRecruitmentDataForDate(date);
 
+          {/** 각 칩스에 대한 데이터 셀에 띄울 디자인 적용하는 부분 */}
           {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
           const companySchedules = recruitmentsSchedulesForDate.map((recruitmentsData) => {
             // 서류 칩스
@@ -542,6 +564,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 key={recruitmentsData.scheduleId}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               :
               // 셀 호버 상태
@@ -550,6 +573,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 key={recruitmentsData.scheduleId}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
@@ -557,6 +581,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 key={recruitmentsData.scheduleId}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
             
             // 면접 칩스
@@ -565,7 +590,8 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               isSelected ?
               <ClickedInterviewChip 
                 key={recruitmentsData.scheduleId}
-                companyName={recruitmentsData.companyName} 
+                companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               :
               // 셀 호버 상태
@@ -573,12 +599,14 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               <HoveredInterviewChip 
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
               <DefaultInterviewChip
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
 
             // 기타 칩스
@@ -588,6 +616,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               <ClickedOtherChip 
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               :
               // 셀 호버 상태
@@ -595,38 +624,45 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               <HoveredOtherChip 
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
               <DefaultOtherChip
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               //console.log(recruitmentsData.filter) // 확인 완료
-
+              
             return (
-              // 면접 칩 반환
-              recruitmentsData.filter == filterState.INTERVIEW?
-              interviewScheduleChip
-              :
+              <div>
+                {
+                  // 면접 칩 반환
+                  recruitmentsData.filter == filterState.INTERVIEW?
+                  interviewScheduleChip
+                  :
 
-              // 기타 칩 반환
-              recruitmentsData.filter == filterState.OTHER?
-              otherScheduleChip
-              :
+                  // 기타 칩 반환
+                  recruitmentsData.filter == filterState.OTHER?
+                  otherScheduleChip
+                  :
 
-              // 서류 칩 반환
-              documentScheduleChip
+                  // 서류 칩 반환
+                  documentScheduleChip
+                }
+              </div>
             );
           });
 
           
-          
+          {/** 개인 일정 칩 */}
           // 현재 보이는 월의 전체 개인 일정 중에서
           // 각 날짜 셀에 대한 개인 일정만 가져오기
           const personalSchedulesForDate = getPersonalWorksForDate(date);
 
           
+          {/** 각 칩스에 대한 데이터 셀에 띄울 디자인 적용하는 부분 */}
           {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
           const personalSchedules = personalSchedulesForDate.map((personalScheduleForDate) => {
             // 개인 일정칩스
@@ -651,6 +687,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 personalSchedule={personalScheduleForDate.content}
               />
 
+            
             return (
               // 개인 일정 칩 반환
               personalScheduleChip

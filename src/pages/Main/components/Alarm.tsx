@@ -57,29 +57,48 @@ const Alarm = ({userId, alertsCount}: AlarmProps) => {
 
     // 정상 상태, 알림이 0개일 때 렌더링
     if (alertsCount === 0) {
-        return <div>알림이 없습니다</div>;
+        return (
+            // 겉 보더, 높이 고정
+            <div className="border h-[300px] min-w-[350px] rounded-lg shadow-lg bg-static-100 p-5">
+                <div className="text-small18 font-semibold mb-3">
+                    알림
+                </div>
+                <div className="text-neutral-20">
+                    새로운 알림이 없습니다
+                </div>;
+            </div>
+        );
     }
 
 
     // 정상 상태, 알림이 1개 이상일 때 렌더링
     return (
-        <div className="border ">
-            <h2>알림 목록</h2>
+        // 겉 보더, 높이 고정
+        <div className="border h-[300px] min-w-[350px] rounded-lg shadow-lg bg-static-100 p-5">
+            <div className="text-small18 font-semibold mb-3">
+                알림
+            </div>
             
-            {/* 알림 띄우기: 정보(회사명, 전형종류, 종료날짜) */}
-            {alerts.map((alert, index) => (
-                <div>
-                    <div className="text-neutral-30">
-                        {alert.endDate == getFormattedDate3(new Date())? "오늘" : alert.endDate}
+            {/* 스크롤 추가:  부모보다 h가 작아야 스크롤 생김 */}
+            <div className="overflow-y-auto h-[220px]">
+                {/* 알림 목록 띄우기: 정보(회사명, 전형종류, 종료날짜) */}
+                {alerts.map((alert, index) => (
+                    <div className="mb-3">
+                        <div className="text-neutral-40">
+                            {alert.endDate == getFormattedDate3(new Date())? "오늘" : alert.endDate}
+                        </div>
+                        <div className="text-neutral-20">
+                            <span>
+                                {alert.companyName} {alert.stageName} 전형이 </span>
+                            <span className="text-primary-100">
+                                {geteDateDifference(getFormattedDate3(new Date()), alert.endDate)}일 </span>
+                            <span>
+                                남았어요!
+                            </span>
+                        </div>
                     </div>
-                    <div className="text-neutral-50">
-                        <span>
-                            {alert.companyName} {alert.stageName} 전형이
-                        </span>
-                        <span className="text-primary-100">{geteDateDifference(getFormattedDate3(new Date()), alert.endDate)} 남았어요!</span>
-                    </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 }

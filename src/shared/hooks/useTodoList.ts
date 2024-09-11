@@ -1,5 +1,4 @@
-/** 이 훅은 MainTodoList와 CalendarTodoList 컴포에서 공용으로 사용 */
-import React, { useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import checkedBox from "../assets/checkSquareChecked.png";
 import blankedBox from "../assets/checkSquareBlanked.png";
 

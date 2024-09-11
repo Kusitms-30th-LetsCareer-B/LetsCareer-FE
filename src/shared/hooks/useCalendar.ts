@@ -3,6 +3,7 @@ import { useState } from "react";
 
 // 페이지 전환 이벤트
 import { useNavigate } from "react-router-dom";
+import { PATHS } from "../../Path"
 
 const useCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜
@@ -138,7 +139,7 @@ const useCalendar = () => {
   // 새 채용 일정 추가하기 이벤트 핸들러
   const handleNewSchedule = () => {
     // 새 일정 추가 로직 추가
-    navigate("/calendar/schedule");
+    navigate(PATHS.RECRU_SCHEDULE_ENV_PATH);
   };
 
   return {
@@ -146,6 +147,7 @@ const useCalendar = () => {
     selectedDate,
     hoveredDate,
     getDates,
+    setSelectedDate,
     getCurrentDates,
     handlePrevMonth,
     handleNextMonth,

@@ -1,10 +1,10 @@
 import addIcon from "../../../shared/assets/add-neutral-40.png";
 
-interface ScheduleButtonProbs {
+interface ScheduleAddButtonProbs {
   contents: string;
 }
 
-export const ScheduleButton = ({ contents }: ScheduleButtonProbs) => {
+export const ScheduleAddButton = ({ contents }: ScheduleAddButtonProbs) => {
   return (
     <div className="inline-flex h-[24px] min-w-[131px] items-center justify-center">
       {/* 왼쪽 영역 */}

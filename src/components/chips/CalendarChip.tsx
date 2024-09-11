@@ -29,15 +29,24 @@ export const filterState = {
 interface CompanyDocumentChipProps {
   companyName: string;
   filter: string; // 서류, 시작, 종료 총 3가지 상태
+  onClick?: () => void; // onClick을 선택적 속성으로 추가
 }
 
 interface CompanyChipProps {
   companyName: string;
+  onClick?: () => void; // onClick을 선택적 속성으로 추가
 }
 
 interface PersonalChipProps {
   personalSchedule: string;
+  onClick?: () => void; // onClick을 선택적 속성으로 추가
 }
+
+// 긴 일정의 경우 ... 처리를 위한 함수
+import { getSplittedText } from "../../shared/hooks/useText";
+const limit = 7;   // 글자수 제한 (7글자 넘으면 ... 처리)
+const buttonWidth = 110; // 버튼 길이 일관
+
 
 /* 재사용: 네모 박스 컴포넌트 */
 // 기본/호버 상태 : bg-secondary-0, text-secondary-100
@@ -56,25 +65,31 @@ const SquareBox = ({ filter, bg, txtColor }) => (
 // 클릭 상태      : text-secondary-0
 const CompanyBox = ({ companyName, txtColor }) => (
   //<div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ">
-  <div
-    className={`mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ${txtColor}`}
-  >
-    <span>{companyName}</span>
+  <div className={`mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ${txtColor}`}>
+    <span>
+      {getSplittedText(companyName, limit)}
+    </span>
   </div>
 );
+
 
 /** 시작 & 종료 & 서류 칩스 */
 export const DefaultDocumentChip = ({
   companyName,
-  filter,
+  filter, onClick
 }: CompanyDocumentChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full min-w-[80px] items-center justify-start gap-[4px] bg-secondary-10 px-[6px]">
+      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
@@ -112,16 +127,21 @@ export const DefaultDocumentChip = ({
 
 export const HoveredDocumentChip = ({
   companyName,
-  filter,
+  filter, onClick
 }: CompanyDocumentChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-secondary-100">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-secondary-100"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
-      {/* 오른쪽 영역, border size만큼 min-w 줄임 */}
-      <div className="flex h-full min-w-[76px] items-center justify-start gap-[4px] bg-secondary-10 px-[6px]">
+      {/* 오른쪽 영역 */}
+      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
@@ -160,14 +180,20 @@ export const HoveredDocumentChip = ({
 export const ClickedDocumentChip = ({
   companyName,
   filter,
+  onClick,
 }: CompanyDocumentChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-0" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full min-w-[80px] items-center justify-start gap-[4px] bg-secondary-100 px-[6px]">
+      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-100 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
@@ -198,64 +224,85 @@ export const ClickedDocumentChip = ({
 };
 
 /** 면접 칩스 */
-export const DefaultInterviewChip = ({ companyName }: CompanyChipProps) => {
+export const DefaultInterviewChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full min-w-[80px] items-center justify-start gap-[4px] bg-primary-10 px-[6px]">
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 font-semibold text-primary-0">
           면
         </div>
         {/* 기업명 */}
         <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-100">
-          <span>{companyName}</span>
+          <span>
+            {getSplittedText(companyName, limit)}
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-export const HoveredInterviewChip = ({ companyName }: CompanyChipProps) => {
+export const HoveredInterviewChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-primary-100">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-primary-100"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="px flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
-      {/* 오른쪽 영역, border size만큼 min-w 줄임 */}
-      <div className="flex h-full min-w-[76px] items-center justify-start gap-[4px] bg-primary-10 px-[6px]">
+      {/* 오른쪽 영역 */}
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 font-semibold text-primary-0">
           면
         </div>
         {/* 기업명 */}
         <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-100">
-          <span>{companyName}</span>
+          <span>
+            {getSplittedText(companyName, limit)}
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-export const ClickedInterviewChip = ({ companyName }: CompanyChipProps) => {
+export const ClickedInterviewChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-primary-0" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full min-w-[80px] items-center justify-start gap-[4px] bg-primary-100 px-[6px]">
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-100 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-0 text-xxsmall11 font-semibold text-primary-100">
           면
         </div>
         {/* 기업명 */}
         <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-0">
-          <span>{companyName}</span>
+          <span>
+            {getSplittedText(companyName, limit)}
+          </span>
         </div>
       </div>
     </div>
@@ -263,64 +310,85 @@ export const ClickedInterviewChip = ({ companyName }: CompanyChipProps) => {
 };
 
 /** 기타 칩스 */
-export const DefaultOtherChip = ({ companyName }: CompanyChipProps) => {
+export const DefaultOtherChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full min-w-[80px] items-center justify-start gap-[4px] bg-teritory-light px-[6px]">
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 font-semibold text-teritory-0">
           기
         </div>
         {/* 기업명 */}
         <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-normal">
-          <span>{companyName}</span>
+          <span>
+            {getSplittedText(companyName, limit)}
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-export const HoveredOtherChip = ({ companyName }: CompanyChipProps) => {
+export const HoveredOtherChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-teritory-normal">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-teritory-normal"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
-      {/* 오른쪽 영역, border size만큼 min-w 줄임 */}
-      <div className="flex h-full min-w-[76px] items-center justify-start gap-[4px] bg-teritory-light px-[6px]">
+      {/* 오른쪽 영역 */}
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 font-semibold text-teritory-0">
           기
         </div>
         {/* 기업명 */}
         <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-normal">
-          <span>{companyName}</span>
+          <span>
+            {getSplittedText(companyName, limit)}
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-export const ClickedOtherChip = ({ companyName }: CompanyChipProps) => {
+export const ClickedOtherChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-0" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full min-w-[80px] items-center justify-start gap-[4px] bg-teritory-normal px-[6px]">
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-normal px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-0 text-xxsmall11 font-semibold text-teritory-normal">
           기
         </div>
         {/* 기업명 */}
         <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-0">
-          <span>{companyName}</span>
+          <span>
+            {getSplittedText(companyName, limit)}
+          </span>
         </div>
       </div>
     </div>
@@ -329,49 +397,70 @@ export const ClickedOtherChip = ({ companyName }: CompanyChipProps) => {
 
 /** 개인 일정 Chip */
 export const DefaultPersonalChip = ({
-  personalSchedule,
+  personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className="inline-flex h-[24px] min-w-[84px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]">
+    <div className="flex h-[24px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 동그라미 박스 */}
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-neutral-45" />
 
       {/* 개인일정 내용 */}
       <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45">
-        <span>{personalSchedule}</span>
+        <span>
+            {getSplittedText(personalSchedule, limit)}
+        </span>
       </div>
     </div>
   );
 };
 
 export const HoveredPersonalChip = ({
-  personalSchedule,
+  personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] min-w-[84px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]">
+    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 동그라미 박스 */}
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-neutral-45" />
 
       {/* 개인일정 내용 */}
       <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45">
-        <span>{personalSchedule}</span>
+        <span>
+          {getSplittedText(personalSchedule, limit)}
+        </span>
       </div>
     </div>
   );
 };
 
 export const ClickedPersonalChip = ({
-  personalSchedule,
+  personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className="inline-flex h-[24px] min-w-[84px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]">
+    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 동그라미 박스 */}
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-static-100" />
 
       {/* 개인일정 내용 */}
       <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-static-100">
-        <span>{personalSchedule}</span>
+        <span>
+          {getSplittedText(personalSchedule, limit)}
+        </span>
       </div>
     </div>
   );

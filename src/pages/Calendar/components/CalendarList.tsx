@@ -2,9 +2,10 @@
 import { getYearMonthDay, getYear, getMonth, getFormattedDate2, getFormattedDate3 } from "../../../shared/hooks/useDate.ts";
 
 /* 일정 리스트 */
-import CalendarCareerList from "./CalendarCareerList"
-import CalendarPersonalList from "./CalendarPersonalList"
-import CompanyTodoListComponent from "./CalendarTodoListEditable.tsx"
+import RecruitmentList from "./RecruitmentScheduleList.tsx"
+import PersonalScheduleList from "./PersonalScheduleList.tsx"
+import PersonalScheduleList_API연동전 from "./PersonalScheduleList_API연동전.tsx"
+import TodoListComponent from "./TodoListEditable.tsx"
 
 /** Props */
 // 로그인 정보 받기
@@ -47,16 +48,19 @@ const CalendarList = ({userId, userName, selectedDate, setSelectedDate, recruitm
             
             
             {/** 두 번째 채용 일정 */}
-            <CalendarCareerList userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} recruitmentScheduleChips={recruitmentScheduleChips}/>
+            <RecruitmentList userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} recruitmentScheduleChips={recruitmentScheduleChips}/>
             
             
             {/** 세 번째 개인 일정 */}
-            <CalendarPersonalList userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} personalScheduleChips={personalScheduleChips}/>
+            {/*
+            <PersonalScheduleList_API연동전 userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} personalScheduleChips={personalScheduleChips}/>
+            */}
+            <PersonalScheduleList userId={userId} selectedDate={selectedDate}/>
             
 
             {/** 네 번째 투두 리스트 */}
             {/** 투두 리스트 데이터 */}
-            <CompanyTodoListComponent  userId={userId} selectedDate={selectedDate} setSelectedDate={setSelectedDate}  selectedDateString ={getFormattedDate3(selectedDate)}  />
+            <TodoListComponent  userId={userId} selectedDate={selectedDate} setSelectedDate={setSelectedDate}  selectedDateString ={getFormattedDate3(selectedDate)}  />
             
         </div>
 
