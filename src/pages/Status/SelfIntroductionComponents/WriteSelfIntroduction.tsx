@@ -265,21 +265,16 @@ const handleAddQuestion = () => {
             <span className="mr-[12px] text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
               문항
             </span>
-            <div className="flex">
             <SelfIntroductionQuestions
-              questions={introductions.map((_, index) => `${index + 1}`)} // 질문 번호
-              selectedQuestion={selectedQuestion} // 현재 선택된 질문
-              onQuestionClick={(index) => setSelectedQuestion(index)} // 질문 클릭 시 처리
+                questions={introductions.map((_, index) => `${index + 1}`)} // 질문 번호
+                selectedQuestion={selectedQuestion} // 현재 선택된 질문
+                onQuestionClick={(index) => setSelectedQuestion(index)} // 질문 클릭 시 처리
+                onQuestionAdd={handleAddQuestion} // 질문 추가 버튼 처리
+                totalItems={introductions.length} // 전체 질문 수
+                itemsPerPage={1} // 페이지 당 질문 수 (한 페이지에 하나의 질문만 표시)
+                initialPage={1} // 초기 페이지는 1
+                onPageChange={(page) => setSelectedQuestion(page - 1)} // 페이지 변경 시 처리
             />
-            <button
-              onClick={handleAddQuestion} // 질문 추가 버튼 클릭
-              className="ml-[6px] flex h-[28px] w-[70px] flex-shrink-0 flex-col items-center justify-center rounded-lg border border-neutral-80 bg-static-100"
-            >
-              <span className="text-xsmall14 font-medium tracking-[-0.21px] text-neutral-45">
-                추가하기
-              </span>
-            </button>
-            </div>
           </div>
           <div className="flex gap-[12px]">
             <button
