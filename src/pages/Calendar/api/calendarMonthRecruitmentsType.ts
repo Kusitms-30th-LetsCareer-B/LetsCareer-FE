@@ -15,4 +15,5 @@ export interface GetRequestCalendarMonthRecruitmentsType {
     date: Date;
     filter: string
     companyName: string;
+    recruitmentId: number;
 }

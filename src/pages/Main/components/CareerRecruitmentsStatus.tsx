@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { PATHS } from "../../../Path.ts";
 import { useNavigate } from "react-router-dom"; // 페이지 전환을 위한 useNavigate 훅
+import { PATHS } from "../../../Path.ts";
 import { Ddayh24Chip } from "../../../components/chips/DdayChip.tsx";
 import { getCareerList } from "../api/careerRecruitmentsStatusApiService.ts"; // API 모듈에서 함수 임포트
 import nextButtonIcon from "../../../shared/assets/calendar-next.png";
@@ -13,6 +13,19 @@ import {
   PassInterviewChip,
   OtherStatusChip,
 } from "../../../components/chips/StatusChip.tsx";
+
+
+// 백엔드에서 받는 진행 상태 Enum으로 관리
+enum ScheduleFilter {
+  PROGRESS = "PROGRESS",
+  PASSES = "PASSES",
+  FAILED = "FAILED",
+}
+enum StageFilter {
+  DOCUMENT = "서류",
+  INTERVIEW = "면접",
+  //OTHER = "기타", "직무테스트", "코딩테스트", ...
+}
 
 // API 연동 타입
 import {
@@ -57,35 +70,39 @@ status:
 // 상태 값에 따라 칩 컴포넌트를 반환하는 훅
 const getChipComponent = (stageName: string, status: string) => {
   switch (stageName) {
-    case "서류":
+    case StageFilter.DOCUMENT:
       switch (status) {
-        case "PROGRESS":
+        case ScheduleFilter.PROGRESS:
           return <PrepareDocumentChip />;
-        case "PASSED":
+        case ScheduleFilter.PASSES:
           return <PassDocumentChip />;
       }
-    case "면접":
+    case StageFilter.INTERVIEW:
       switch (status) {
-        case "PROGRESS":
+        case ScheduleFilter.PROGRESS:
           return <PrepareInterviewChip />;
-        case "PASSED":
+        case ScheduleFilter.PASSES:
           return <PassInterviewChip />;
       }
   }
-
+  /*
   let contents = "";
   contents += stageName;
   switch (status) {
-    case "PROGRESS":
+    case ScheduleFilter.PROGRESS:
       contents = contents + "준비중";
-    case "PASSED":
+    case ScheduleFilter.PASSES:
       contents = contents + "합격";
-    case "FAILED":
+    case ScheduleFilter.FAILED:
       contents = contents + "불합격";
     default:
       contents += status;
   }
   return <OtherStatusChip contents={contents} />;
+  */
+ 
+  // 기타 상태일 때는 'stageName'에 코딩테스트 등 지원 종류가 나옴
+  return <OtherStatusChip contents={stageName} />;
 };
 
 /* 컴포넌트 */
@@ -99,9 +116,17 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
     const fetchCareerList = async () => {
       try {
         const response = await getCareerList({ userId, page });
-        setCareerList(response.data.recruitments); // API 응답 데이터 중 recruitments 저장
+
+        // API 연동 확인
         console.log("📫 status(기업 일정 메인보드) 데이터 배송완료!!");
         console.log(response.data)
+
+        // 파싱: endDate 기준 오름차순 정렬
+        const sortedCareers = response.data.recruitments.sort((a: Career, b: Career) => {
+          return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+        });
+        setCareerList(sortedCareers); // API 응답 데이터 중 recruitments 저장
+        
 
       } catch (error) {
         console.error("데이터를 가져오는 데 실패했습니다:", error);

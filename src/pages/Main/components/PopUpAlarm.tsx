@@ -75,9 +75,11 @@ const PopUpAlarmButton = ({userId, userName} : userInfo) => {
                 onClick={toggleAlerts}
                 style={{ cursor: 'pointer' }}
             />
-            
-            {/* Alarm가 열릴 때만 표시 */}
-            {isAlertsOpen && <Alarm userId={userId} alertsCount={alertsCount}/>}
+            {/* 데이터피커를 절대적 위치(부모 컴포 바로 위)에 독립적으로 띄우기 */}
+            <div className="absolute" style={{ left: '-300px' }}>
+                {/* Alarm가 열릴 때만 표시 */}
+                {isAlertsOpen && <Alarm userId={userId} alertsCount={alertsCount}/>}
+            </div>
         </div>
     );
 }
