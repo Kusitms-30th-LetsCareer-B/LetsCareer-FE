@@ -279,7 +279,7 @@ const handleAddQuestion = () => {
           <div className="flex gap-[12px]">
             <button
               onClick={handleDeleteQuestion}
-              className="flex items-center justify-center gap-[10px] rounded-sm border border-neutral-80 px-[20px] py-[6px]"
+              className="flex w-[110px] h-[38px] items-center justify-center gap-[10px] rounded-sm border border-neutral-80 px-[20px] py-[6px]"
             >
               <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
                 질문 삭제
@@ -316,7 +316,7 @@ const handleAddQuestion = () => {
       <div className="flex justify-end">
         <button 
             onClick={() => handleSaveQuestion(selectedQuestion)}
-            className="flex h-[36px] w-[123px] items-center justify-center rounded-sm bg-primary px-[32px] py-[6px]"
+            className="flex h-[36px] w-[130px] items-center justify-center rounded-sm bg-primary px-[32px] py-[6px]"
         >
             <div className="text-center text-xsmall16 font-medium tracking-[-0.096px] text-static-100">
                 저장하기
