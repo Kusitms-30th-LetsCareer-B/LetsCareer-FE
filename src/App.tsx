@@ -31,6 +31,8 @@ function App() {
       <NavBar />
       <PlannerSideBar>
         <Routes>
+          <Route path="/" element={<MainPage userId={testUser.userId} userName={testUser.userName} />} />
+          <Route path="/*" element={<MainPage userId={testUser.userId} userName={testUser.userName}/>} />
           <Route
             path={PATHS.HOME_PATH}
             element={

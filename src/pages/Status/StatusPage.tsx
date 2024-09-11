@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useStatusPagination } from "../../shared/hooks/useStatusPagination";
 import { UserStatusChip } from "./components/Chips/StatusChip";
 import { WelcomeMessage } from "./components/Helpers/StatusHelper";
 import {
   ApplyStatus,
   ConsequenceFailedStatus,
   ConsequenceSuccessStatus,
+  FinalSuccessStatus,
 } from "./components/Layout/StatusLayout";
 import StatusPagination from "./components/Pagination/StatusPagination";
 import {
@@ -29,6 +29,7 @@ interface Recruitment {
   isFavorite: boolean;
   endDate: string;
   daysUntilEnd: number;
+  isFinal: boolean;
 }
 
 function StatusPage() {
@@ -37,7 +38,6 @@ function StatusPage() {
   }, []);
 
   const navigate = useNavigate();
-  // const { userId } = useParams<{ userId: string }>(); URL에서 userId 받아오기
   const itemsPerPage = 6;
   const pageRange = 6;
   const [statusCounts, setStatusCounts] = useState({
@@ -56,19 +56,20 @@ function StatusPage() {
   const [deleteMode, setDeleteMode] = useState<boolean>(false);
   const [selectedStage, setSelectedStage] = useState("전체");
   const [totalItems, setTotalItems] = useState(0); // totalItems 상태 추가
-  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const [totalPages, setTotalPages] = useState(1);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [selectedRecruitment, setSelectedRecruitment] =
     useState<Recruitment | null>(null);
 
   const [filteredItemCount, setFilteredItemCount] = useState(0);
 
+  // Fetch recruitments
   const fetchRecruitments = async (type: string, pageId: number) => {
     try {
       const response = await axios.get(
         `${BASE_URL}/recruitments/status?type=${type}&userId=1&page=${pageId}`,
       );
-      const { recruitments: newRecruitments, totalElementsCount } =
+      const { recruitments: newRecruitments, totalElementsCount, totalPages } =
         response.data.data;
 
       setRecruitments((prev) => ({
@@ -76,10 +77,33 @@ function StatusPage() {
         [pageId]: newRecruitments,
       }));
       setTotalItems(totalElementsCount);
+      setTotalPages(totalPages);
     } catch (error) {
       console.error("Error fetching recruitments", error);
     }
   };
+
+  // Handle favorite toggle
+const toggleFavorite = async (recruitmentId: number) => {
+  try {
+    await axios.patch(`${BASE_URL}/recruitments/${recruitmentId}/favorite`);
+    
+    // 즉시 상태 업데이트를 위해 로컬 상태를 먼저 변경
+    setRecruitments((prevRecruitments) => {
+      const updatedRecruitments = { ...prevRecruitments };
+      const pageData = updatedRecruitments[currentPage].map((rec) => {
+        if (rec.recruitmentId === recruitmentId) {
+          return { ...rec, isFavorite: !rec.isFavorite }; // 즐겨찾기 상태를 즉시 반전
+        }
+        return rec;
+      });
+      updatedRecruitments[currentPage] = pageData;
+      return updatedRecruitments;
+    });
+  } catch (error) {
+    console.error("Error updating favorite status:", error);
+  }
+};
 
   const filteredRecruitments = (recruitments[currentPage] || []).filter(
     (recruitment) => {
@@ -110,8 +134,6 @@ function StatusPage() {
 
   useEffect(() => {
     const type = activeTab === "prepare" ? "progress" : "consequence";
-
-    console.log("Active tab:", activeTab, "Type:", type); // 확인 로그 추가
 
     // 첫 페이지와 마지막 페이지를 우선적으로 불러오기
     fetchRecruitments(type, 1);
@@ -155,18 +177,11 @@ function StatusPage() {
         // 페이지별로 데이터를 필터링하여 새로운 상태를 설정
         setRecruitments((prevRecruitments) => {
           const updatedRecruitments = { ...prevRecruitments };
-
-          // 현재 탭이 준비 현황인지 지원 결과인지 확인
-          const type = activeTab === "prepare" ? "progress" : "consequence";
-
-          // 현재 페이지의 배열에서 삭제된 항목을 필터링
           const filteredPageData = updatedRecruitments[currentPage].filter(
             (rec) => rec.recruitmentId !== selectedRecruitment.recruitmentId,
           );
 
-          // 필터링된 데이터를 다시 해당 페이지에 설정
           updatedRecruitments[currentPage] = filteredPageData;
-
           return updatedRecruitments;
         });
 
@@ -233,22 +248,41 @@ function StatusPage() {
                   onClick={() =>
                     navigate(`/status/${recruitment.recruitmentId}`)
                   }
+                  recruitmentId={recruitment.recruitmentId}
+                  isFavorite={recruitment.isFavorite}
+                  toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)}
                 />
               );
               break;
-            case "PASSED":
-              StatusComponent = (
-                <ConsequenceSuccessStatus
-                  company={recruitment.companyName}
-                  department={recruitment.task}
-                  recruitmentId={recruitment.recruitmentId}
-                  deleteMode={deleteMode}
-                  onDelete={() => handleDeleteClick(recruitment)}
-                  onClick={() =>
-                    navigate(`/status/${recruitment.recruitmentId}`)
-                  }
-                />
-              );
+              case "PASSED":
+                StatusComponent = recruitment.isFinal ? (
+                  <FinalSuccessStatus
+                    company={recruitment.companyName}
+                    department={recruitment.task}
+                    recruitmentId={recruitment.recruitmentId}
+                    deleteMode={deleteMode}
+                    onDelete={() => handleDeleteClick(recruitment)}
+                    onClick={() =>
+                      navigate(`/status/${recruitment.recruitmentId}`)
+                    }
+                    isFavorite={recruitment.isFavorite}
+                    toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)} 
+                  />
+                ) : (
+                  <ConsequenceSuccessStatus
+                    company={recruitment.companyName}
+                    department={recruitment.task}
+                    recruitmentId={recruitment.recruitmentId}
+                    stageName={recruitment.stageName}
+                    deleteMode={deleteMode}
+                    onDelete={() => handleDeleteClick(recruitment)}
+                    onClick={() =>
+                      navigate(`/status/${recruitment.recruitmentId}`)
+                    }
+                    isFavorite={recruitment.isFavorite}
+                    toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)} 
+                  />
+                );
               break;
             case "FAILED":
               StatusComponent = (
@@ -262,6 +296,8 @@ function StatusPage() {
                   onClick={() =>
                     navigate(`/status/${recruitment.recruitmentId}`)
                   }
+                  isFavorite={recruitment.isFavorite}
+                  toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)} 
                 />
               );
               break;
@@ -292,7 +328,7 @@ function StatusPage() {
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
-          totalPages={Math.ceil(filteredItemCount / itemsPerPage)}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       </div>

@@ -4,7 +4,6 @@ import {
   Ddayh32Chip,
   Finishh32Chip,
 } from "../../../../components/chips/DdayChip";
-import { useScrap } from "../../../../shared/hooks/useScrap";
 import {
   TodoDropdown,
   WriteRecurringNoteButton,
@@ -12,6 +11,7 @@ import {
 import { Departmenth32Chip } from "../Chips/SelfIntroductionChip";
 import { FailedChip, ProgressChip, SuccessChip } from "../Chips/StatusChip";
 import { useState } from "react";
+import { FavoriteButton } from "../../../../components/Buttons/FavoriteButton";
 
 export interface NameProps {
   name: string;
@@ -36,6 +36,7 @@ interface DetailStatusProps {
   name: string;
   company: string;
   department: string;
+  recruitmentId: number;
 }
 
 interface DetailStatusProps2 {
@@ -131,7 +132,36 @@ export const FailedStatus = ({ name, recruitmentId }: RecurringNoteProps) => {
   );
 };
 
-export const SuccessStatus = ({ recruitmentId }: RecurringNoteProps2) => {
+export const SuccessStatus = ({ name, recruitmentId}: RecurringNoteProps) => {
+  return (
+    <div className="flex h-[60px] w-[554px] items-center rounded-bl-md rounded-br-md rounded-tl-none rounded-tr-none border-b border-l border-r border-neutral-80 bg-secondary-10 px-[20px]">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M4 12.0005L8.94975 16.9502L19.5572 6.34375"
+              stroke="#1BC47D"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="ml-[6px] text-small20 font-semibold tracking-[-0.4px] text-secondary">
+            {name} 합격
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const FinalStatus = ({ recruitmentId }: RecurringNoteProps2) => {
   const navigate = useNavigate();
 
   const handleRecurringNote = () => {
@@ -177,8 +207,8 @@ export const DetailOnGoingStatus = ({
   day,
   company,
   department,
+  recruitmentId,
 }: DetailStatusProps) => {
-  const { scrap, scrapImage } = useScrap();
 
   return (
     <div className="mb-[20px] flex w-full flex-col items-start self-stretch">
@@ -216,12 +246,7 @@ export const DetailOnGoingStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={recruitmentId} />
         </div>
       </div>
     </div>
@@ -233,8 +258,9 @@ export const DetailSuccessStatus = ({
   company,
   department,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
+
   const navigate = useNavigate();
 
   const handleRecurringNote = () => {
@@ -285,12 +311,7 @@ export const DetailSuccessStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>
@@ -302,8 +323,9 @@ export const DetailFailedStatus = ({
   company,
   department,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
+
   const navigate = useNavigate();
 
   const handleRecurringNote = () => {
@@ -354,12 +376,7 @@ export const DetailFailedStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>

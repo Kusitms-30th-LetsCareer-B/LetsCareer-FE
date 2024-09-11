@@ -21,13 +21,13 @@ export const useStatusPagination = (
   };
 
   const handlePrevClick = () => {
-    if (currentPage > 1) {
+    if (currentPage-1 >=  1) {
       changePage(currentPage - 1);
     }
   };
 
   const handleNextClick = () => {
-    if (currentPage < totalPages) {
+    if (currentPage-1 <= totalPages) {
       changePage(currentPage + 1);
     }
   };
@@ -43,23 +43,35 @@ export const useStatusPagination = (
     } else {
       if (currentPage <= 3) {
         for (let i = 1; i <= 5; i++) {
-          pages.push(i);
+          if(i === 5) {
+            pages.push("5...");
+          }
+          else {
+            pages.push(i);
+          } 
         }
-        pages.push("...");
         pages.push(totalPages);
       } else if (currentPage > totalPages - 3) {
-        pages.push(1);
-        pages.push("...");
+        pages.push("1");
         for (let i = totalPages - 4; i <= totalPages; i++) {
-          pages.push(i);
+          if(i === totalPages-4)
+          {
+            pages.push(`${i}...`);
+          }
+          else{
+            pages.push(i); 
+          }
         }
       } else {
-        pages.push(1);
-        pages.push("...");
+        pages.push("1");
         for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-          pages.push(i);
+          if (i === currentPage - 2 || i === currentPage + 2){
+            pages.push(`${i}...`);
+          }
+          else{
+            pages.push(i);
+          }
         }
-        pages.push("...");
         pages.push(totalPages);
       }
     }

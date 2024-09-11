@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "../../../../components/DatePicker";
-import {
-  getFormattedDate2,
-  getFormattedDate3,
-} from "../../../../shared/hooks/useDate.ts";
 import axios from "axios";
-import { DeleteButton } from "./StatusButton.tsx";
+import { getFormattedDate2, getFormattedDate3 } from "../../../../shared/hooks/useDate";
+import { DeleteButton } from "./StatusButton";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -26,16 +23,17 @@ export const ArchiveButton = ({
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
   return (
     <>
-      <button
+    <button
         className="mt-[12px] flex items-center justify-between gap-[16px] rounded-sm bg-neutral-95 px-[16px] py-[12px]"
         onClick={() => navigate(archiveLink)}
       >
-        <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+       <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
           {title}
         </span>
-        <button
+        <button 
           className=""
           onClick={(e) => {
             e.stopPropagation();
@@ -55,20 +53,20 @@ export const ArchiveButton = ({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-            />
-          </svg>
+              />
+            </svg>
+          </button>
         </button>
-      </button>
-      <DeleteButton
-      title={title}
-      isOpen={isModalOpen}
-      onCancel={handleCloseModal}
-      onDelete={() => {
-        onDelete();
-        handleCloseModal(); // 삭제 후 모달 닫기
-      }}
-    />
-  </>
+        <DeleteButton
+        title={title}
+        isOpen={isModalOpen}
+        onCancel={handleCloseModal}
+        onDelete={() => {
+          onDelete();
+          handleCloseModal(); // 삭제 후 모달 닫기
+        }}
+      />
+    </>
   );
 };
 
@@ -81,7 +79,7 @@ export const AnnouncementButton = ({ text, onClick }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className="border-1-neutral-85 inline-flex h-[38px] w-[101px] items-center justify-center gap-[10px] rounded-sm border bg-static-100 px-[20px] py-[6px]"
+      className="border-1-neutral-85 inline-flex h-[38px] w-[110px] items-center justify-center gap-[10px] rounded-sm border bg-static-100 px-[20px] py-[6px]"
     >
       <div className="text-center text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
         {text}
@@ -109,16 +107,30 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
     setIsFinalStage(!isFinalStage);
   };
 
+  const formatDate = (date: Date) => {
+    return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+  };
+
   const handleDateSelect = (date: Date) => {
-    setSelectedDate(getFormattedDate2(date)); // YYYY.MM.DD 형식
+    setSelectedDate(formatDate(date)); // YYYY.MM.DD 형식
     setApiDate(getFormattedDate3(date)); // YYYY-MM-DD 형식
     setIsDatePickerOpen(false);
   };
 
   const handleSubmit = async () => {
+    let mappedStatus = "";
+  if (selectedStatus === "진행중") {
+    mappedStatus = "준비중";
+  } else if (selectedStatus === "합격") {
+    mappedStatus = "합격";
+  } else if (selectedStatus === "불합격") {
+    mappedStatus = "불합격";
+  }
+
     const requestBody = {
       stageName: selectedType === "기타" ? inputValue : selectedType,
       endDate: apiDate,
+      status: mappedStatus,
       isFinal: isFinalStage,
     };
 
@@ -214,7 +226,6 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
               onBlur={() => setIsFocused(false)}
             />
           )}
-
           <button
             className="flex w-full justify-between gap-[23px] rounded-sm border border-neutral-80 px-[20px] py-[14px]"
             onClick={() => setIsDatePickerOpen(true)}
@@ -365,7 +376,7 @@ interface UpdateTypeModalProps {
 
 export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null); // 선택된 전형명 상태
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(""); // 선택된 상태 (진행중, 합격, 불합격)
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(""); // 선택된 상태 (준비중, 합격, 불합격)
   const [isFinalStage, setIsFinalStage] = useState(false); // 최종 단계 체크박스 상태
   const [inputValue, setInputValue] = useState<string>(""); // 기타 항목 입력 값
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false); // DatePicker 열림 상태
@@ -377,76 +388,55 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
     setIsFinalStage(!isFinalStage);
   };
 
+  const formatDate = (date: Date) => {
+    return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+  };
+
   const handleDateSelect = (date: Date) => {
     setSelectedDate(getFormattedDate2(date)); // 화면에 표시할 yy.mm.dd 형식
-    setApiDate(getFormattedDate3(date)); // API에 보낼 yyyy-mm-dd 형식
+    setApiDate(getFormattedDate3(date));
     setIsDatePickerOpen(false);
   };
 
   useEffect(() => {
     const fetchStageData = async () => {
       try {
-        const response = await axios.get(
-          `${BASE_URL}/stages?stageId=${stageId}`,
-        );
+        const response = await axios.get(`${BASE_URL}/stages?stageId=${stageId}`);
         const stageData = response.data.data;
-
+  
         setSelectedType(stageData.stageName);
-        setSelectedStatus(mapStatusToDisplay(stageData.status));
+        setSelectedStatus(stageData.status);
         setIsFinalStage(stageData.isFinal);
-
+  
         if (stageData.stageName !== "서류" || stageData.stageName !== "면접") {
           setInputValue(stageData.stageName);
         }
-        const formattedDate = getFormattedDate3(stageData.endDate);
+  
+        // 여기서 날짜를 Date 객체로 변환합니다.
+        const formattedDate = formatDate(new Date(stageData.endDate));
         setSelectedDate(formattedDate);
         setApiDate(stageData.endDate); // API에 보낼 원본 날짜는 유지
       } catch (error) {
         console.error("Error fetching stage data:", error);
       }
     };
-
+  
     if (stageId) {
       fetchStageData(); // stageId가 있을 때만 데이터 fetch
     }
   }, [stageId]);
 
-  const mapStatusToDisplay = (status: string) => {
-    switch (status) {
-      case "PROGRESS":
-        return "진행중";
-      case "PASSED":
-        return "합격";
-      case "FAILED":
-        return "불합격";
-      default:
-        return "";
-    }
-  };
-
-  // 상태를 '진행중', '합격', '불합격'에서 API에 맞는 'PROGRESS', 'PASSED', 'FAILED'로 변환
-  const mapStatusToApi = (status: string) => {
-    switch (status) {
-      case "준비중":
-        return "PROGRESS";
-      case "합격":
-        return "PASSED";
-      case "불합격":
-        return "FAILED";
-      default:
-        return "";
-    }
-  };
 
   const handleUpdate = async () => {
     const requestBody = {
       stageName: selectedType === "기타" ? inputValue : selectedType,
       endDate: apiDate,
       status: selectedStatus,
+      isFinal: isFinalStage,
     };
 
     try {
-      await axios.put(`${BASE_URL}/stages?stageId=${stageId}`, requestBody);
+      await axios.patch(`${BASE_URL}/stages?stageId=${stageId}`, requestBody);
       onClose();
     } catch (error) {
       console.error("Error updating stage:", error);
@@ -578,11 +568,11 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
             <div className="flex items-center gap-[8px]">
               <button
                 className={`flex w-[60px] items-center justify-center rounded-sm border px-[10px] py-[8px] ${
-                  selectedStatus === "진행중"
+                  selectedStatus === "준비중"
                     ? "border-primary bg-primary-10 text-primary"
                     : "border-neutral-80 text-neutral-45"
                 }`}
-                onClick={() => setSelectedStatus("진행중")}
+                onClick={() => setSelectedStatus("준비중")}
               >
                 <span className="text-xsmall14 font-medium tracking-[-0.21px]">
                   진행중

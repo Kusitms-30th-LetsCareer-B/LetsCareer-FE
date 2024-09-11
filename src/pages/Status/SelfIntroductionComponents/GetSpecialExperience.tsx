@@ -155,7 +155,7 @@ export const GetExperience: React.FC<GetExperienceProps> = ({
         </span>
         <button
           onClick={handleButtonClick}
-          className="font-regular flex items-center justify-center rounded-md bg-primary px-[15px] py-[5px] text-xsmall14 tracking-[-0.022px] text-static-100"
+          className="font-regular flex items-center justify-center rounded-sm bg-primary px-[15px] py-[5px] text-xsmall14 tracking-[-0.022px] text-static-100"
         >
           필살기 경험 작성하기
         </button>

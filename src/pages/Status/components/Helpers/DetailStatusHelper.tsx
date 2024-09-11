@@ -4,7 +4,6 @@ import {
   Ddayh32Chip,
   Finishh32Chip,
 } from "../../../../components/chips/DdayChip";
-import { useScrap } from "../../../../shared/hooks/useScrap";
 import { NameProps } from "./StatusHelper";
 import {
   RoutineDropdown,
@@ -20,6 +19,7 @@ import {
   ArchiveButton,
   UpdateTypeModal,
 } from "../Buttons/DetailStatusButton";
+import { FavoriteButton } from "../../../../components/Buttons/FavoriteButton";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -29,6 +29,7 @@ interface DetailStatusProps {
   company: string;
   department: string;
   announcementUrl: string;
+  recruitmentId: number;
 }
 
 interface DetailStatusProps2 {
@@ -36,6 +37,7 @@ interface DetailStatusProps2 {
   company: string;
   department: string;
   announcementUrl: string;
+  recruitmentId: number;
 }
 
 export const DetailOnGoingStatus = ({
@@ -44,9 +46,8 @@ export const DetailOnGoingStatus = ({
   company,
   department,
   announcementUrl,
+  recruitmentId,
 }: DetailStatusProps) => {
-  const { scrap, scrapImage } = useScrap();
-
   return (
     <div className="mb-[20px] flex w-full flex-col items-start self-stretch">
       <div className="flex-start flex flex-col self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-primary-10 px-[24px] py-[16px]">
@@ -92,12 +93,7 @@ export const DetailOnGoingStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={recruitmentId} />
         </div>
       </div>
     </div>
@@ -110,10 +106,85 @@ export const DetailSuccessStatus = ({
   department,
   announcementUrl,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
 
   const navigate = useNavigate();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
+
+  const handleRecurringNote = () => {
+    if (recruitmentId) {
+      navigate(`/status/${recruitmentId}/recurring-note`);
+    } else {
+      alert("올바르지 않은 경로입니다");
+    }
+  };
+
+  return (
+    <div className="mb-[20px] flex w-full flex-col items-start self-stretch">
+      <div className="flex-start flex flex-col self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-primary-10 bg-secondary-10 px-[24px] py-[16px]">
+        <div className="flex items-center justify-between">
+          <div className="flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M4 12.0005L8.94975 16.9502L19.5572 6.34375"
+                stroke="#1BC47D"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="ml-[6px] text-small20 font-semibold tracking-[-0.4px] text-secondary">
+              {name} 합격
+            </span>
+          </div>
+          <AnnouncementButton
+            onClick={() => {
+              if ({ announcementUrl }) {
+                window.location.href = announcementUrl; // 공고 URL로 이동
+              } else {
+                alert("공고 URL이 없습니다.");
+              }
+            }}
+            text="공고 이동"
+          />
+        </div>
+      </div>
+      <div className="flex-start flex flex-col self-stretch rounded-bl-md rounded-br-md rounded-tl-none rounded-tr-none border-b border-l border-r border-neutral-80 bg-static-100 p-[24px]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+              <div className="flex h-[32px] items-center justify-center gap-[10px] rounded-sm bg-neutral-60 px-[12px] py-[4px]">
+                <div className="text-small16 text-center font-medium tracking-[-0.096px] text-static-100">
+                  다음 전형 대기중
+                </div>
+              </div>
+            <span className="ml-[20px] mr-[8px] text-medium24 font-bold tracking-[-0.576px] text-neutral-0">
+              {company}
+            </span>
+            <Departmenth32Chip department={department} />
+          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const FinalSuccessStatus = ({
+  name,
+  company,
+  department,
+  announcementUrl,
+}: DetailStatusProps2) => {
+
+  const navigate = useNavigate();
+  const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
 
   const handleRecurringNote = () => {
     if (recruitmentId) {
@@ -174,12 +245,7 @@ export const DetailSuccessStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>
@@ -192,9 +258,9 @@ export const DetailFailedStatus = ({
   department,
   announcementUrl,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
   const navigate = useNavigate();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
 
   const handleRecurringNote = () => {
     if (recruitmentId) {
@@ -255,12 +321,7 @@ export const DetailFailedStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>
