@@ -12,7 +12,7 @@ import {
   RecurringNoteTab,
 } from "./components/Helpers/RecurringNoteHelper";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -47,7 +47,7 @@ function RecurringNotePage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
+  const navigate = useNavigate();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
 
   const [company, setCompany] = useState<string>("");
@@ -484,9 +484,9 @@ function RecurringNotePage() {
               ) : (
                 <div className="flex w-1/2 flex-col">
                   <NoSelfIntroduction
-                    onClick={() => {
-                      console.log("NoSelfIntroduction clicked");
-                    }}
+                   onClick={() => {
+                    navigate(`/status/${recruitmentId}/self-introduce`);
+                  }}
                   />
                   <NoGoodQuestion />
                 </div>
