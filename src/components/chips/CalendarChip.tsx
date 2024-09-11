@@ -29,14 +29,17 @@ export const filterState = {
 interface CompanyDocumentChipProps {
   companyName: string;
   filter: string; // 서류, 시작, 종료 총 3가지 상태
+  onClick?: () => void; // onClick을 선택적 속성으로 추가
 }
 
 interface CompanyChipProps {
   companyName: string;
+  onClick?: () => void; // onClick을 선택적 속성으로 추가
 }
 
 interface PersonalChipProps {
   personalSchedule: string;
+  onClick?: () => void; // onClick을 선택적 속성으로 추가
 }
 
 // 긴 일정의 경우 ... 처리를 위한 함수
@@ -73,10 +76,15 @@ const CompanyBox = ({ companyName, txtColor }) => (
 /** 시작 & 종료 & 서류 칩스 */
 export const DefaultDocumentChip = ({
   companyName,
-  filter,
+  filter, onClick
 }: CompanyDocumentChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
@@ -119,11 +127,16 @@ export const DefaultDocumentChip = ({
 
 export const HoveredDocumentChip = ({
   companyName,
-  filter,
+  filter, onClick
 }: CompanyDocumentChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-secondary-100">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-secondary-100"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
@@ -167,9 +180,15 @@ export const HoveredDocumentChip = ({
 export const ClickedDocumentChip = ({
   companyName,
   filter,
+  onClick,
 }: CompanyDocumentChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-0" />
 
@@ -205,9 +224,14 @@ export const ClickedDocumentChip = ({
 };
 
 /** 면접 칩스 */
-export const DefaultInterviewChip = ({ companyName }: CompanyChipProps) => {
+export const DefaultInterviewChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
@@ -228,10 +252,15 @@ export const DefaultInterviewChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-export const HoveredInterviewChip = ({ companyName }: CompanyChipProps) => {
+export const HoveredInterviewChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-primary-100">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-primary-100"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="px flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
@@ -252,9 +281,14 @@ export const HoveredInterviewChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-export const ClickedInterviewChip = ({ companyName }: CompanyChipProps) => {
+export const ClickedInterviewChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-primary-0" />
 
@@ -276,9 +310,14 @@ export const ClickedInterviewChip = ({ companyName }: CompanyChipProps) => {
 };
 
 /** 기타 칩스 */
-export const DefaultOtherChip = ({ companyName }: CompanyChipProps) => {
+export const DefaultOtherChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
@@ -299,10 +338,15 @@ export const DefaultOtherChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-export const HoveredOtherChip = ({ companyName }: CompanyChipProps) => {
+export const HoveredOtherChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-teritory-normal">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs border-2 border-teritory-normal"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
@@ -323,9 +367,14 @@ export const HoveredOtherChip = ({ companyName }: CompanyChipProps) => {
   );
 };
 
-export const ClickedOtherChip = ({ companyName }: CompanyChipProps) => {
+export const ClickedOtherChip = ({ companyName, onClick }: CompanyChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs">
+    <div className="inline-flex h-[24px] items-center justify-center overflow-hidden rounded-xxs"
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-0" />
 
@@ -348,10 +397,15 @@ export const ClickedOtherChip = ({ companyName }: CompanyChipProps) => {
 
 /** 개인 일정 Chip */
 export const DefaultPersonalChip = ({
-  personalSchedule,
+  personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className={`flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]`}>
+    <div className={`flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]`}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 동그라미 박스 */}
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-neutral-45" />
 
@@ -366,11 +420,16 @@ export const DefaultPersonalChip = ({
 };
 
 export const HoveredPersonalChip = ({
-  personalSchedule,
+  personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
     /* border 추가 */
-    <div className={`inline-flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]`}>
+    <div className={`inline-flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]`}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 동그라미 박스 */}
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-neutral-45" />
 
@@ -385,10 +444,15 @@ export const HoveredPersonalChip = ({
 };
 
 export const ClickedPersonalChip = ({
-  personalSchedule,
+  personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className={`inline-flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]`}>
+    <div className={`inline-flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]`}
+        onClick={(e) => {
+          e.stopPropagation(); // 이벤트 전파 중지
+          onClick();
+        }}
+    >
       {/* 동그라미 박스 */}
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-static-100" />
 

@@ -19,10 +19,11 @@ export const PATHS = {
 
 import { useNavigate } from "react-router-dom";
 // 기업 일정 상세보기 페이지로 이동하는 훅
-export function useNavigationStatusByRecruitmentId(recruitmentId: number) {
+export function useNavigationStatusByRecruitmentId() {
   const navigate = useNavigate();
 
-  const goStatusByRecruitmentId = () => {
+  // recruitmentId를 매개변수로 받지 않고, 반환되는 함수가 실행될 때 recruitmentId를 전달받도록 함
+  const goStatusByRecruitmentId = (recruitmentId: number) => {
     navigate(`${PATHS.STATUS_PATH}/${recruitmentId}`);
   };
 

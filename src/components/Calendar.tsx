@@ -134,6 +134,9 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
     }
   };
 
+  // 칩 누르면 해당 기업 상세 페이지로 전환하는 훅
+  const navigateByRecruitmentId = useNavigationStatusByRecruitmentId();
+
 
   /**---------------------------------------------------*/
   /** API 연동 데이터 관련 변수, 함수 */
@@ -561,7 +564,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 key={recruitmentsData.scheduleId}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
-//                onClick={useNavigationStatusByRecruitmentId(recruitmentsData.scheduleId)}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               :
               // 셀 호버 상태
@@ -570,6 +573,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 key={recruitmentsData.scheduleId}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
@@ -577,6 +581,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
                 key={recruitmentsData.scheduleId}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
             
             // 면접 칩스
@@ -586,6 +591,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               <ClickedInterviewChip 
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               :
               // 셀 호버 상태
@@ -593,12 +599,14 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               <HoveredInterviewChip 
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
               <DefaultInterviewChip
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
 
             // 기타 칩스
@@ -608,6 +616,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               <ClickedOtherChip 
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               :
               // 셀 호버 상태
@@ -615,12 +624,14 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               <HoveredOtherChip 
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName} 
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
               <DefaultOtherChip
                 key={recruitmentsData.scheduleId}
                 companyName={recruitmentsData.companyName}
+                onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
               //console.log(recruitmentsData.filter) // 확인 완료
               
