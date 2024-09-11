@@ -107,8 +107,12 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
     setIsFinalStage(!isFinalStage);
   };
 
+  const formatDate = (date: Date) => {
+    return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+  };
+
   const handleDateSelect = (date: Date) => {
-    setSelectedDate(getFormattedDate2(date)); // YYYY.MM.DD 형식
+    setSelectedDate(formatDate(date)); // YYYY.MM.DD 형식
     setApiDate(getFormattedDate3(date)); // YYYY-MM-DD 형식
     setIsDatePickerOpen(false);
   };
@@ -222,7 +226,6 @@ export const AddTypeModal = ({ onClose, recruitmentId }: AddTypeModalProps) => {
               onBlur={() => setIsFocused(false)}
             />
           )}
-
           <button
             className="flex w-full justify-between gap-[23px] rounded-sm border border-neutral-80 px-[20px] py-[14px]"
             onClick={() => setIsDatePickerOpen(true)}
@@ -385,6 +388,10 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
     setIsFinalStage(!isFinalStage);
   };
 
+  const formatDate = (date: Date) => {
+    return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+  };
+
   const handleDateSelect = (date: Date) => {
     setSelectedDate(getFormattedDate2(date)); // 화면에 표시할 yy.mm.dd 형식
     setApiDate(getFormattedDate3(date));
@@ -394,37 +401,31 @@ export const UpdateTypeModal = ({ onClose, stageId }: UpdateTypeModalProps) => {
   useEffect(() => {
     const fetchStageData = async () => {
       try {
-        const response = await axios.get(
-          `${BASE_URL}/stages?stageId=${stageId}`,
-        );
+        const response = await axios.get(`${BASE_URL}/stages?stageId=${stageId}`);
         const stageData = response.data.data;
-
+  
         setSelectedType(stageData.stageName);
         setSelectedStatus(stageData.status);
         setIsFinalStage(stageData.isFinal);
-
+  
         if (stageData.stageName !== "서류" || stageData.stageName !== "면접") {
           setInputValue(stageData.stageName);
         }
-        const formattedDate = getFormattedDate3(stageData.endDate);
+  
+        // 여기서 날짜를 Date 객체로 변환합니다.
+        const formattedDate = formatDate(new Date(stageData.endDate));
         setSelectedDate(formattedDate);
         setApiDate(stageData.endDate); // API에 보낼 원본 날짜는 유지
       } catch (error) {
         console.error("Error fetching stage data:", error);
       }
     };
-
+  
     if (stageId) {
       fetchStageData(); // stageId가 있을 때만 데이터 fetch
     }
   }, [stageId]);
 
-
-  // API로 날짜를 보낼 때는 yyyy-mm-dd 형식으로 변환
-  const formatDateForDisplay = (apiDate: string) => {
-    const date = new Date(apiDate);
-    return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
-  };
 
   const handleUpdate = async () => {
     const requestBody = {
