@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useStatusPagination } from "../../shared/hooks/useStatusPagination";
 import { UserStatusChip } from "./components/Chips/StatusChip";
 import { WelcomeMessage } from "./components/Helpers/StatusHelper";
 import {
@@ -39,7 +38,6 @@ function StatusPage() {
   }, []);
 
   const navigate = useNavigate();
-  // const { userId } = useParams<{ userId: string }>(); URL에서 userId 받아오기
   const itemsPerPage = 6;
   const pageRange = 6;
   const [statusCounts, setStatusCounts] = useState({
@@ -65,6 +63,7 @@ function StatusPage() {
 
   const [filteredItemCount, setFilteredItemCount] = useState(0);
 
+  // Fetch recruitments
   const fetchRecruitments = async (type: string, pageId: number) => {
     try {
       const response = await axios.get(
@@ -83,6 +82,28 @@ function StatusPage() {
       console.error("Error fetching recruitments", error);
     }
   };
+
+  // Handle favorite toggle
+const toggleFavorite = async (recruitmentId: number) => {
+  try {
+    await axios.patch(`${BASE_URL}/recruitments/${recruitmentId}/favorite`);
+    
+    // 즉시 상태 업데이트를 위해 로컬 상태를 먼저 변경
+    setRecruitments((prevRecruitments) => {
+      const updatedRecruitments = { ...prevRecruitments };
+      const pageData = updatedRecruitments[currentPage].map((rec) => {
+        if (rec.recruitmentId === recruitmentId) {
+          return { ...rec, isFavorite: !rec.isFavorite }; // 즐겨찾기 상태를 즉시 반전
+        }
+        return rec;
+      });
+      updatedRecruitments[currentPage] = pageData;
+      return updatedRecruitments;
+    });
+  } catch (error) {
+    console.error("Error updating favorite status:", error);
+  }
+};
 
   const filteredRecruitments = (recruitments[currentPage] || []).filter(
     (recruitment) => {
@@ -113,8 +134,6 @@ function StatusPage() {
 
   useEffect(() => {
     const type = activeTab === "prepare" ? "progress" : "consequence";
-
-    console.log("Active tab:", activeTab, "Type:", type); // 확인 로그 추가
 
     // 첫 페이지와 마지막 페이지를 우선적으로 불러오기
     fetchRecruitments(type, 1);
@@ -158,18 +177,11 @@ function StatusPage() {
         // 페이지별로 데이터를 필터링하여 새로운 상태를 설정
         setRecruitments((prevRecruitments) => {
           const updatedRecruitments = { ...prevRecruitments };
-
-          // 현재 탭이 준비 현황인지 지원 결과인지 확인
-          const type = activeTab === "prepare" ? "progress" : "consequence";
-
-          // 현재 페이지의 배열에서 삭제된 항목을 필터링
           const filteredPageData = updatedRecruitments[currentPage].filter(
             (rec) => rec.recruitmentId !== selectedRecruitment.recruitmentId,
           );
 
-          // 필터링된 데이터를 다시 해당 페이지에 설정
           updatedRecruitments[currentPage] = filteredPageData;
-
           return updatedRecruitments;
         });
 
@@ -236,12 +248,15 @@ function StatusPage() {
                   onClick={() =>
                     navigate(`/status/${recruitment.recruitmentId}`)
                   }
+                  recruitmentId={recruitment.recruitmentId}
+                  isFavorite={recruitment.isFavorite}
+                  toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)}
                 />
               );
               break;
               case "PASSED":
                 StatusComponent = recruitment.isFinal ? (
-                  <FinalSuccessStatus // isFinal이 true이면 FinalSuccessStatus 출력
+                  <FinalSuccessStatus
                     company={recruitment.companyName}
                     department={recruitment.task}
                     recruitmentId={recruitment.recruitmentId}
@@ -250,9 +265,11 @@ function StatusPage() {
                     onClick={() =>
                       navigate(`/status/${recruitment.recruitmentId}`)
                     }
+                    isFavorite={recruitment.isFavorite}
+                    toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)} 
                   />
                 ) : (
-                  <ConsequenceSuccessStatus // isFinal이 false이면 ConsequenceSuccessStatus 출력
+                  <ConsequenceSuccessStatus
                     company={recruitment.companyName}
                     department={recruitment.task}
                     recruitmentId={recruitment.recruitmentId}
@@ -262,6 +279,8 @@ function StatusPage() {
                     onClick={() =>
                       navigate(`/status/${recruitment.recruitmentId}`)
                     }
+                    isFavorite={recruitment.isFavorite}
+                    toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)} 
                   />
                 );
               break;
@@ -277,6 +296,8 @@ function StatusPage() {
                   onClick={() =>
                     navigate(`/status/${recruitment.recruitmentId}`)
                   }
+                  isFavorite={recruitment.isFavorite}
+                  toggleFavorite={() => toggleFavorite(recruitment.recruitmentId)} 
                 />
               );
               break;

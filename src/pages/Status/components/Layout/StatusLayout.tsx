@@ -1,8 +1,8 @@
+import { FavoriteButton } from "../../../../components/Buttons/FavoriteButton";
 import {
   Ddayh32Chip,
   Finishh32Chip,
 } from "../../../../components/chips/DdayChip";
-import { useScrap } from "../../../../shared/hooks/useScrap";
 import { useStatusTab } from "../../../../shared/hooks/useStatusTab";
 import { DeleteIcon } from "../Buttons/StatusButton";
 import { Departmenth32Chip } from "../Chips/SelfIntroductionChip";
@@ -20,9 +20,12 @@ interface ApplyStatusProps {
   department: string;
   stageName: string;
   endDate: string;
+  recruitmentId: number;
   deleteMode?: boolean;
   onDelete?: () => void;
   onClick?: () => void;
+  isFavorite: boolean; 
+  toggleFavorite: () => Promise<void>;
 }
 
 interface FinalSuccessProps {
@@ -32,6 +35,8 @@ interface FinalSuccessProps {
   deleteMode?: boolean;
   onDelete?: () => void;
   onClick?: () => void;
+  isFavorite: boolean; 
+  toggleFavorite: () => Promise<void>;
 }
 
 interface ConsequenceProps {
@@ -42,6 +47,8 @@ interface ConsequenceProps {
   deleteMode?: boolean;
   onDelete?: () => void;
   onClick?: () => void;
+  isFavorite: boolean; 
+  toggleFavorite: () => Promise<void>;
 }
 
 export const ApplyStatus: React.FC<ApplyStatusProps> = ({
@@ -51,10 +58,10 @@ export const ApplyStatus: React.FC<ApplyStatusProps> = ({
   stageName,
   endDate,
   deleteMode = false,
+  recruitmentId,
   onDelete,
   onClick,
 }) => {
-  const { scrap, scrapImage } = useScrap();
 
   return (
     <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
@@ -67,9 +74,7 @@ export const ApplyStatus: React.FC<ApplyStatusProps> = ({
             <Departmenth32Chip department={department} />
           </div>
           <div className="flex-end flex flex-shrink-0 items-center">
-            <div className="cursor-pointer" onClick={scrapImage}>
-              {scrap}
-            </div>
+            <FavoriteButton recruitmentId={recruitmentId} />
             {deleteMode && onDelete && (
               <div className="cursor-pointer">
                 <DeleteIcon onClick={onDelete} />
@@ -98,7 +103,6 @@ export const ConsequenceFailedStatus: React.FC<ConsequenceProps> = ({
   onDelete,
   onClick,
 }) => {
-  const { scrap, scrapImage } = useScrap();
 
   return (
     <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
@@ -111,9 +115,7 @@ export const ConsequenceFailedStatus: React.FC<ConsequenceProps> = ({
             <Departmenth32Chip department={department} />
           </div>
           <div className="flex-end flex flex-shrink-0 items-center">
-            <div className="cursor-pointer" onClick={scrapImage}>
-              {scrap}
-            </div>
+            <FavoriteButton recruitmentId={recruitmentId} />
             {deleteMode && onDelete && (
               <div className="cursor-pointer">
                 <DeleteIcon onClick={onDelete} />
@@ -142,7 +144,6 @@ export const ConsequenceSuccessStatus: React.FC<ConsequenceProps> = ({
   onDelete,
   onClick,
 }) => {
-  const { scrap, scrapImage } = useScrap();
 
   return (
     <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
@@ -159,9 +160,7 @@ export const ConsequenceSuccessStatus: React.FC<ConsequenceProps> = ({
             <Departmenth32Chip department={department} />
           </div>
           <div className="flex-end flex flex-shrink-0 items-center">
-            <div className="cursor-pointer" onClick={scrapImage}>
-              {scrap}
-            </div>
+            <FavoriteButton recruitmentId={recruitmentId} />
             {deleteMode && onDelete && (
               <div className="cursor-pointer">
                 <DeleteIcon onClick={onDelete} />
@@ -190,7 +189,6 @@ export const FinalSuccessStatus: React.FC<FinalSuccessProps> = ({
   onDelete,
   onClick,
 }) => {
-  const { scrap, scrapImage } = useScrap();
 
   return (
     <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
@@ -203,9 +201,7 @@ export const FinalSuccessStatus: React.FC<FinalSuccessProps> = ({
             <Departmenth32Chip department={department} />
           </div>
           <div className="flex-end flex flex-shrink-0 items-center">
-            <div className="cursor-pointer" onClick={scrapImage}>
-              {scrap}
-            </div>
+            <FavoriteButton recruitmentId={recruitmentId} />
             {deleteMode && onDelete && (
               <div className="cursor-pointer">
                 <DeleteIcon onClick={onDelete} />

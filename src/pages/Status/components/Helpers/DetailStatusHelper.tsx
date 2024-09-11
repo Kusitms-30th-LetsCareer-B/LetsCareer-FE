@@ -4,7 +4,6 @@ import {
   Ddayh32Chip,
   Finishh32Chip,
 } from "../../../../components/chips/DdayChip";
-import { useScrap } from "../../../../shared/hooks/useScrap";
 import { NameProps } from "./StatusHelper";
 import {
   RoutineDropdown,
@@ -20,6 +19,7 @@ import {
   ArchiveButton,
   UpdateTypeModal,
 } from "../Buttons/DetailStatusButton";
+import { FavoriteButton } from "../../../../components/Buttons/FavoriteButton";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -29,6 +29,7 @@ interface DetailStatusProps {
   company: string;
   department: string;
   announcementUrl: string;
+  recruitmentId: number;
 }
 
 interface DetailStatusProps2 {
@@ -36,6 +37,7 @@ interface DetailStatusProps2 {
   company: string;
   department: string;
   announcementUrl: string;
+  recruitmentId: number;
 }
 
 export const DetailOnGoingStatus = ({
@@ -44,9 +46,8 @@ export const DetailOnGoingStatus = ({
   company,
   department,
   announcementUrl,
+  recruitmentId,
 }: DetailStatusProps) => {
-  const { scrap, scrapImage } = useScrap();
-
   return (
     <div className="mb-[20px] flex w-full flex-col items-start self-stretch">
       <div className="flex-start flex flex-col self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-primary-10 px-[24px] py-[16px]">
@@ -92,12 +93,7 @@ export const DetailOnGoingStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={recruitmentId} />
         </div>
       </div>
     </div>
@@ -110,10 +106,10 @@ export const DetailSuccessStatus = ({
   department,
   announcementUrl,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
 
   const navigate = useNavigate();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
 
   const handleRecurringNote = () => {
     if (recruitmentId) {
@@ -172,12 +168,7 @@ export const DetailSuccessStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>
@@ -190,10 +181,10 @@ export const FinalSuccessStatus = ({
   department,
   announcementUrl,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
 
   const navigate = useNavigate();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
 
   const handleRecurringNote = () => {
     if (recruitmentId) {
@@ -254,12 +245,7 @@ export const FinalSuccessStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>
@@ -272,9 +258,9 @@ export const DetailFailedStatus = ({
   department,
   announcementUrl,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
   const navigate = useNavigate();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
 
   const handleRecurringNote = () => {
     if (recruitmentId) {
@@ -335,12 +321,7 @@ export const DetailFailedStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>

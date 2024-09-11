@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useScrap } from "../../../shared/hooks/useScrap";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { DdayScheduleEndChip } from "../../../components/chips/DdayChip";
@@ -7,6 +6,7 @@ import { DepartmentChip } from "../components/Chips/SelfIntroductionChip";
 import { AnnouncementButton } from "../components/Buttons/DetailStatusButton";
 import { InterviewDeleteButton } from "../components/Buttons/RecurringNoteButton";
 import { SelfIntroductionQuestions } from "../components/Pagination/SelfIntroducePagination";
+import { FavoriteButton } from "../../../components/Buttons/FavoriteButton";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -58,8 +58,9 @@ interface IntroductionData {
 
 
 export const WriteSelfIntroduction = () => {
-  const { scrap, scrapImage } = useScrap();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
+
   const [introductions, setIntroductions] = useState<IntroductionData[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [totalPages, setTotalPages] = useState(1);
@@ -249,9 +250,7 @@ const handleAddQuestion = () => {
     <div className="mb-[20px] flex w-[747px] flex-col items-end rounded-md border border-neutral-80 bg-static-100 p-[24px]">
       <div className="mb-[16px] flex h-[28px] items-start items-center justify-between self-stretch">
         <DdayScheduleEndChip schedule={stages} day={endDate} />
-        <div className="h-[20px] w-[20px] cursor-pointer" onClick={scrapImage}>
-          {scrap}
-        </div>
+        <FavoriteButton recruitmentId={numericRecruitmentId} />
       </div>
       <div className="flex flex-col self-stretch">
         <div className="mb-[24px]">

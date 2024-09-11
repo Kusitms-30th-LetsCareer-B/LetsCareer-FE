@@ -82,6 +82,8 @@ function DetailStatusPage() {
     }
   }, [recruitmentId, stages]);
 
+  const numericRecruitmentId = Number(recruitmentId);
+
   const formatDate = (date: Date) => {
     return `${String(date.getFullYear()).slice(2)}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
@@ -117,6 +119,7 @@ function DetailStatusPage() {
             company={company}
             department={task}
             announcementUrl={announcementUrl}
+            recruitmentId={numericRecruitmentId}
           />
         );
         break;
@@ -128,6 +131,7 @@ function DetailStatusPage() {
               department={task}
               company={company}
               announcementUrl={announcementUrl}
+              recruitmentId={numericRecruitmentId}
             />
           );
         } else {
@@ -137,6 +141,7 @@ function DetailStatusPage() {
               department={task}
               company={company}
               announcementUrl={announcementUrl}
+              recruitmentId={numericRecruitmentId}
             />
           );
         }
@@ -148,6 +153,7 @@ function DetailStatusPage() {
             department={task}
             company={company}
             announcementUrl={announcementUrl}
+            recruitmentId={numericRecruitmentId}
           />
         );
         break;

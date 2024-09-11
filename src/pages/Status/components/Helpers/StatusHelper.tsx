@@ -4,7 +4,6 @@ import {
   Ddayh32Chip,
   Finishh32Chip,
 } from "../../../../components/chips/DdayChip";
-import { useScrap } from "../../../../shared/hooks/useScrap";
 import {
   TodoDropdown,
   WriteRecurringNoteButton,
@@ -12,6 +11,7 @@ import {
 import { Departmenth32Chip } from "../Chips/SelfIntroductionChip";
 import { FailedChip, ProgressChip, SuccessChip } from "../Chips/StatusChip";
 import { useState } from "react";
+import { FavoriteButton } from "../../../../components/Buttons/FavoriteButton";
 
 export interface NameProps {
   name: string;
@@ -36,6 +36,7 @@ interface DetailStatusProps {
   name: string;
   company: string;
   department: string;
+  recruitmentId: number;
 }
 
 interface DetailStatusProps2 {
@@ -206,8 +207,8 @@ export const DetailOnGoingStatus = ({
   day,
   company,
   department,
+  recruitmentId,
 }: DetailStatusProps) => {
-  const { scrap, scrapImage } = useScrap();
 
   return (
     <div className="mb-[20px] flex w-full flex-col items-start self-stretch">
@@ -245,12 +246,7 @@ export const DetailOnGoingStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={recruitmentId} />
         </div>
       </div>
     </div>
@@ -262,8 +258,9 @@ export const DetailSuccessStatus = ({
   company,
   department,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
+
   const navigate = useNavigate();
 
   const handleRecurringNote = () => {
@@ -314,12 +311,7 @@ export const DetailSuccessStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>
@@ -331,8 +323,9 @@ export const DetailFailedStatus = ({
   company,
   department,
 }: DetailStatusProps2) => {
-  const { scrap, scrapImage } = useScrap();
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
+  const numericRecruitmentId = Number(recruitmentId);
+
   const navigate = useNavigate();
 
   const handleRecurringNote = () => {
@@ -383,12 +376,7 @@ export const DetailFailedStatus = ({
             </span>
             <Departmenth32Chip department={department} />
           </div>
-          <div
-            className="h-[20px] w-[20px] cursor-pointer"
-            onClick={scrapImage}
-          >
-            {scrap}
-          </div>
+          <FavoriteButton recruitmentId={numericRecruitmentId} />
         </div>
       </div>
     </div>
