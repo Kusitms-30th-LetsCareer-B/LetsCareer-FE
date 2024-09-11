@@ -57,3 +57,36 @@ export const GoBackButton = ({ text }: ButtonProps) => {
     </div>
   );
 };
+
+
+export const RecurringGoBackButton = ({ text }: ButtonProps) => {
+  const goBack = useGoBack();
+
+  return (
+    <div className="flex items-start">
+      <button
+        className="my-[4px] mr-[12px] flex items-center justify-center"
+        onClick={goBack}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <path
+            d="M15 18L9 12L15 6"
+            stroke="#2A2D34"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      <span className="text-medium24 font-bold tracking-[-0.576px] text-neutral-0">
+        {text}
+      </span>
+    </div>
+  );
+};

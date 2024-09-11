@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { InterviewQuestions } from "../Pagination/RecurringNotePagination";
+import { GoBackButton, RecurringGoBackButton } from "../../../../components/Buttons/Button";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -27,9 +28,9 @@ export const RecurringNoteHeader = ({ company, task }: RecurringNoteProps) => {
   return (
     <div className="flex w-full flex-col items-start gap-[8px]">
       <div className="flex items-center gap-[12px]">
-        <span className="text-medium24 font-bold tracking-[-0.576px] text-neutral-0">
-          {company} 복기노트
-        </span>
+
+          <RecurringGoBackButton text={`${company} 복기노트`} />
+          {/* {company} 복기노트 */}
         <div className="flex items-center gap-[6px]">
           <FailedChip />
           <DepartmentChip department={task} />
@@ -925,7 +926,7 @@ export const InterviewRecurringNoteRightPart = ({
               className="flex items-center justify-center gap-[10px] rounded-sm border border-neutral-80 px-[20px] py-[6px]"
             >
               <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
-                질문 등록
+                질문 저장
               </span>
             </button>
           </div>
