@@ -56,7 +56,7 @@ function StatusPage() {
   const [deleteMode, setDeleteMode] = useState<boolean>(false);
   const [selectedStage, setSelectedStage] = useState("전체");
   const [totalItems, setTotalItems] = useState(0); // totalItems 상태 추가
-  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const [totalPages, setTotalPages] = useState(1);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [selectedRecruitment, setSelectedRecruitment] =
     useState<Recruitment | null>(null);
@@ -68,7 +68,7 @@ function StatusPage() {
       const response = await axios.get(
         `${BASE_URL}/recruitments/status?type=${type}&userId=1&page=${pageId}`,
       );
-      const { recruitments: newRecruitments, totalElementsCount } =
+      const { recruitments: newRecruitments, totalElementsCount, totalPages } =
         response.data.data;
 
       setRecruitments((prev) => ({
@@ -76,6 +76,7 @@ function StatusPage() {
         [pageId]: newRecruitments,
       }));
       setTotalItems(totalElementsCount);
+      setTotalPages(totalPages);
     } catch (error) {
       console.error("Error fetching recruitments", error);
     }
@@ -292,7 +293,7 @@ function StatusPage() {
           totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
-          totalPages={Math.ceil(filteredItemCount / itemsPerPage)}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       </div>

@@ -21,13 +21,13 @@ export const useStatusPagination = (
   };
 
   const handlePrevClick = () => {
-    if (currentPage > 1) {
+    if (currentPage-1 >=  1) {
       changePage(currentPage - 1);
     }
   };
 
   const handleNextClick = () => {
-    if (currentPage < totalPages) {
+    if (currentPage-1 <= totalPages) {
       changePage(currentPage + 1);
     }
   };

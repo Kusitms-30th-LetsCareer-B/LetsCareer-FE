@@ -30,6 +30,10 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
     onPageChange(page);
   }
 
+  console.log("currentPage", currentPage);
+  console.log("total items : ", totalItems);
+  console.log("totalpages" , totalPages);
+
   return (
     <nav className="mt-[20px] inline-flex items-center gap-[32px]">
       <button
@@ -96,13 +100,13 @@ const StatusPagination: React.FC<PaginationComponentProps> = ({
       <button
         onClick={handleNextClick}
         className={`flex items-center justify-center rounded-xxs border bg-static-100 py-[4px] pl-[5px] pr-[3px] ${
-          currentPage - 1 < totalPages
+          currentPage < totalPages
             ? "border-primary-50"
             : "border-neutral-80"
         }`}
-        disabled={currentPage - 1 === totalPages}
+        disabled={currentPage === totalPages} 
       >
-        {currentPage - 1 < totalPages ? (
+        {currentPage < totalPages ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
