@@ -14,3 +14,17 @@ export const PATHS = {
     CAREER_PATH: '/setting',
     SPECIAL_EXPERIENCE_PATH: '/setting/special-experience',
 }
+
+
+
+import { useNavigate } from "react-router-dom";
+// 기업 일정 상세보기 페이지로 이동하는 훅
+export function useNavigationStatusByRecruitmentId(recruitmentId: number) {
+  const navigate = useNavigate();
+
+  const goStatusByRecruitmentId = () => {
+    navigate(`${PATHS.STATUS_PATH}/${recruitmentId}`);
+  };
+
+  return goStatusByRecruitmentId;
+}
