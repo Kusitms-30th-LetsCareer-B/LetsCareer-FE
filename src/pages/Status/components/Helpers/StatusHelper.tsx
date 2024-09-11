@@ -131,7 +131,36 @@ export const FailedStatus = ({ name, recruitmentId }: RecurringNoteProps) => {
   );
 };
 
-export const SuccessStatus = ({ recruitmentId }: RecurringNoteProps2) => {
+export const SuccessStatus = ({ name, recruitmentId}: RecurringNoteProps) => {
+  return (
+    <div className="flex h-[60px] w-[554px] items-center rounded-bl-md rounded-br-md rounded-tl-none rounded-tr-none border-b border-l border-r border-neutral-80 bg-secondary-10 px-[20px]">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M4 12.0005L8.94975 16.9502L19.5572 6.34375"
+              stroke="#1BC47D"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="ml-[6px] text-small20 font-semibold tracking-[-0.4px] text-secondary">
+            {name} 합격
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const FinalStatus = ({ recruitmentId }: RecurringNoteProps2) => {
   const navigate = useNavigate();
 
   const handleRecurringNote = () => {

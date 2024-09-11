@@ -6,6 +6,7 @@ import {
   ApplyStatus,
   ConsequenceFailedStatus,
   ConsequenceSuccessStatus,
+  FinalSuccessStatus,
 } from "./components/Layout/StatusLayout";
 import StatusPagination from "./components/Pagination/StatusPagination";
 import {
@@ -29,6 +30,7 @@ interface Recruitment {
   isFavorite: boolean;
   endDate: string;
   daysUntilEnd: number;
+  isFinal: boolean;
 }
 
 function StatusPage() {
@@ -237,19 +239,31 @@ function StatusPage() {
                 />
               );
               break;
-            case "PASSED":
-              StatusComponent = (
-                <ConsequenceSuccessStatus
-                  company={recruitment.companyName}
-                  department={recruitment.task}
-                  recruitmentId={recruitment.recruitmentId}
-                  deleteMode={deleteMode}
-                  onDelete={() => handleDeleteClick(recruitment)}
-                  onClick={() =>
-                    navigate(`/status/${recruitment.recruitmentId}`)
-                  }
-                />
-              );
+              case "PASSED":
+                StatusComponent = recruitment.isFinal ? (
+                  <FinalSuccessStatus // isFinal이 true이면 FinalSuccessStatus 출력
+                    company={recruitment.companyName}
+                    department={recruitment.task}
+                    recruitmentId={recruitment.recruitmentId}
+                    deleteMode={deleteMode}
+                    onDelete={() => handleDeleteClick(recruitment)}
+                    onClick={() =>
+                      navigate(`/status/${recruitment.recruitmentId}`)
+                    }
+                  />
+                ) : (
+                  <ConsequenceSuccessStatus // isFinal이 false이면 ConsequenceSuccessStatus 출력
+                    company={recruitment.companyName}
+                    department={recruitment.task}
+                    recruitmentId={recruitment.recruitmentId}
+                    stageName={recruitment.stageName}
+                    deleteMode={deleteMode}
+                    onDelete={() => handleDeleteClick(recruitment)}
+                    onClick={() =>
+                      navigate(`/status/${recruitment.recruitmentId}`)
+                    }
+                  />
+                );
               break;
             case "FAILED":
               StatusComponent = (

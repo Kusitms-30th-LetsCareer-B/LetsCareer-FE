@@ -8,6 +8,7 @@ import { DeleteIcon } from "../Buttons/StatusButton";
 import { Departmenth32Chip } from "../Chips/SelfIntroductionChip";
 import {
   FailedStatus,
+  FinalStatus,
   OnGoingStatus,
   SuccessStatus,
 } from "../Helpers/StatusHelper";
@@ -24,7 +25,7 @@ interface ApplyStatusProps {
   onClick?: () => void;
 }
 
-interface ConsequenceSuccessProps {
+interface FinalSuccessProps {
   company: string;
   department: string;
   recruitmentId: number;
@@ -33,7 +34,7 @@ interface ConsequenceSuccessProps {
   onClick?: () => void;
 }
 
-interface ConsequenceFailedProps {
+interface ConsequenceProps {
   company: string;
   department: string;
   stageName: string;
@@ -77,7 +78,7 @@ export const ApplyStatus: React.FC<ApplyStatusProps> = ({
           </div>
         </div>
         <span
-          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0"
+          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0 cursor-pointer"
           onClick={onClick}
         >
           {company}
@@ -88,7 +89,7 @@ export const ApplyStatus: React.FC<ApplyStatusProps> = ({
   );
 };
 
-export const ConsequenceFailedStatus: React.FC<ConsequenceFailedProps> = ({
+export const ConsequenceFailedStatus: React.FC<ConsequenceProps> = ({
   company,
   department,
   stageName,
@@ -121,7 +122,7 @@ export const ConsequenceFailedStatus: React.FC<ConsequenceFailedProps> = ({
           </div>
         </div>
         <span
-          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0"
+          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0 cursor-pointer"
           onClick={onClick}
         >
           {company}
@@ -132,7 +133,56 @@ export const ConsequenceFailedStatus: React.FC<ConsequenceFailedProps> = ({
   );
 };
 
-export const ConsequenceSuccessStatus: React.FC<ConsequenceSuccessProps> = ({
+export const ConsequenceSuccessStatus: React.FC<ConsequenceProps> = ({
+  company,
+  department,
+  recruitmentId,
+  stageName,
+  deleteMode = false,
+  onDelete,
+  onClick,
+}) => {
+  const { scrap, scrapImage } = useScrap();
+
+  return (
+    <div className="mt-[20px] flex flex-shrink-0 flex-col items-start">
+      <div className="flex flex-col items-start self-stretch rounded-bl-none rounded-br-none rounded-tl-md rounded-tr-md border-l border-r border-t border-neutral-80 bg-static-100 p-[20px]">
+        <div className="mb-[16px] flex w-full items-center justify-between">
+          <div className="flex items-center">
+            <div className="mr-[8px]">
+              <div className="flex h-[32px] items-center justify-center gap-[10px] rounded-sm bg-neutral-60 px-[12px] py-[4px]">
+                <div className="text-small16 text-center font-medium tracking-[-0.096px] text-static-100">
+                  다음 전형 대기중
+                </div>
+              </div>
+            </div>
+            <Departmenth32Chip department={department} />
+          </div>
+          <div className="flex-end flex flex-shrink-0 items-center">
+            <div className="cursor-pointer" onClick={scrapImage}>
+              {scrap}
+            </div>
+            {deleteMode && onDelete && (
+              <div className="cursor-pointer">
+                <DeleteIcon onClick={onDelete} />
+              </div>
+            )}
+          </div>
+        </div>
+        <span
+          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0 cursor-pointer"
+          onClick={onClick}
+        >
+          {company}
+        </span>
+      </div>
+      <SuccessStatus name={stageName} recruitmentId={recruitmentId} />
+    </div>
+  );
+};
+
+
+export const FinalSuccessStatus: React.FC<FinalSuccessProps> = ({
   company,
   department,
   recruitmentId,
@@ -164,13 +214,13 @@ export const ConsequenceSuccessStatus: React.FC<ConsequenceSuccessProps> = ({
           </div>
         </div>
         <span
-          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0"
+          className="w-full text-small20 font-bold tracking-[-0.4px] text-neutral-0 cursor-pointer"
           onClick={onClick}
         >
           {company}
         </span>
       </div>
-      <SuccessStatus recruitmentId={recruitmentId} />
+      <FinalStatus recruitmentId={recruitmentId} />
     </div>
   );
 };
