@@ -89,7 +89,7 @@ export const DefaultDocumentChip = ({
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-secondary-10 px-[6px]`}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
@@ -140,8 +140,8 @@ export const HoveredDocumentChip = ({
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
-      {/* 오른쪽 영역, border size만큼 min-w 줄임 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-secondary-10 px-[6px]`}>
+      {/* 오른쪽 영역 */}
+      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
@@ -193,7 +193,7 @@ export const ClickedDocumentChip = ({
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-0" />
 
       {/* 오른쪽 영역 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-secondary-100 px-[6px]`}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-100 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {filter !== filterState.FINISH ? (
           <>
             {/* 네모 박스 */}
@@ -236,7 +236,7 @@ export const DefaultInterviewChip = ({ companyName, onClick }: CompanyChipProps)
       <div className="flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-primary-10 px-[6px]`}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 font-semibold text-primary-0">
           면
@@ -264,8 +264,8 @@ export const HoveredInterviewChip = ({ companyName, onClick }: CompanyChipProps)
       {/* 왼쪽 영역 */}
       <div className="px flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
-      {/* 오른쪽 영역, border size만큼 min-w 줄임 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-primary-10 px-[6px]`}>
+      {/* 오른쪽 영역 */}
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 font-semibold text-primary-0">
           면
@@ -293,7 +293,7 @@ export const ClickedInterviewChip = ({ companyName, onClick }: CompanyChipProps)
       <div className="flex h-full w-[4px] items-center justify-center bg-primary-0" />
 
       {/* 오른쪽 영역 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-primary-100 px-[6px]`}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-100 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-0 text-xxsmall11 font-semibold text-primary-100">
           면
@@ -322,7 +322,7 @@ export const DefaultOtherChip = ({ companyName, onClick }: CompanyChipProps) => 
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
       {/* 오른쪽 영역 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-teritory-light px-[6px]`}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 font-semibold text-teritory-0">
           기
@@ -350,8 +350,8 @@ export const HoveredOtherChip = ({ companyName, onClick }: CompanyChipProps) => 
       {/* 왼쪽 영역 */}
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
-      {/* 오른쪽 영역, border size만큼 min-w 줄임 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-teritory-light px-[6px]`}>
+      {/* 오른쪽 영역 */}
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 font-semibold text-teritory-0">
           기
@@ -379,7 +379,7 @@ export const ClickedOtherChip = ({ companyName, onClick }: CompanyChipProps) => 
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-0" />
 
       {/* 오른쪽 영역 */}
-      <div className={`flex h-full min-w-[${buttonWidth}px] items-center justify-start gap-[4px] bg-teritory-normal px-[6px]`}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-normal px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-0 text-xxsmall11 font-semibold text-teritory-normal">
           기
@@ -400,7 +400,7 @@ export const DefaultPersonalChip = ({
   personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className={`flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]`}
+    <div className="flex h-[24px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
         onClick={(e) => {
           e.stopPropagation(); // 이벤트 전파 중지
           onClick();
@@ -424,7 +424,7 @@ export const HoveredPersonalChip = ({
 }: PersonalChipProps) => {
   return (
     /* border 추가 */
-    <div className={`inline-flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]`}
+    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
         onClick={(e) => {
           e.stopPropagation(); // 이벤트 전파 중지
           onClick();
@@ -447,7 +447,7 @@ export const ClickedPersonalChip = ({
   personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className={`inline-flex h-[24px] min-w-[${buttonWidth}px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]`}
+    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
         onClick={(e) => {
           e.stopPropagation(); // 이벤트 전파 중지
           onClick();
