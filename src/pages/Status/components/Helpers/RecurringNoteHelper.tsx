@@ -94,12 +94,16 @@ export const RecurringNoteTab = ({
             {/* 상단 탭에 저장된 reviewName들을 버튼으로 나열 */}
             {etcData.map((etcNote) => (
               <button
-                key={etcNote.id}
-                className="ml-[8px] rounded-sm border border-neutral-80 bg-neutral-100 px-[12px] py-[6px] text-neutral-30"
-                onClick={() => setActiveTabById(etcNote.id)} // 기타 탭 클릭 시 데이터 조회
-              >
-                {etcNote.reviewName}
-              </button>
+              key={etcNote.id}
+              className={`ml-[8px] h-[38px] rounded-sm border px-[12px] py-[6px] ${
+                etcNote.reviewName
+                  ? "border-neutral-80 bg-neutral-100 text-neutral-30"
+                  : "border-neutral-80 bg-neutral-100 text-neutral-60" // reviewName이 없을 때 스타일링
+              }`}
+              onClick={() => setActiveTabById(etcNote.id)} // 기타 탭 클릭 시 데이터 조회
+            >
+              {etcNote.reviewName ? etcNote.reviewName : "전형명 입력 필요"}
+            </button>
             ))}
           </>
         )}
@@ -436,7 +440,7 @@ export const InterviewRecurringNoteLeftPart = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             placeholder="추가로 메모하고 싶은 점을 적어주세요"
-            className={`min-h-[257px] w-full resize-none rounded-sm border px-[16px] py-[12px] placeholder:text-neutral-45 ${
+            className={`min-h-[252px] w-full resize-none rounded-sm border px-[16px] py-[12px] placeholder:text-neutral-45 ${
               isFocused
                 ? "outline-primary"
                 : "border-neutral-80 text-neutral-30"
@@ -484,7 +488,7 @@ export const InterviewRecurringNoteLeftPart = ({
             onFocus={handleFocus}
             onBlur={handleBlur}
             placeholder="추가로 메모하고 싶은 점을 적어주세요"
-            className={`min-h-[257px] w-full resize-none rounded-sm border px-[16px] py-[12px] placeholder:text-neutral-45 ${
+            className={`min-h-[252px] w-full resize-none rounded-sm border px-[16px] py-[12px] placeholder:text-neutral-45 ${
               isFocused
                 ? "outline-primary"
                 : "border-neutral-80 text-neutral-30"
@@ -591,7 +595,7 @@ export const DocumentRecurringNoteRightPart = ({
               {question}
             </div>
           </div>
-          <div className="font-regular mt-[12px] h-full min-h-[465px] w-full overflow-auto text-xsmall16 tracking-[-0.096px] text-neutral-30">
+          <div className="font-regular mt-[12px] h-full min-h-[488px] w-full overflow-auto text-xsmall16 tracking-[-0.096px] text-neutral-30">
             {answer}
           </div>
         </div>
@@ -643,6 +647,7 @@ const QuestionComponent = ({
         <textarea
           value={question}
           placeholder="질문을 입력하세요"
+          rows={1}
           onChange={(e) => onQuestionChange(e.target.value)}
           className="flex w-full resize-none items-start self-stretch rounded-sm border border-neutral-80 px-[16px] py-[12px] text-neutral-30 placeholder:text-neutral-45"
         />
@@ -653,7 +658,7 @@ const QuestionComponent = ({
           value={answer}
           placeholder="답변을 입력하세요"
           onChange={(e) => onAnswerChange(e.target.value)}
-          className="font-regular h-full min-h-[465px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
+          className="font-regular h-full min-h-[488px] w-full resize-none rounded-sm border border-neutral-80 px-[16px] py-[12px] text-xsmall16 tracking-[-0.096px] text-neutral-30 placeholder:text-neutral-45"
         />
       </div>
     </div>
@@ -1070,7 +1075,7 @@ export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
         <span className="mb-[20px] self-stretch text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
           한 번 더 보면 좋을 질문
         </span>
-        <div className="mb-[20px] flex min-h-[96px] items-start self-stretch rounded-sm bg-primary-10 px-[16px] py-[12px]">
+        <div className="mb-[20px] flex min-h-[73px] items-start self-stretch rounded-sm bg-primary-10 px-[16px] py-[12px]">
           <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
             {badQuestions[selectedDot]} {/* 선택된 질문 표시 */}
           </span>
@@ -1102,7 +1107,7 @@ export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
 
 export const NoGoodQuestion = () => {
   return (
-    <div className="flex h-[215px] w-full flex-col items-start rounded-md border border-neutral-80 bg-static-100 px-[24px] py-[24px] pt-[20px]">
+    <div className="flex w-full flex-col items-start rounded-md border border-neutral-80 bg-static-100 px-[24px] py-[24px] pt-[20px] mt-[3px]">
       <div className="flex w-full flex-col gap-[20px]">
         <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
           한 번 더 보면 좋을 질문
