@@ -48,6 +48,21 @@ function DetailStatusPage() {
   };
 
   const handleDeleteConfirm = async () => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/recruitments`, {
+        params: { recruitmentId: recruitmentId },
+      });
+  
+      if (response.status === 200) {
+        console.log("삭제 성공:", response.data);
+        navigate("/status"); 
+      } else {
+        console.error("삭제 실패:", response.data);
+      }
+    } catch (error) {
+      console.error("오류:", error);
+    }
+  
     setIsDeletePopupOpen(false);
   };
 
