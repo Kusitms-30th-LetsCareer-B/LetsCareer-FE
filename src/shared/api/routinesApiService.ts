@@ -1,6 +1,6 @@
 /** API 연동 관련 모듈, 변수 가져오기 */
 import { AxiosError } from 'axios';
-import { AxiosInstance, BASE_URL } from '../../../../../shared/api/axiosInstance.ts';
+import { AxiosInstance, BASE_URL } from './axiosInstance.ts';
 
 // API 연동 타입
 import { Routines_URL, 
@@ -82,11 +82,20 @@ export const deleteRoutineById = async ({ routineId }: DeleteRoutineByIdParamsTy
 // PATCH 요청 및 응답받기: 특정 루틴 수정
 export const updateRoutineById = async ({ routineId, content, startDate, endDate }: UpdateRoutineByIdParamsType & UpdateRoutineRequestType) => {
   try {
-    const response = await AxiosInstance.patch(`${BASE_URL}${Routines_URL}/${routineId}`, {
-      content,
-      startDate,
-      endDate,
-    });
+    const response = await AxiosInstance.patch(`${BASE_URL}${Routines_URL}/${routineId}`, 
+      // Request Data 전달
+      {
+        content,
+        startDate,
+        endDate,
+      },
+      // 쿼리 파라미터 설정:  routineId 전달
+      {
+        params: {
+          routineId,
+        },
+      }
+    );
 
     // 백엔드 서버로부터 응답 데이터 반환
     return response.data;

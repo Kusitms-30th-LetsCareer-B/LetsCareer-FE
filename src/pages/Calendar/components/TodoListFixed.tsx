@@ -12,7 +12,8 @@ import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
 import { getFormattedDate1, getFormattedDate2, getFormattedDate3 } from "../../../shared/hooks/useDate.ts";
 
 // API 연동 이벤트 임포트
-import { getResponseTodoDayGroupedByCompany } from '../api/todoDayGroupedByCompanyApiService.ts';
+import { getTodoListDayGroupedByCompany } from '../api/todoDayGroupedByCompanyApiService.ts';
+import { Todo } from "../api/todoDayGroupedByCompanyType.ts"
 
 
 // 아이콘 파일
@@ -27,26 +28,6 @@ import checkRoundedSquareBlankedIcon from "../../../shared/assets/todo-no-check.
 // 사실 이렇게 받아도 됨
 interface CompanyTodoListComponentProps {
   userId: number;
-}
-
-
-/** 연동받은 데이터 갖고 놀기 위한 인스턴스 틀 */
-// Todo 데이터 타입
-/**
- * content: "현대모비스 합격 포트폴리오 보기"
- * date: "2024-09-09"
- * isCompleted: false
- * isRoutine: true
- * recruitmentId: 23
- * todoId: 9
- */
-interface Todo {
-  content: string;
-  date: string;
-  isCompleted: boolean;
-  isRoutine: boolean;
-  recruitmentId: number;
-  todoId: number;
 }
 
 // 각 Company별 Todo List 데이터 타입
@@ -90,7 +71,7 @@ const CompanyTodoListComponent = ({ userId }: CompanyTodoListComponentProps) => 
 
             // 요청 및 응답받기
             // date: 백엔드에서 지정한 매개변수명,  selectedDateString: 파라미터로 전달할 파라미터명
-            const response = await getResponseTodoDayGroupedByCompany({ userId, date: getFormattedDate3(today) });
+            const response = await getTodoListDayGroupedByCompany({ userId, date: getFormattedDate3(today) });
 
             console.log("📫 투두쨩~");
             // 백엔드로부터 받은 순수 DB 확인

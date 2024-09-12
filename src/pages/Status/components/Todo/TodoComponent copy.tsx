@@ -151,9 +151,6 @@ const TodoComponent = ({ userId, recruitmentId }: TodoComponentProps) => {
 
     // API로 데이터 가져오기 (투두 및 루틴)
     useEffect(() => {
-      fetchData();
-    }, [selectedDate, recruitmentId]);
-      /*
       const fetchData = async () => {
         try {
           const todosResponse = await getTodoListDayGroupedByCompany({
@@ -194,7 +191,7 @@ const TodoComponent = ({ userId, recruitmentId }: TodoComponentProps) => {
 
       fetchData();
     }, [recruitmentId, selectedDate]);
-*/
+
 
     /** POST API */
     // Todo 추가 함수, 초기 content는 ""로 입력함
