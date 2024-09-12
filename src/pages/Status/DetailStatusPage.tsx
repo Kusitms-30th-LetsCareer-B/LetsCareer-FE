@@ -109,12 +109,11 @@ function DetailStatusPage() {
   };
 
   let StatusComponent;
-  if (topStage) {
-    switch (topStage.status) {
+    switch (status) {
       case "PROGRESS":
         StatusComponent = (
           <DetailOnGoingStatus
-            name={topStage.stageName}
+            name={stageName}
             day={daysUntilEnd}
             company={company}
             department={task}
@@ -127,7 +126,7 @@ function DetailStatusPage() {
         if (topStage?.isFinal) {
           StatusComponent = (
             <FinalSuccessStatus
-              name={topStage.stageName}
+              name={stageName}
               department={task}
               company={company}
               announcementUrl={announcementUrl}
@@ -137,7 +136,7 @@ function DetailStatusPage() {
         } else {
           StatusComponent = (
             <DetailSuccessStatus
-              name={topStage.stageName}
+              name={stageName}
               department={task}
               company={company}
               announcementUrl={announcementUrl}
@@ -160,7 +159,6 @@ function DetailStatusPage() {
       default:
         StatusComponent = null;
     }
-  }
 
   const handleAddClick = () => {
     setIsAddModalOpen(true);
