@@ -16,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { RecruitmentDeleteButton } from "./components/Buttons/StatusButton";
 import { AddTypeModal } from "./components/Buttons/DetailStatusButton";
+import TodoComponent from "./components/Todo/TodoComponent";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
@@ -254,79 +255,11 @@ function DetailStatusPage() {
         </div>
       </div>
       <div className="flex items-center gap-[20px] self-stretch">
-        <div className="flex w-full flex-col items-start rounded-md border border-neutral-80 p-[24px]">
-          <div className="mb-[16px] flex items-center justify-between self-stretch">
-            <div className="flex items-center gap-[6px]">
-              <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
-                오늘의
-              </span>
-              <span className="text-small18 font-semibold tracking-[-0.022px] text-primary">
-                {company}
-              </span>
-              <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
-                Todo
-              </span>
-            </div>
-            <div className="flex items-center gap-[8px]">
-              <button onClick={handlePrevDay}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M15 18L9 12L15 6"
-                    stroke="#4C4F56"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <div className="flex items-center gap-[4px]">
-                <span className="text-small18 font-semibold tracking-[-0.096px] text-neutral-35">
-                  {formatDate(today)}
-                </span>
-                <button className="">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                  >
-                    <path
-                      d="M9.44355 12.6151C8.80197 13.5723 7.19803 13.5723 6.55645 12.6151L2.2258 6.15352C1.58423 5.19626 2.3862 3.99967 3.66935 3.99968L12.3306 3.99968C13.6138 3.99968 14.4158 5.19626 13.7742 6.15352L9.44355 12.6151Z"
-                      fill="#757BFF"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <button onClick={handleNextDay}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M9 18L15 12L9 6"
-                    stroke="#4C4F56"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <CreateTodo companyName={company} />
+        <div className="flex w-full flex-col items-start rounded-md border border-neutral-80 p-[45px]">
+          <TodoComponent userId={1} recruitmentId={Number(recruitmentId)}/>
         </div>
-        <div className="flex flex-col items-start rounded-md border border-neutral-80 p-[24px]">
-          <div className="mb-[18px] flex items-center justify-between self-stretch">
+        <div className="flex flex-col items-start rounded-md border border-neutral-80 ">
+          <div className="mb-[18px] flex items-center justify-between self-stretch p-[24px]">
             <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
               아카이빙
             </span>

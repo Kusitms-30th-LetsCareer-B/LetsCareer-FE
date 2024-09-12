@@ -344,7 +344,7 @@ const TodoComponent = ({ userId, recruitmentId }: TodoComponentProps) => {
 
     return (
         // 전체 보더 박스
-        <div className="h-[380px] min-w-[520px] w-[520px] rounded-md border border-neutral-80 flex flex-col px-[24px] pt-[24px]">
+        <div className="flex flex-col">
           {/** 처음 */}
           <div className="w-[full]">
               {/** 헤더 */}
