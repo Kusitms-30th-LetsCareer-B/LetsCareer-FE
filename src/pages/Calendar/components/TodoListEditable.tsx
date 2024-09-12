@@ -14,7 +14,7 @@ import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
 import { getFormattedDate1, getFormattedDate2, getFormattedDate3 } from "../../../shared/hooks/useDate.ts";
 
 // API 연동 이벤트 임포트
-import { getResponseTodoDayGroupedByCompany } from '../api/todoDayGroupedByCompanyApiService.ts';
+import { getTodoListDayGroupedByCompany } from '../api/todoDayGroupedByCompanyApiService.ts';
 import { updateTodoCheck } from '../../../shared/api/todoApiService.ts'
 
 
@@ -117,7 +117,7 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
 
             // 요청 및 응답받기
             // date: 백엔드에서 지정한 매개변수명,  selectedDateString: 파라미터로 전달할 파라미터명
-            const response = await getResponseTodoDayGroupedByCompany({ userId, date: selectedDateString });
+            const response = await getTodoListDayGroupedByCompany({ userId, date: selectedDateString });
 
             console.log("📫 투두쨩~");
             // 백엔드로부터 받은 순수 DB 확인

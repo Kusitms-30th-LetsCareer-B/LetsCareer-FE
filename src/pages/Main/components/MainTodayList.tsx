@@ -8,7 +8,7 @@ import {Company, useCountIncomplete, useTotalCountIncomplete,} from '../../../sh
 import { getYearMonthDay, getYear, getMonth, getFormattedDate3 } from "../../../shared/hooks/useDate.ts";
 
 // API 연동 이벤트 임포트
-import { getResponseTodoDayGroupedByCompany } from '../../Calendar/api/todoDayGroupedByCompanyApiService.ts';
+import { getTodoListDayGroupedByCompany } from '../../Calendar/api/todoDayGroupedByCompanyApiService.ts';
 
 // 아이콘 이미지 임포트
 import todoListIcon from "../../../shared/assets/todoList.png"
@@ -63,7 +63,7 @@ const SubTodoList = ({userId, userName, selectedDate, setSelectedDate} : Combine
 
                 // GET 호출
                 // 백엔드에서 데이터를 받아온다.
-                const response = await getResponseTodoDayGroupedByCompany({ userId, date: today });
+                const response = await getTodoListDayGroupedByCompany({ userId, date: today });
                 // 확인
                 //console.log("📫 인애쨩~ todoDayGroupedByCompany 데이터 배송 완료! 메인홈에서 확인!!");
                 //console.log(response)
