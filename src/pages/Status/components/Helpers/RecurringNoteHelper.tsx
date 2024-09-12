@@ -8,9 +8,9 @@ import {
   RecurringNoteChipGroup2,
 } from "../Chips/RecurringNoteChip";
 import {
-  ButtonGroup,
-  ButtonGroup2,
   InterviewDeleteButton,
+  InterviewReactionButtons,
+  IntroductionReactionButtons,
 } from "../Buttons/RecurringNoteButton";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -147,12 +147,8 @@ export const DocumentRecurringNoteLeftPart = ({
   setDocumentData,
 }: DocumentRecurringNoteLeftPartProps) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [wellDonePoints, setWellDonePoints] = useState<string[]>(
-    documentData?.wellDonePoints || [],
-  );
-  const [shortcomingPoints, setShortcomingPoints] = useState<string[]>(
-    documentData?.shortcomingPoints || [],
-  );
+  const [wellDonePoints, setWellDonePoints] = useState<string[]>([]);
+  const [shortcomingPoints, setShortcomingPoints] = useState<string[]>([]);
 
   useEffect(() => {
     setWellDonePoints(documentData?.wellDonePoints || []);
@@ -168,25 +164,25 @@ export const DocumentRecurringNoteLeftPart = ({
   };
 
   const toggleWellDonePoint = (point: string) => {
-    const updatedPoints = wellDonePoints.includes(point)
+    const updatedPoints = wellDonePoints?.includes(point) // 배열 존재 여부를 확인한 후 includes 사용
       ? wellDonePoints.filter((p) => p !== point) // 선택 해제
       : [...wellDonePoints, point]; // 선택된 경우 추가
-
+  
     setWellDonePoints(updatedPoints);
-
+  
     setDocumentData((prev) => ({
       ...prev,
       wellDonePoints: updatedPoints,
     }));
   };
-
+  
   const toggleShortcomingPoint = (point: string) => {
-    const updatedPoints = shortcomingPoints.includes(point)
+    const updatedPoints = shortcomingPoints?.includes(point) // 배열 존재 여부를 확인한 후 includes 사용
       ? shortcomingPoints.filter((p) => p !== point) // 선택 해제
       : [...shortcomingPoints, point]; // 선택된 경우 추가
-
+  
     setShortcomingPoints(updatedPoints);
-
+  
     setDocumentData((prev) => ({
       ...prev,
       shortcomingPoints: updatedPoints,
@@ -422,11 +418,11 @@ export const InterviewRecurringNoteLeftPart = ({
               "직무 이해도",
               "차별화",
               "열정 표현",
-            ].map((point, index) => (
+            ].map((point: string, index: number) => (
               <RecurringNoteChip2
                 key={index}
                 text={point}
-                isSelected={wellDonePoints.includes(point)}
+                isSelected={wellDonePoints ? wellDonePoints.includes(point) : false} // wellDonePoints가 undefined일 때 대비
                 onClick={() => toggleWellDonePoint(point)}
               />
             ))}
@@ -470,12 +466,12 @@ export const InterviewRecurringNoteLeftPart = ({
               "직무 이해도",
               "차별화",
               "열정 표현",
-            ].map((point, index) => (
+            ].map((point: string, index: number) => (
               <RecurringNoteChip2
                 key={index}
                 text={point}
-                isSelected={shortcomingPoints.includes(point)}
-                onClick={() => toggleShortcomingPoint(point)}
+                isSelected={wellDonePoints ? wellDonePoints.includes(point) : false} // wellDonePoints가 undefined일 때 대비
+                onClick={() => toggleWellDonePoint(point)}
               />
             ))}
           </div>
@@ -545,10 +541,10 @@ interface DocumentRecurringNoteProps {
   question: string;
   answer: string;
   questions: string[];
-  reactionType: string | null; // 초기 reactionType을 받음
+  reactionType: string;
   introduceId: number;
-  onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
   onQuestionClick: (index: number) => void;
+  onReactionSave: (introduceId: number, reactionType: string) => void;
 }
 
 export const DocumentRecurringNoteRightPart = ({
@@ -556,9 +552,9 @@ export const DocumentRecurringNoteRightPart = ({
   questions,
   answer,
   reactionType,
-  onReactionSave,
   introduceId,
   onQuestionClick,
+  onReactionSave,
 }: DocumentRecurringNoteProps) => {
   const [selectedDot, setSelectedDot] = useState(0);
   const [selectedQuestion, setSelectedQuestion] = useState(0); // 선택된 질문 번호
@@ -571,6 +567,11 @@ export const DocumentRecurringNoteRightPart = ({
   const handleDotClick = (index: number) => {
     setSelectedDot(index);
   };
+
+  const handleReactionChange = (newReactionType: "잘했어요" | "아쉬워요" | null) => {
+    onReactionSave(introduceId, newReactionType); 
+  };
+
 
   return (
     <div className="mb-[20px] flex w-full flex-col items-end rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
@@ -597,10 +598,10 @@ export const DocumentRecurringNoteRightPart = ({
         </div>
       </div>
       <div className="flex">
-        <ButtonGroup
-          introduceId={introduceId}
-          initialReactionType={reactionType || ""} // 초기 reactionType을 넘김
-          onReactionSave={onReactionSave}
+        <IntroductionReactionButtons
+          introduceId={String(introduceId)}
+          initialReactionType={reactionType ? (reactionType as "잘했어요" | "아쉬워요") : null}
+          onReactionChange={handleReactionChange}
         />
       </div>
     </div>
@@ -617,8 +618,6 @@ interface InterviewRecurringNoteProps {
   question: string;
   answer: string;
   questions: InterviewQuestion[]; // 여기서 questions 배열은 { question: string } 형태의 객체 배열
-  reactionType: string;
-  onReactionSave: (interviewId: number, reactionType: string) => Promise<void>;
   interviewId: number;
   onQuestionClick: (index: number) => void;
 }
@@ -673,28 +672,27 @@ interface InterviewQuestion {
 interface InterviewRecurringNoteProps {
   question: string;
   answer: string;
-  reactionType: string;
   interviewId: number;
+  reactionType: string;
+  onReactionSave: (interviewId: number, reactionType: string) => void;
   questions: InterviewQuestion[]; // InterviewQuestion 배열 타입
   onQuestionClick: (index: number) => void;
-  onReactionSave: (interviewId: number, type: string) => Promise<void>;
 }
 
 export const InterviewRecurringNoteRightPart = ({
   question,
   answer,
   reactionType,
+  onReactionSave,
   interviewId,
   questions,
   onQuestionClick,
-  onReactionSave,
 }: InterviewRecurringNoteProps) => {
   const [interviewQuestions, setInterviewQuestions] = useState<
     InterviewQuestion[]
   >([]);
   const [selectedQuestion, setSelectedQuestion] = useState(0); // 선택된 질문 번호
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); // 삭제 확인창 표시 상태
-  const [reactionList, setReactionList] = useState<string[]>([]); // 각 질문의 reactionType을 저장하는 배열
 
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
 
@@ -816,6 +814,14 @@ export const InterviewRecurringNoteRightPart = ({
     setInterviewQuestions(updatedQuestions); // 답변 업데이트
   };
 
+  const handleReaction = (type: string) => {
+    onReactionSave(interviewId, type); // reactionType을 저장하는 함수
+  };
+
+  const handleReactionChange = (newReactionType: "잘했어요" | "아쉬워요" | null) => {
+    onReactionSave(interviewId, newReactionType);
+  };
+
   return (
     <div className="flex w-full flex-col items-start">
       <div className="flex w-full flex-col items-end rounded-md border border-neutral-80 bg-static-100 px-[24px] pb-[24px] pt-[20px]">
@@ -883,10 +889,10 @@ export const InterviewRecurringNoteRightPart = ({
   
         <div className="flex">
           {/* 리액션 버튼 그룹 */}
-          <ButtonGroup2
-            interviewId={interviewQuestions[selectedQuestion]?.interviewId}
-            initialReactionType={reactionList[selectedQuestion] || ""}
-            onReactionSave={onReactionSave}
+          <InterviewReactionButtons
+            interviewId={String(interviewQuestions[selectedQuestion]?.interviewId || "")}
+            initialReactionType={reactionType? (reactionType as "잘했어요" | "아쉬워요") : null}
+            onReactionChange={handleReactionChange}
           />
         </div>
       </div>
@@ -1002,15 +1008,45 @@ export const EtcRecurringNotePart = ({ etcData, setEtcData }) => {
 };
 
 interface AgainQuestionProps {
-  badQuestions: string[]; // 질문 리스트로 수정
+  recruitmentId: string; 
 }
 
-export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
+export const IntroductionsAgainQuestion = ({ recruitmentId }: AgainQuestionProps) => {
+  const [badQuestions, setBadQuestions] = useState<string[]>([]); // 질문 리스트 상태
   const [selectedDot, setSelectedDot] = useState(0); // 현재 선택된 질문의 index
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+
+  useEffect(() => {
+    const fetchBadQuestions = async () => {
+      try {
+        // API 호출
+        const response = await axios.get(
+          `${BASE_URL}/introduces/additional?recruitmentId=${recruitmentId}`,
+        );
+
+        const questionsData = response.data.data || [];
+        setBadQuestions(questionsData.map((q: any) => q.question));
+        setLoading(false); // 데이터 로드 완료 시 로딩 상태 해제
+      } catch (error) {
+        console.error("Error fetching bad questions:", error);
+        setLoading(false); // 에러 발생 시 로딩 상태 해제
+      }
+    };
+
+    fetchBadQuestions();
+  }, [recruitmentId]);
 
   const handleDotClick = (index: number) => {
     setSelectedDot(index); // 클릭한 버튼의 index로 변경
   };
+
+  if (loading) {
+    return <div>질문을 불러오는 중입니다...</div>; // 로딩 중일 때 출력
+  }
+
+  if (badQuestions.length === 0) {
+    return <NoGoodQuestion />; // 조회된 질문이 없을 때 NoGoodQuestion 컴포넌트 출력
+  }
 
   return (
     <div className="flex w-full flex-col rounded-md border border-neutral-80 px-[24px] pb-[24px] pt-[20px]">
@@ -1018,11 +1054,13 @@ export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
         <span className="mb-[20px] self-stretch text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
           한 번 더 보면 좋을 질문
         </span>
+
         <div className="mb-[20px] flex min-h-[73px] items-start self-stretch rounded-sm bg-primary-10 px-[16px] py-[12px]">
           <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
             {badQuestions[selectedDot]} {/* 선택된 질문 표시 */}
           </span>
         </div>
+
         <div className="flex items-center justify-center gap-[8px]">
           {badQuestions.map((_, index) => (
             <button key={index} onClick={() => handleDotClick(index)}>
@@ -1043,6 +1081,81 @@ export const AgainQuestion = ({ badQuestions }: AgainQuestionProps) => {
             </button>
           ))}
         </div>
+      </div>
+    </div>
+  );
+};
+
+export const InterviewsAgainQuestion = ({ recruitmentId }: AgainQuestionProps) => {
+  const [badQuestions, setBadQuestions] = useState<string[]>([]); // 질문 리스트 상태
+  const [selectedDot, setSelectedDot] = useState(0); // 현재 선택된 질문의 index
+
+  useEffect(() => {
+    const fetchBadQuestions = async () => {
+      try {
+        // API 호출
+        const response = await axios.get(
+          `${BASE_URL}/interviews/additional?recruitmentId=${recruitmentId}`,
+        );
+
+        const questionsData = response.data.data || [];
+        // 질문 리스트를 상태에 저장
+        setBadQuestions(questionsData.map((q: any) => q.question));
+      } catch (error) {
+        console.error("Error fetching bad questions:", error);
+      }
+    };
+
+    fetchBadQuestions();
+  }, [recruitmentId]);
+
+  const handleDotClick = (index: number) => {
+    setSelectedDot(index); // 클릭한 버튼의 index로 변경
+  };
+
+  if (badQuestions.length === 0) {
+    return <NoGoodQuestion />; // 조회된 질문이 없을 때 NoGoodQuestion 컴포넌트 출력
+  }
+
+
+  return (
+    <div className="flex w-full flex-col rounded-md border border-neutral-80 px-[24px] pb-[24px] pt-[20px]">
+      <div className="flex flex-col">
+        <span className="mb-[20px] self-stretch text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
+          한 번 더 보면 좋을 질문
+        </span>
+
+        {badQuestions.length > 0 ? (
+          <>
+            <div className="mb-[20px] flex min-h-[73px] items-start self-stretch rounded-sm bg-primary-10 px-[16px] py-[12px]">
+              <span className="text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
+                {badQuestions[selectedDot]} {/* 선택된 질문 표시 */}
+              </span>
+            </div>
+            <div className="flex items-center justify-center gap-[8px]">
+              {badQuestions.map((_, index) => (
+                <button key={index} onClick={() => handleDotClick(index)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="8"
+                    height="8"
+                    viewBox="0 0 8 8"
+                    fill="none"
+                  >
+                    <circle
+                      cx="4"
+                      cy="4"
+                      r="4"
+                      fill={selectedDot === index ? "#757BFF" : "#E7E7E7"} // 선택된 버튼만 색을 변경
+                    />
+                  </svg>
+                </button>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div>질문을 불러오는 중입니다...</div>
+        )}
       </div>
     </div>
   );

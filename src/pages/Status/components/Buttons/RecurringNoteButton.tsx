@@ -3,84 +3,96 @@ import { useEffect, useState } from "react";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
-interface ButtonGroupProps {
-  introduceId: number;
-  initialReactionType: string;
-  onReactionSave: (introduceId: number, reactionType: string) => Promise<void>;
+interface IntroductionReactionButtonsProps {
+  introduceId: string;
+  initialReactionType: "잘했어요" | "아쉬워요" | null; // 초기 reaction 상태
+  onReactionChange: (reactionType: "잘했어요" | "아쉬워요" | null) => void; 
 }
 
-export const ButtonGroup = ({
-  introduceId,
-  initialReactionType,
-  onReactionSave,
-}: ButtonGroupProps) => {
-  const [reactionType, setReactionType] = useState(initialReactionType);
+export const IntroductionReactionButtons: React.FC<IntroductionReactionButtonsProps> = ({ introduceId, initialReactionType, onReactionChange }) => {
+  const [selectedReaction, setSelectedReaction] = useState<"잘했어요" | "아쉬워요" | null>(initialReactionType);
 
-  useEffect(() => {
-    setReactionType(initialReactionType); // 초기 type 값이 바뀌면 반영
-  }, [initialReactionType]);
-
-  const handleReactionClick = async (reaction: string) => {
-    setReactionType(reaction); // 클릭한 버튼에 맞게 상태를 업데이트합니다.
-
+  const updateIntroductionReaction = async (reaction: string) => {
     try {
-      await onReactionSave(introduceId, reaction); // 서버에 저장 요청
+      await axios.patch(`${BASE_URL}/introduces/${introduceId}/reaction`, { reaction });
     } catch (error) {
-      console.error("Error saving reaction:", error);
+      console.error("Error updating reaction:", error);
     }
+  };
+  const handleWellDoneClick = () => {
+    updateIntroductionReaction("잘했어요");
+    setSelectedReaction("잘했어요");
+    onReactionChange("잘했어요");
+  };
+
+
+  const handleShortcomingClick = () => {
+    updateIntroductionReaction("아쉬워요");
+    setSelectedReaction("아쉬워요");
+    onReactionChange("아쉬워요"); 
+  };
+
+
+  return (
+    <div className="flex gap-[10px]">
+      <GoodButton
+        onClick={handleWellDoneClick}
+        isSelected={selectedReaction === "잘했어요"}
+      >
+      </GoodButton>
+      <BadButton
+        onClick={handleShortcomingClick}
+        isSelected={selectedReaction === "아쉬워요"}
+      >
+      </BadButton>
+    </div>
+  );
+};
+
+interface InterviewReactionButtonsProps {
+  interviewId: string; // 해당 자기소개서 ID
+  initialReactionType: "잘했어요" | "아쉬워요" | null;
+  onReactionChange: (reactionType: "잘했어요" | "아쉬워요" | null) => void;
+}
+
+export const InterviewReactionButtons: React.FC<InterviewReactionButtonsProps> = ({ interviewId, initialReactionType, onReactionChange }) => {
+  const [selectedReaction, setSelectedReaction] = useState<"잘했어요" | "아쉬워요" | null>(initialReactionType);
+
+  const updateInterviewReaction = async (reaction: string) => {
+    try {
+      await axios.patch(`${BASE_URL}/interviews/${interviewId}/reaction`, { reaction });
+    } catch (error) {
+      console.error("Error updating reaction:", error);
+    }
+  };
+
+  const handleWellDoneClick = () => {
+    updateInterviewReaction("잘했어요");
+    setSelectedReaction("잘했어요");
+    onReactionChange("잘했어요");
+  };
+
+  const handleShortcomingClick = () => {
+    updateInterviewReaction("아쉬워요");
+    setSelectedReaction("아쉬워요");
+    onReactionChange("아쉬워요");
   };
 
   return (
     <div className="flex gap-[10px]">
       <GoodButton
-        isSelected={reactionType === "잘했어요"}
-        onClick={() => handleReactionClick("잘했어요")}
+        onClick={handleWellDoneClick}
+        isSelected={selectedReaction === "잘했어요"}
       />
       <BadButton
-        isSelected={reactionType === "아쉬워요"}
-        onClick={() => handleReactionClick("아쉬워요")}
+        onClick={handleShortcomingClick}
+        isSelected={selectedReaction === "아쉬워요"}
       />
     </div>
   );
 };
 
-interface ButtonGroupProps2 {
-  interviewId: number;
-  initialReactionType: string; // 초기 reactionType을 props로 전달
-  onReactionSave: (interviewId: number, reactionType: string) => Promise<void>;
-}
 
-export const ButtonGroup2 = ({
-  interviewId,
-  initialReactionType,
-  onReactionSave,
-}: ButtonGroupProps2) => {
-  const [reactionType, setReactionType] = useState(initialReactionType);
-
-  // 버튼 클릭 핸들러
-  const handleReactionClick = async (reaction: string) => {
-    setReactionType(reaction); // 클릭한 버튼에 맞게 상태를 업데이트합니다.
-
-    try {
-      await onReactionSave(interviewId, reaction); // 서버에 저장 요청
-    } catch (error) {
-      console.error("Error saving reaction:", error);
-    }
-  };
-
-  return (
-    <div className="flex gap-[10px]">
-      <GoodButton
-        isSelected={reactionType === "잘했어요"} // reactionType이 "잘했어요"일 때 선택된 상태
-        onClick={() => handleReactionClick("잘했어요")}
-      />
-      <BadButton
-        isSelected={reactionType === "아쉬워요"} // reactionType이 "아쉬워요"일 때 선택된 상태
-        onClick={() => handleReactionClick("아쉬워요")}
-      />
-    </div>
-  );
-};
 
 interface GoodButtonProps {
   isSelected: boolean;

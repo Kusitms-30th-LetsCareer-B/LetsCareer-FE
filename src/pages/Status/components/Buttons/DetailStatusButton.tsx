@@ -79,7 +79,7 @@ export const AnnouncementButton = ({ text, onClick }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className="border-1-neutral-85 inline-flex h-[38px] w-[110px] items-center justify-center gap-[10px] rounded-sm border bg-static-100 px-[20px] py-[6px]"
+      className="border-1-neutral-85 inline-flex h-[38px] w-[120px] items-center justify-center gap-[10px] rounded-sm border bg-static-100 px-[20px] py-[6px]"
     >
       <div className="text-center text-xsmall16 font-medium tracking-[-0.096px] text-neutral-30">
         {text}
