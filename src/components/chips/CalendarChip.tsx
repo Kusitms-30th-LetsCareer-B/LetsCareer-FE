@@ -45,7 +45,7 @@ interface PersonalChipProps {
 // 긴 일정의 경우 ... 처리를 위한 함수
 import { getSplittedText } from "../../shared/hooks/useText";
 const limit = 7;   // 글자수 제한 (7글자 넘으면 ... 처리)
-const buttonWidth = 110; // 버튼 길이 일관
+const buttonWidth = 105; // 버튼 길이 일관
 
 
 /* 재사용: 네모 박스 컴포넌트 */

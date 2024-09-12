@@ -58,7 +58,7 @@ function CalendarPage({userId, userName} : userInfo) {
         </div>
         
         {/* 2번째 열:  일정 리스트 */}
-        <div>
+        <div className="w-[240px]">
           <CalendarList userId={userId} 
                         userName={userName} 
                         selectedDate={selectedDate} 
