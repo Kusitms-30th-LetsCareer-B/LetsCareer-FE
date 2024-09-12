@@ -62,7 +62,7 @@ function MainPage({userId, userName} : userInfo) {
           <MainCalendar userId={userId} onDateSelected={setSelectedDate}/>
         </div>
 
-        <div className="min-w-[247px]">
+        <div className="w-[240px]">
           {/** 투데이 리스트  */}
           <div className="font-sans rounded-lg border border-neutral-80 mb-[40px]">
             <MainTodayList userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
