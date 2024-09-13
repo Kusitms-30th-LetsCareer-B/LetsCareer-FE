@@ -22,7 +22,8 @@ import AddButton from "./components/AddButton";
 import {TodoCheckBox, RoutineCheckBox} from "./components/ScheduleField"
 
 // Todo를 셋팅하기 위한 모달창
-import { SettingsModal } from "./components/SettingsModal";
+import { RoutineSettingsModal } from "./components/RoutineSettingsModal";
+import { TodoSettingsModal } from "./components/TodoSettingsModal";
 
 /*
 interface Item {
@@ -106,15 +107,18 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
     // 선택 모달 창(자식)에서 제출 이벤트 발생했을 때 호출되는 부모 함수
     // 선택한 체크박스 아이템에 따라 루틴 또는 투두 업뎃
-    const handleModalSubmit = (content: string, startDate?: Date, endDate?: Date) => {
-      if (selectedItem) {
-          if (selectedItem.isRoutine) {
-              // 루틴 업데이트 호출
-              updateRoutine(selectedItem.todoId, content, startDate!, endDate!);
-          } else {
-              // 투두 업데이트 호출
-              updateTodo(selectedItem.todoId, content, startDate!);
-          }
+    const handleTodoModalSubmit = (content: string, date?: Date) => {
+      if (selectedItem && !selectedItem.isRoutine) {
+          // 투두 업데이트 호출
+          updateTodo(selectedItem.todoId, content, date!);
+      }
+      closeSettings(); // 모달 창 닫기
+    };
+    
+    const handleRoutineModalSubmit = (content: string, startDate?: Date, endDate?: Date) => {
+      if (selectedItem && selectedItem.isRoutine) {
+          // 루틴 업데이트 호출
+          updateRoutine(selectedItem.todoId, content, startDate!, endDate!);
       }
       closeSettings(); // 모달 창 닫기
     };
@@ -403,17 +407,33 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
           </div>
 
 
+          {/** 투두 설정 모달 */}  
+          {selectedItem && !selectedItem.isRoutine && (
+              <div className="relative">
+                <TodoSettingsModal
+                    //isOpen={!!selectedItem}
+                    isOpen={isSettingsOpen}
+                    onClose={closeSettings}
+                    onSubmit={handleTodoModalSubmit}
+                    initialContent={selectedItem.content}
+                    initialDate={!selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
+                />
+              </div>
+          )}
+
           {/** 루틴 설정 모달 */}  
-          {selectedItem && (
-              <SettingsModal
-                  //isOpen={!!selectedItem}
-                  isOpen={isSettingsOpen}
-                  onClose={closeSettings}
-                  onSubmit={handleModalSubmit}
-                  initialContent={selectedItem.content}
-                  initialStartDate={selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
-                  initialEndDate={selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
-              />
+          {selectedItem && selectedItem.isRoutine && (
+              <div className="relative">
+                <RoutineSettingsModal
+                    //isOpen={!!selectedItem}
+                    isOpen={isSettingsOpen}
+                    onClose={closeSettings}
+                    onSubmit={handleRoutineModalSubmit}
+                    initialContent={selectedItem.content}
+                    initialStartDate={selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
+                    initialEndDate={selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
+                />
+              </div>
           )}
 
         </div>  

@@ -7,7 +7,7 @@ import useDatePicker from "../../../../../shared/hooks/useDatePicker";
 // Date 형식 파싱 함수
 import { getFormattedDate3 } from "../../../../../shared/hooks/useDate"
 
-interface SettingsModalProps {
+interface RoutineSettingsModalProps {
     isOpen: boolean;
     onClose: () => void;
     // 제출하기
@@ -17,7 +17,7 @@ interface SettingsModalProps {
     initialEndDate?: Date;
 }
 
-export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initialStartDate, initialEndDate}: SettingsModalProps) => {
+export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initialStartDate, initialEndDate}: RoutineSettingsModalProps) => {
     // 백엔드에 수정요청할 데이터 정보
     const [content, setContent] = useState(""); // 자료 아카이빙하기 입력 필드 상태
     const [startDate, setStartDate] = useState(new Date()); // 시작 날짜 상태
@@ -56,9 +56,16 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
     if (!isOpen) return null;
 
     return (
-        <div className="absolute fixed inset-0 flex justify-center items-center">
+        // 모델 최상위 윤곽, 부모 위치의 중앙을 시작으로 하여 y축만 250px 위로
+        <div className="absolute transform top-1/2 left-1/2 flex justify-center items-center"
+             style={{ transform: 'translate(-50%, -50%) translate(0px, -250px)' }} >
+            {/** 전체 모달 박스 */}
             <div className="bg-white p-6 rounded-md shadow-lg w-[320px]">
-                {/* 모달 제목 */}
+                {/** 모달 닫기 버튼 */}
+                <div className="flex justify-end mb-3 mr-2">
+                    <button onClick={onClose} className="font-semibold text-neutral-20 hover:text-neutral-50">✕</button>
+                </div>
+                {/** 모달 내용 입력 필드 */}
                 <div className="flex justify-between items-center mb-4">
                     <input
                         type="text"
@@ -67,7 +74,6 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
                         onChange={(e) => setContent(e.target.value)}
                         className="w-full border rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">✕</button>
                 </div>
 
                 {/* 시작 날짜 입력 */}
@@ -109,11 +115,11 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
                         주기
                     </div>
                     
-                    <button className="w-full py-2 bg-primary-100 text-white rounded-md hover:bg-blue-700">
+                    <button className="w-full py-2 bg-primary-10 text-primary-100 border-[2px] border-primary-100 rounded-sm hover:bg-primary-20">
                         매일
                     </button>
                     
-                    <button className="w-full py-2 bg-primary-100 text-white rounded-md hover:bg-blue-700">
+                    <button className="w-full py-2 bg-neutral-90 text-neutral-50 rounded-sm cursor-not-allowed">
                         매주
                     </button>
                 </div>
@@ -121,7 +127,9 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
                 {/* 완료 버튼 */}
                 <button
                     onClick={handleSubmit}
-                    className="w-full py-2 font-semibold bg-primary-100 text-white rounded-md hover:bg-neutral-90 hover:text-neutral-30"
+                    disabled={!isFormValid} // 폼이 유효하지 않으면 비활성화
+                    className={`w-full py-2 font-semibold rounded-sm
+                    ${isFormValid ? 'bg-primary-100 text-white hover:bg-primary-80' : 'bg-neutral-90 text-neutral-50 cursor-not-allowed'}`}
                 >
                     완료
                 </button>
