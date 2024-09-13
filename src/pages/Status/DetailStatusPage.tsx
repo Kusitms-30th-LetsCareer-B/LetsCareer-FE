@@ -20,7 +20,12 @@ import TodoComponent from "./components/Todo/TodoComponent";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
-function DetailStatusPage() {
+interface DetailStatusPageProps {
+  userId: number
+}
+
+
+function DetailStatusPage({userId}: DetailStatusPageProps) {
   const { recruitmentId } = useParams<{ recruitmentId: string }>();
 
   const [company, setCompany] = useState<string>("");
@@ -256,7 +261,7 @@ function DetailStatusPage() {
       </div>
       <div className="flex items-center gap-[20px] self-stretch">
         <div className="flex w-full flex-col items-start rounded-md border border-neutral-80 p-[45px]">
-          <TodoComponent userId={1} recruitmentId={Number(recruitmentId)}/>
+          <TodoComponent userId={userId} recruitmentId={Number(recruitmentId)} companyName={company}/>
         </div>
         <div className="flex flex-col items-start rounded-md border border-neutral-80 ">
           <div className="mb-[18px] flex items-center justify-between self-stretch p-[24px]">

@@ -42,15 +42,21 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
         handleDateSelected: handleEndDateSelected,
     } = useDatePicker();
 
+
+    // 모든 항목이 작성되어야 submit 버튼 활성화
+    const isFormValid = content.trim() && selectedStartDate && selectedEndDate;
+
     const handleSubmit = () => {
-        onSubmit(content, startDate, endDate); // 부모 컴포넌트로 입력값 전달하여 API 호출
-        onClose(); // 모달 닫기
+        if (isFormValid) {  // 모든 항목이 작성되었으면
+            onSubmit(content, selectedStartDate, selectedEndDate); // 부모 컴포넌트로 입력값 전달하여 API 호출
+            onClose(); // 모달 닫기
+        }
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="absolute fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="absolute fixed inset-0 flex justify-center items-center">
             <div className="bg-white p-6 rounded-md shadow-lg w-[320px]">
                 {/* 모달 제목 */}
                 <div className="flex justify-between items-center mb-4">
@@ -66,9 +72,9 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
 
                 {/* 시작 날짜 입력 */}
                 <div className="mb-4">
-                    <label className="block text-sm mb-1">시작 날짜</label>
+                    <label className="block text-xsmall12 text-neutral-30 mb-1">시작 날짜</label>
                     <div className="relative">
-                        <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[248px]" onClick={handleOpenStartDatePicker}>
+                        <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-3 min-w-[248px]" onClick={handleOpenStartDatePicker}>
                             {/* 선택된 날짜 포매팅 후 출력 */}
                             {selectedStartDate ? getFormattedDate3(selectedStartDate) : '시작일'}
                             
@@ -82,9 +88,9 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
 
                 {/* 종료 날짜 입력 */}
                 <div className="mb-4">
-                    <label className="block text-sm mb-1">종료 날짜</label>
+                    <label className="block text-xsmall12 text-neutral-30 mb-1">종료 날짜</label>
                     <div className="relative">
-                        <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-5 min-w-[248px]" onClick={handleOpenEndDatePicker}>
+                        <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-3 min-w-[248px]" onClick={handleOpenEndDatePicker}>
                             {/* 선택된 날짜 포매팅 후 출력 */}
                             {selectedEndDate ? getFormattedDate3(selectedEndDate) : '마감일'}
                             
@@ -96,10 +102,26 @@ export const SettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initi
                     </div>
                 </div>
 
+                {/** 주기 */}
+                {/** 현재 백엔드 프론트엔드 모두 '매일'만 구현된 상황 */}
+                <div className="mb-5 flex items-center text-xsmall12 gap-3">
+                    <div className="w-[100px] font-semibold text-neutral-30">
+                        주기
+                    </div>
+                    
+                    <button className="w-full py-2 bg-primary-100 text-white rounded-md hover:bg-blue-700">
+                        매일
+                    </button>
+                    
+                    <button className="w-full py-2 bg-primary-100 text-white rounded-md hover:bg-blue-700">
+                        매주
+                    </button>
+                </div>
+
                 {/* 완료 버튼 */}
                 <button
                     onClick={handleSubmit}
-                    className="w-full py-2 bg-primary-100 text-white rounded-md hover:bg-blue-700"
+                    className="w-full py-2 font-semibold bg-primary-100 text-white rounded-md hover:bg-neutral-90 hover:text-neutral-30"
                 >
                     완료
                 </button>
