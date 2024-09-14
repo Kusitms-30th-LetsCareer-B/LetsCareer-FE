@@ -11,12 +11,12 @@ import deleteIcon from "../../../../../shared/assets/routine-delete.png"
 interface TodoCheckBoxProps {
     checked: boolean;
     content: string;  // 투두/루틴 내용 표시를 위한 prop
-    onChange: () => void;
+    onCheckChange: () => void;  // 체크 상태 여부 변경 이벤트
     onOpenSettings: () => void; // 부모로부터 받는 설정창 열기 이벤트
     onDelete: () => void; // 삭제 이벤트를 위한 함수
 }
 
-export const TodoCheckBox = ({checked, content, onChange, onOpenSettings, onDelete}: TodoCheckBoxProps) => {
+export const TodoCheckBox = ({checked, content, onCheckChange, onOpenSettings, onDelete}: TodoCheckBoxProps) => {
 
     return (
         <div className="flex justify-between py-3">
@@ -27,7 +27,7 @@ export const TodoCheckBox = ({checked, content, onChange, onOpenSettings, onDele
                     <input
                         type="checkbox"
                         checked={checked}
-                        onChange={onChange}
+                        onChange={onCheckChange}
                         className="hidden"
                     />
                     {checked ? <img src={todoCheckedIcon} className="w-[20px] h-[20px]"/> : <img src={todoBlankedIcon} className="w-[20px] h-[20px]" />}
@@ -55,7 +55,7 @@ export const TodoCheckBox = ({checked, content, onChange, onOpenSettings, onDele
     );
 }
 
-export const RoutineCheckBox = ({checked, content, onChange, onOpenSettings, onDelete}: TodoCheckBoxProps) => {
+export const RoutineCheckBox = ({checked, content, onCheckChange, onOpenSettings, onDelete}: TodoCheckBoxProps) => {
     
     return (
         <div className="flex justify-between py-3">
@@ -66,7 +66,7 @@ export const RoutineCheckBox = ({checked, content, onChange, onOpenSettings, onD
                     <input
                         type="checkbox"
                         checked={checked}
-                        onChange={onChange}
+                        onChange={onCheckChange}
                         className="hidden"
                     />
                     {checked ? <img src={routineCheckedIcon} className="w-[20px] h-[20px]"/> : <img src={todoBlankedIcon} className="w-[20px] h-[20px]"/>}

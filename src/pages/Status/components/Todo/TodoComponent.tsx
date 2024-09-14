@@ -71,8 +71,10 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
         ));
         // 공통 변수 토글
         setAllItems(allItems.map(item =>
-          item.isRoutine === false && item.todoId === id ? { ...item, isCompleted: !item.isCompleted } : item
-      ));
+          !item.isRoutine && item.todoId === id ? { ...item, isCompleted: !item.isCompleted } : item
+        ));
+        // API 연동
+        updateTodoIsCompleted(id)
     };
     const toggleRoutine = (id: number) => {
         // 루틴 변수 토글
@@ -81,8 +83,10 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
         ));
         // 공통 변수 토글
         setAllItems(allItems.map(item =>
-          item.isRoutine === true && item.todoId === id ? { ...item, isCompleted: !item.isCompleted } : item
+          item.isRoutine && item.todoId === id ? { ...item, isCompleted: !item.isCompleted } : item
         ));
+        // API 연동
+        updateTodoIsCompleted(id)
     };
 
 
@@ -146,7 +150,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
     // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-    const itemsPerPage = 7; // 한 페이지에 보여줄 아이템(CheckBox) 수
+    const itemsPerPage = 5; // 한 페이지에 보여줄 아이템(CheckBox) 수
 
     // 페이지네이션 계산
     const totalPages = Math.ceil(allItems.length / itemsPerPage); // 총 페이지 수
@@ -273,7 +277,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
     
     /** PATCH API */
-    // Todo 업데이트 함수, data를 인자로 받아서 업뎃하기
+    // Todo 내용 업데이트 함수, data를 인자로 받아서 업뎃하기
     const updateTodo = async (todoId: number, content: string, date: Date) => {
       try {
         const todoResponse = await updateTodoContent(
@@ -296,7 +300,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
       }
     };
 
-    // Routine 추가 함수
+    // Routine 내용 업데이트 함수
     const updateRoutine = async (todoId: number, routineId: number, content: string, startDate: Date, endDate: Date) => {
       try {
         console.log(selectedItem.content+" 너 누가야2 "+content+"몸 "+todoId);
@@ -319,6 +323,29 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
         console.error("루틴 업뎃 중 오류 발생:", error);
       }
     };
+
+    // 투두 체크 여부 업데이트 함수
+    const updateTodoIsCompleted = async (todoId: number) => {
+      try {
+        const todoResponse = await updateTodoCheck(
+          { 
+            // 선택한 Todo Id
+            todoId
+          }
+        );
+
+        //console.log("✈️ 투두 체크 상태 업뎃 완료:")
+        //console.log(todoResponse)
+
+        // 상태 업데이트
+        // 수정 후 데이터 새로 가져오기
+        await fetchData();
+        
+      } catch (error) {
+        console.error("투두 업뎃 중 오류 발생:", error);
+      }
+    };
+
 
 
     /** DELETE API */
@@ -375,7 +402,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
                         key={`routine-${item.todoId}`}  // 고유한 key 설정
                         checked={item.isCompleted}      // isCompleted 값 전달
                         content={item.content}          // content 값 전달
-                        onChange={() => toggleRoutine(item.todoId)}
+                        onCheckChange={() => toggleRoutine(item.todoId)}
                         onOpenSettings={() => openRoutineSettings(item)}
                         onDelete={() => {
                           //deleteTodoItem(item.todoId);
@@ -387,7 +414,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
                         key={`todo-${item.todoId}`}
                         checked={item.isCompleted}
                         content={item.content}
-                        onChange={() => toggleTodo(item.todoId)}
+                        onCheckChange={() => toggleTodo(item.todoId)}
                         onOpenSettings={() => openTodoSettings(item)}
                         onDelete={() => deleteTodoItem(item.todoId)}
                     />
