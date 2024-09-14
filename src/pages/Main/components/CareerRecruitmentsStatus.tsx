@@ -14,6 +14,9 @@ import {
   OtherStatusChip,
 } from "../../../components/chips/StatusChip.tsx";
 
+// 페이지 전환 훅 임포트
+import { useNavigationStatusByRecruitmentId } from "../../../Path.ts";
+
 
 // 백엔드에서 받는 진행 상태 Enum으로 관리
 enum ScheduleFilter {
@@ -60,45 +63,13 @@ interface Career {
   stageName: string;
 }
 
-/*
-stage_name: 서류, 면접, 기타(직무테스트 등)
-status:
-* PROGRESS
-* PASSED
-* FAILED
-*/
-// 상태 값에 따라 칩 컴포넌트를 반환하는 훅
-const getChipComponent = (stageName: string, status: string) => {
-  switch (stageName) {
-    case StageFilter.DOCUMENT:
-      switch (status) {
-        case ScheduleFilter.PROGRESS:
-          return <PrepareDocumentChip />;
-        case ScheduleFilter.PASSED:
-          return <PassDocumentChip />;
-        case ScheduleFilter.FAILED: // 불합격인 경우 null 반환하여 띄우지 않기
-          return null;
-      }
-    case StageFilter.INTERVIEW:
-      switch (status) {
-        case ScheduleFilter.PROGRESS:
-          return <PrepareInterviewChip />;
-        case ScheduleFilter.PASSED:
-          return <PassInterviewChip />;
-        case ScheduleFilter.FAILED: // 불합격인 경우 null 반환하여 띄우지 않기
-          return null;
-      }
-  }
- 
-  // 기타 상태일 때는 'stageName'에 코딩테스트 등 지원 종류가 나옴
-  return <OtherStatusChip contents={stageName} />;
-};
 
 /* 컴포넌트 */
 const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
   const [careerList, setCareerList] = useState<Career[]>([]); // 채용 일정 상태 저장
   const [visibleCareers, setVisibleCareers] = useState(6); // 표시할 최대 줄 수
   const navigate = useNavigate(); // 페이지 전환 함수
+
 
   // API 호출을 통해 데이터를 가져오는 함수
   useEffect(() => {
@@ -132,6 +103,44 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
     navigate(PATHS.STATUS_PATH); // 더 많은 정보를 출력하는 StatusPage로 전환
   };
 
+
+  // 칩 누르면 해당 기업 상세 페이지로 전환하는 훅
+  const navigateByRecruitmentId = useNavigationStatusByRecruitmentId();
+  /*
+  stage_name: 서류, 면접, 기타(직무테스트 등)
+  status:
+  * PROGRESS
+  * PASSED
+  * FAILED
+  */
+  // 상태 값에 따라 칩 컴포넌트를 반환하는 훅
+  const getChipComponent = (stageName: string, status: string, recruitmentId: number) => {  
+    switch (stageName) {
+      case StageFilter.DOCUMENT:
+        switch (status) {
+          case ScheduleFilter.PROGRESS:
+            return <PrepareDocumentChip onClick={() => navigateByRecruitmentId(recruitmentId)} />
+          case ScheduleFilter.PASSED:
+            return <PassDocumentChip onClick={() => navigateByRecruitmentId(recruitmentId)} />
+          case ScheduleFilter.FAILED: // 불합격인 경우 null 반환하여 띄우지 않기
+            return null;
+        }
+      case StageFilter.INTERVIEW:
+        switch (status) {
+          case ScheduleFilter.PROGRESS:
+            return <PrepareInterviewChip onClick={() => navigateByRecruitmentId(recruitmentId)} />
+          case ScheduleFilter.PASSED:
+            return <PassInterviewChip onClick={() => navigateByRecruitmentId(recruitmentId)} />
+          case ScheduleFilter.FAILED: // 불합격인 경우 null 반환하여 띄우지 않기
+            return null;
+        }
+    }
+  
+    // 기타 상태일 때는 'stageName'에 코딩테스트 등 지원 종류가 나옴
+    return <OtherStatusChip contents={stageName} onClick={() => navigateByRecruitmentId(recruitmentId)} />
+  };
+
+
   return (
     <div className="mx-auto min-w-[700px] p-4">
       {/* 커리어 현황 헤더 */}
@@ -160,7 +169,7 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
       {/* 테이블 데이터 출력 */}
       {careerList
         // getChipComponent가 null을 반환하면 메인보드에 띄우지 않고, visibleCareers+1 해주고 다음 career로 skip
-        .filter(career => getChipComponent(career.stageName, career.status) !== null) // getChipComponent가 null이 아닌 항목만 필터링
+        .filter(career => getChipComponent(career.stageName, career.status, career.recruitmentId) !== null) // getChipComponent가 null이 아닌 항목만 필터링
         .slice(0, visibleCareers + 1) // visibleCareers에서 하나 더 표시
         .map((career) => (
           <div
@@ -173,7 +182,7 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
             <div className="px-2">{career.companyName}</div>
             <div className="px-2">{career.task}</div>
             <div className="px-2">
-              {getChipComponent(career.stageName, career.status)}
+              {getChipComponent(career.stageName, career.status, career.recruitmentId)}
             </div>
           </div>
       ))}
