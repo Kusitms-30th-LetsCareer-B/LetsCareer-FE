@@ -7,8 +7,6 @@ import CalendarList from "./components/CalendarList"
 /* 로그인 정보 받기 */
 import {userInfo} from "../../shared/api/loginInstance.ts"
 
-import TestCalendar from "../../components/TestCalendar.tsx" // 이건 캘린더에 띄우기
-
 function CalendarPage({userId, userName} : userInfo) {
 
   /** 캘린더 컴포완 연동:  캘린더로부터 반환받는 데이터 관리 */

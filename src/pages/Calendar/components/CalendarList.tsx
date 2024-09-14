@@ -4,7 +4,6 @@ import { getYearMonthDay, getYear, getMonth, getFormattedDate2, getFormattedDate
 /* 일정 리스트 */
 import RecruitmentList from "./RecruitmentScheduleList.tsx"
 import PersonalScheduleList from "./PersonalScheduleList.tsx"
-import PersonalScheduleList_API연동전 from "./PersonalScheduleList_API연동전.tsx"
 import TodoListComponent from "./TodoListEditable.tsx"
 
 /** Props */
@@ -52,9 +51,6 @@ const CalendarList = ({userId, userName, selectedDate, setSelectedDate, recruitm
             
             
             {/** 세 번째 개인 일정 */}
-            {/*
-            <PersonalScheduleList_API연동전 userId={userId} userName={userName} selectedDate={selectedDate} setSelectedDate={setSelectedDate} personalScheduleChips={personalScheduleChips}/>
-            */}
             <PersonalScheduleList userId={userId} selectedDate={selectedDate}/>
             
 
