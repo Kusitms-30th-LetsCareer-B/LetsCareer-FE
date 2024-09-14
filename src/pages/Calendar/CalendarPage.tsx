@@ -52,7 +52,7 @@ function CalendarPage({userId, userName} : userInfo) {
         {/* 1번째 열: 캘린더 */}
         <div>
           {/* 캘린더 컴포 */}
-          <Calender userId={userId} onDateSelected={handleDateSelected}/>
+          <Calender userId={userId} componentName={"CalendarPage"} onDateSelected={handleDateSelected}/>
         </div>
         
         {/* 2번째 열:  일정 리스트 */}

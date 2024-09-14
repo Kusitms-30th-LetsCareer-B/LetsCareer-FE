@@ -38,9 +38,6 @@ interface CompanyTodo {
 
 // 기업별 TodoList 확인이 가능한 컴포넌트
 const CompanyTodoListComponent = ({ userId }: CompanyTodoListComponentProps) => {
-    // 오늘 날짜
-    const [today, setToday] = useState(new Date())
-
     // company별로 Todo 데이터를 담은 list
     const [companyTodoList, setCompanyTodoList] = useState<CompanyTodo[]>([]);
 
@@ -55,53 +52,57 @@ const CompanyTodoListComponent = ({ userId }: CompanyTodoListComponentProps) => 
     const [error, setError] = useState<string | null>(null);
 
 
-    // GET 요청 함수 호출: '/todos/groupedByCompany'
-    // API 연동하여 기업별 투두리스트 가져오는 부분
-    // 컴포넌트가 렌더링될 때 API 호출
+    // 컴포넌트가 처음 렌더링될 때 호출
+    // userId, today가 바뀔 때 호출
     useEffect(() => {
-      // userId가 있어야(로그인 상태여야) 작동되니깐 검증용으로
-      if (userId) {
-        
-        const fetchTodoList = async () => {
-          try {
-            // 상태 제어
-            setLoading(true); // 로딩 상태 시작
-            setError(null);   // 에러 초기화
-
-            // 요청 및 응답받기
-            // date: 백엔드에서 지정한 매개변수명,  selectedDateString: 파라미터로 전달할 파라미터명
-            const response = await getTodoListDayGroupedByCompany({ userId, date: getFormattedDate3(today) });
-
-            console.log("📫 투두쨩~");
-            // 백엔드로부터 받은 순수 DB 확인
-            console.log(response);
+      fetchTodoList();
+      
+    }, [userId]);
 
 
-            // 파싱: companyName별로 data(todoList)를 분리
-            // 서버 응답 데이터 중 "data" 필드만 가져오기
-            // 형태:  index, {companyName, todo[]}
-            const companyTodoList: CompanyTodo[] = response.data;
+    // GET 요청 함수 호출: '/todos/groupedByCompany'
+    // API 연동하여 기업별 투두리스트 가져오는 부분    
+    const fetchTodoList = async () => {
+      // userId가 있어야 API 호출 가능
+      if(userId) {
 
-            // 파싱한 DB 확인
-            //console.log(companyTodoList);
-            
-            // 저장
-            setCompanyTodoList(companyTodoList)
+        try {
+          // 상태 제어
+          setLoading(true); // 로딩 상태 시작
+          setError(null);   // 에러 초기화
+          
+          const today = new Date();
 
-          } catch (error) {
-            console.error('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다:', error);
-            setError('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다.');
+          // 요청 및 응답받기
+          // date: 백엔드에서 지정한 매개변수명,  selectedDateString: 파라미터로 전달할 파라미터명
+          const response = await getTodoListDayGroupedByCompany({ userId, date: getFormattedDate3(today) });
 
-          } finally {
-            // 상태 제어
-            setLoading(false); // 로딩 상태 종료
-          }
-        };
-        fetchTodoList();
+          console.log("📫 투두쨩~");
+          // 백엔드로부터 받은 순수 DB 확인
+          console.log(response);
+
+
+          // 파싱: companyName별로 data(todoList)를 분리
+          // 서버 응답 데이터 중 "data" 필드만 가져오기
+          // 형태:  index, {companyName, todo[]}
+          const companyTodoList: CompanyTodo[] = response.data;
+
+          // 파싱한 DB 확인
+          //console.log(companyTodoList);
+          
+          // 저장
+          setCompanyTodoList(companyTodoList)
+
+        } catch (error) {
+          console.error('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다:', error);
+          setError('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다.');
+
+        } finally {
+          // 상태 제어
+          setLoading(false); // 로딩 상태 종료
+        }
       }
-      // userId 또는 today가 바뀌면 API 다시 호출
-    }, [userId, today]);
-
+    };
 
     
     // 로딩 상태 렌더링
