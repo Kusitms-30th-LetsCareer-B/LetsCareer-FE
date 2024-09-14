@@ -186,9 +186,20 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
         console.log(`📫 기업의 투두 및 루틴 리스트 배송이요>> 💗`)
         console.log(todosResponse)
 
-        // 응답 데이터 중 투두, 루틴 데이터 필터링
-        const todosData = todosResponse.data.flatMap((company) => company.todos || []).filter((todo) => !todo.isRoutine);
-        const routinesData = todosResponse.data.flatMap((company) => company.todos || []).filter((todo) => todo.isRoutine);
+        // 전체 기업 투두 데이터 중 현재 기업 데이터만 필터링
+        const filteredData = todosResponse.data.filter((company) => company.companyName === companyName);
+
+        // 응답 데이터 중 투두와 루틴 데이터를 따로 필터링
+        const todosData = filteredData.flatMap((company) => company.todos || []).filter((todo) => !todo.isRoutine);
+        const routinesData = filteredData.flatMap((company) => company.todos || []).filter((todo) => todo.isRoutine);
+        
+        /*
+        console.log("📫 전체 기업 투두 리스트 조회 배송 완료")
+        console.log(todosResponse.data)
+        console.log(filteredData)
+        console.log(todosData)
+        console.log(routinesData)
+        */
 
         // 응답 데이터 저장
         setTodos(todosData);  // 기존 상태를 덮어씀
