@@ -73,8 +73,6 @@ function StatusPage({userId}: StatusPageProps) {
       const response = await axios.get(
         `${BASE_URL}/recruitments/status?type=${type}&userId=${userId}&page=${pageId}`,
       );
-      console.log("잠난")
-      console.log(response)
       const { recruitments: newRecruitments, totalElementsCount, totalPages } =
         response.data.data;
 

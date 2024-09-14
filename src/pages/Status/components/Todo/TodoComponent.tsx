@@ -8,7 +8,7 @@ import DateNavigation from "../../../../components/DateNavigation"
 import { getFormattedDate3 } from "../../../../shared/hooks/useDate"
 
 // API 관련
-import { postRoutine, deleteRoutineById, updateRoutineById } from "../../../../shared/api/routinesApiService"
+import { getRoutineById, postRoutine, deleteRoutineById, updateRoutineById } from "../../../../shared/api/routinesApiService"
 import { postTodo, deleteTodo, updateTodoContent, updateTodoCheck } from "../../../../shared/api/todoApiService"
 // GET은 해당 기업의 전체 투두를 가져오는 아래 API를 사용해야 함
 import { getTodoListDayGroupedByCompany } from "../../../Calendar/api/todoDayGroupedByCompanyApiService"
@@ -58,6 +58,10 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
     // 선택한 아이템 정보를 관리하기 위한 상태 변수
     const [selectedItem, setSelectedItem] = useState<Todo | null>(null); // 선택한 아이템 정보
+    // 선택한 루틴 정보를 관리하기 위한 상태 변수
+    const [selectedRoutineStartDate, setSelectedRoutineStartDate] = useState<string>(null);
+    const [selectedRoutineEndDate, setSelectedRoutineEndDate] = useState<string>(null);
+
 
     // 일정 완료 체크 박스 이벤트
     const toggleTodo = (id: number) => {
@@ -85,16 +89,30 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
     
 
     // 셋팅 오픈 여부(설정 창 띄우기) 변수
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isTodoSettingsOpen, setIsTodoSettingsOpen] = useState(false);
+    const [isRoutineSettingsOpen, setIsRoutineSettingsOpen] = useState(false);
 
     // 설정 창 오픈 이벤트
-    const openSettings = (item: Todo) => {
+    const openTodoSettings = (item: Todo) => {
       // TodoId 선택 (투두/루틴 하나 선택)
       setSelectedItem(item);
 
       // 모달 열기
-      setIsSettingsOpen(true);
+      setIsTodoSettingsOpen(true);
     };
+    const openRoutineSettings = (item: Todo) => {
+      // TodoId 선택 (투두/루틴 하나 선택)
+      setSelectedItem(item);
+
+      // 루틴 아이템일 경우 선택된 루틴 정보도 업뎃
+      if(item.isRoutine && item.routineId != null) {
+        getRoutineData(item.routineId);
+      }
+
+      // 모달 열기
+      setIsRoutineSettingsOpen(true);
+    };
+
 
     // 설정 창 닫기 이벤트
     const closeSettings = () => {
@@ -102,23 +120,24 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
       setSelectedItem(null);
 
       // 모달 닫기
-      setIsSettingsOpen(false);
+      setIsTodoSettingsOpen(false);
+      setIsRoutineSettingsOpen(false);
     };
 
     // 선택 모달 창(자식)에서 제출 이벤트 발생했을 때 호출되는 부모 함수
     // 선택한 체크박스 아이템에 따라 루틴 또는 투두 업뎃
-    const handleTodoModalSubmit = (content: string, date?: Date) => {
+    const handleTodoModalSubmit = (content: string, date: Date) => {
       if (selectedItem && !selectedItem.isRoutine) {
           // 투두 업데이트 호출
-          updateTodo(selectedItem.todoId, content, date!);
+          updateTodo(selectedItem.todoId, content, date);
       }
       closeSettings(); // 모달 창 닫기
     };
     
-    const handleRoutineModalSubmit = (content: string, startDate?: Date, endDate?: Date) => {
+    const handleRoutineModalSubmit = (content: string, startDate: Date, endDate: Date) => {
       if (selectedItem && selectedItem.isRoutine) {
           // 루틴 업데이트 호출
-          updateRoutine(selectedItem.todoId, content, startDate!, endDate!);
+          updateRoutine(selectedItem.todoId, selectedItem.routineId, content, startDate, endDate);
       }
       closeSettings(); // 모달 창 닫기
     };
@@ -143,16 +162,16 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
 
     // 처음 렌더링시 fetchData() 호출
-    // selectedDate 또는 recruitmentId가 변경될 때마다 fetchData() 호출
+    // recruitmentId, selectedDate(확인할 투두 날짜 이동)가 변경될 때마다 fetchData() 호출
+    // 그 외 추가, 수정, 삭제 할 땐 fetchData를 직접 호출하면 됨
     useEffect(() => {
-      console.log("혹시? 너니?"+recruitmentId+" "+selectedDate)
       fetchData();
-    }, [selectedDate, recruitmentId]);
+    }, [recruitmentId, selectedDate]);
 
     
     
     /** GET API */
-    // Todo, Routine 가져오기
+    // todo database에서 Todo, Routine 가져오기
     const fetchData = async () => {
       try {
         // GET API 호출 및 응답 데이터 받기
@@ -160,8 +179,8 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
           userId: userId,
           date: getFormattedDate3(selectedDate),
         });
-        //console.log(`📫 기업의 투두 및 루틴 리스트 배송이요>> 💗`)
-        //console.log(todosResponse)
+        console.log(`📫 기업의 투두 및 루틴 리스트 배송이요>> 💗`)
+        console.log(todosResponse)
 
         // 응답 데이터 중 투두, 루틴 데이터 필터링
         const todosData = todosResponse.data.flatMap((company) => company.todos || []).filter((todo) => !todo.isRoutine);
@@ -178,10 +197,39 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
         // 투두와 루틴 데이터를 불러온 순서대로 관리하기 위한 변수인 allItems 배열 업데이트
         setAllItems(allItemsSorted);  // 정렬된 allItems 업데이트
         
+        
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생:", error);
       }
     };
+
+    
+    // routine database에서 Routine 가져오기
+    const getRoutineData = async (routineId: number) => {
+      try {
+        // GET API 호출 및 응답 데이터 받기
+        const routineResponse = await getRoutineById({
+          routineId: routineId,
+        });
+        console.log(`📫 루틴 배송이요>> 💗`);
+        console.log(routineResponse);
+
+        // 응답 데이터 저장
+        /**
+         * data:
+            content: "그래"
+            endDate: "2024-09-14"
+            startDate: "2024-09-14"
+         */
+        setSelectedRoutineStartDate(routineResponse.data.startDate);
+        setSelectedRoutineEndDate(routineResponse.data.endDate);
+        
+        
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류 발생:", error);
+      }
+    };
+    
 
 
     /** POST API */
@@ -194,26 +242,9 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
           { date: getFormattedDate3(selectedDate), content: "" }
         );
         
+        // 상태 업데이트
         // Todo 추가 후 데이터를 다시 가져옴
         await fetchData(); // 데이터 가져오는 함수 호출
-
-        // response로 null을 받아서 todoResponse.todoId 불가
-        // 걍 새로 데이터 가져와야 할듯
-        /*
-        // 변수 리스트에 추가
-        const newTodo: Todo = {
-          content: content,
-          date: getFormattedDate3(selectedDate),
-          isCompleted: false,
-          isRoutine: false,
-          recruitmentId: recruitmentId,
-          todoId: todoResponse.todoId, // API로부터 받은 todoId
-        };
-        
-        // 상태 업데이트
-        setTodos([...todos, newTodo]);
-        setAllItems([...allItems, newTodo]);
-        */
         
       } catch (error) {
         console.error("투두 추가 중 오류 발생:", error);
@@ -230,27 +261,11 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
           { content: "", startDate: getFormattedDate3(selectedDate), endDate: getFormattedDate3(selectedDate) }
         );
 
-
-
+        // 상태 업데이트
         // Routine 추가 후 데이터를 다시 가져옴
         await fetchData(); // 데이터 가져오는 함수 호출
         
-        /*
-        // 변수 리스트에 추가
-        const newRoutine: Todo = {
-          content: content, // 실제 루틴의 내용
-          date: getFormattedDate3(selectedDate), // 날짜
-          isCompleted: false, // true 또는 false로 변경 (1 대신 boolean 타입)
-          isRoutine: true, // 루틴이므로 true
-          recruitmentId: 0, // 실제로 사용될 recruitmentId 값
-          todoId: 1, // 실제로 사용될 todoId 값
-        };
-        
-        // 상태 업데이트
-        setRoutines([...routines, newRoutine]);
-        setAllItems([...allItems, newRoutine]);
-        */
-        
+
       } catch (error) {
         console.error("루틴 추가 중 오류 발생:", error);
       }
@@ -272,29 +287,33 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
         console.log("✈️ 투두 업뎃 완료:")
         console.log(todoResponse)
 
-        // 데이터 새로 가져오기
+        // 상태 업데이트
+        // 수정 후 데이터 새로 가져오기
         await fetchData();
-
+        
       } catch (error) {
         console.error("투두 업뎃 중 오류 발생:", error);
       }
     };
 
     // Routine 추가 함수
-    const updateRoutine = async (routineId: number, content: string, startDate: Date, endDate: Date) => {
+    const updateRoutine = async (todoId: number, routineId: number, content: string, startDate: Date, endDate: Date) => {
       try {
+        console.log(selectedItem.content+" 너 누가야2 "+content+"몸 "+todoId);
         const routineResponse = await updateRoutineById(
             { 
               // 선택한 루틴 ID
-              routineId ,
+              routineId,
               // 업뎃한 3개의 인자 전달
               content, startDate: getFormattedDate3(startDate), endDate: getFormattedDate3(endDate) }
         );
         console.log("✈️ 루틴 업뎃 완료:")
         console.log(routineResponse)
 
+        // 상태 업데이트
         // 데이터 새로 가져오기
-        await fetchData(); 
+        await fetchData();
+
         
       } catch (error) {
         console.error("루틴 업뎃 중 오류 발생:", error);
@@ -307,7 +326,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
     const deleteTodoItem = async (todoId: number) => {
       try {
           await deleteTodo({ todoId });
-          await fetchData();
+          await fetchData(); // 상태 업데이트: 데이터 새로 가져오기
       } catch (error) {
           console.error(`투두 ID ${todoId} 삭제 중 오류 발생:`, error);
       }
@@ -317,7 +336,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
     const deleteRoutineItem = async (routineId: number) => {
         try {
             await deleteRoutineById({ routineId });
-            await fetchData();
+            await fetchData(); // 상태 업데이트: 데이터 새로 가져오기
         } catch (error) {
             console.error(`루틴 ID ${routineId} 삭제 중 오류 발생:`, error);
         }
@@ -357,8 +376,11 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
                         checked={item.isCompleted}      // isCompleted 값 전달
                         content={item.content}          // content 값 전달
                         onChange={() => toggleRoutine(item.todoId)}
-                        onOpenSettings={() => openSettings(item)}
-                        onDelete={() => deleteRoutineItem(item.todoId)}
+                        onOpenSettings={() => openRoutineSettings(item)}
+                        onDelete={() => {
+                          //deleteTodoItem(item.todoId);
+                          deleteRoutineItem(item.routineId);}
+                        }
                     />
                   ) : (
                     <TodoCheckBox
@@ -366,7 +388,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
                         checked={item.isCompleted}
                         content={item.content}
                         onChange={() => toggleTodo(item.todoId)}
-                        onOpenSettings={() => openSettings(item)}
+                        onOpenSettings={() => openTodoSettings(item)}
                         onDelete={() => deleteTodoItem(item.todoId)}
                     />
                   )
@@ -405,35 +427,31 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
                   <AddButton textColor="text-secondary" bgColor="bg-secondary-10" text="루틴 추가" handleAddTodo={addRoutine} />
               </div>
           </div>
+          
 
-
-          {/** 투두 설정 모달 */}  
-          {selectedItem && !selectedItem.isRoutine && (
-              <div className="relative">
-                <TodoSettingsModal
-                    //isOpen={!!selectedItem}
-                    isOpen={isSettingsOpen}
-                    onClose={closeSettings}
-                    onSubmit={handleTodoModalSubmit}
-                    initialContent={selectedItem.content}
-                    initialDate={!selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
-                />
-              </div>
-          )}
-
-          {/** 루틴 설정 모달 */}  
-          {selectedItem && selectedItem.isRoutine && (
-              <div className="relative">
+          {/** 모달 */}  
+          {selectedItem && (
+            <div className="relative">              
+              {/** 루틴 또는 투두 설정 모달 */}
+              {selectedItem.isRoutine ? (
                 <RoutineSettingsModal
-                    //isOpen={!!selectedItem}
-                    isOpen={isSettingsOpen}
-                    onClose={closeSettings}
-                    onSubmit={handleRoutineModalSubmit}
-                    initialContent={selectedItem.content}
-                    initialStartDate={selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
-                    initialEndDate={selectedItem.isRoutine ? new Date(selectedItem.date) : undefined}
+                  isOpen={isRoutineSettingsOpen}
+                  onClose={closeSettings}
+                  onSubmit={handleRoutineModalSubmit}
+                  initialContent={selectedItem.content}
+                  initialStartDate={selectedRoutineStartDate}
+                  initialEndDate={selectedRoutineEndDate}
                 />
-              </div>
+              ) : (
+                <TodoSettingsModal
+                  isOpen={isTodoSettingsOpen}
+                  onClose={closeSettings}
+                  onSubmit={handleTodoModalSubmit}
+                  initialContent={selectedItem.content}
+                  initialDate={selectedItem.date}
+                />
+              )}
+            </div>
           )}
 
         </div>  

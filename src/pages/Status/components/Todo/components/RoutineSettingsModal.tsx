@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Date picker를 띄우는 컴포넌트와 훅
 import PopUpDatePicker from "../../../../../components/PopUpDatePicker";
@@ -13,18 +13,16 @@ interface RoutineSettingsModalProps {
     // 제출하기
     onSubmit: (content: string, startDate: Date, endDate: Date) => void; // 부모 컴포에서 받아오는 함수
     initialContent: string;
-    initialStartDate?: Date;
-    initialEndDate?: Date;
+    initialStartDate?: string;
+    initialEndDate?: string;
 }
 
 export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initialStartDate, initialEndDate}: RoutineSettingsModalProps) => {
     // 백엔드에 수정요청할 데이터 정보
-    const [content, setContent] = useState(""); // 자료 아카이빙하기 입력 필드 상태
-    const [startDate, setStartDate] = useState(new Date()); // 시작 날짜 상태
-    const [endDate, setEndDate] = useState(new Date()); // 종료 날짜 상태
-
+    const [content, setContent] = useState(initialContent);
     
     // 시작일 관련 훅
+    // 훅에서 사용한 변수명: 현재 컴포에서 사용할 변수명
     const {
         isDatePickerOpen: isStartDatePickerOpen,
         selectedDate: selectedStartDate,
@@ -34,6 +32,7 @@ export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent
     } = useDatePicker();
 
     // 마감일 관련 훅
+    // 훅에서 사용한 변수명: 현재 컴포에서 사용할 변수명
     const {
         isDatePickerOpen: isEndDatePickerOpen,
         selectedDate: selectedEndDate,
@@ -41,6 +40,17 @@ export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent
         handleCloseDatePicker: handleCloseEndDatePicker,
         handleDateSelected: handleEndDateSelected,
     } = useDatePicker();
+
+
+    // 컴포넌트가 처음 렌더링될 때 initialStartDate를 selectedStartDate로 초기화
+    useEffect(() => {
+        if (initialStartDate) {
+            handleStartDateSelected(new Date(initialStartDate));
+        }
+        if (initialEndDate) {
+            handleEndDateSelected(new Date(initialEndDate));
+        }
+    }, [initialStartDate, initialEndDate]);
 
 
     // 모든 항목이 작성되어야 submit 버튼 활성화
@@ -72,7 +82,7 @@ export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent
                         placeholder="내용을 입력하세요."
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="w-full border rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="w-full border rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary-90"
                     />
                 </div>
 
@@ -101,9 +111,9 @@ export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent
                             {selectedEndDate ? getFormattedDate3(selectedEndDate) : '마감일'}
                             
                             {/* 이미지 클릭 시 DatePicker 열기 */}
-                            <span>
+                            <div className="z-50">
                                 <PopUpDatePicker onDateSelected={handleEndDateSelected} />
-                            </span>
+                            </div>
                         </div>
                     </div>
                 </div>

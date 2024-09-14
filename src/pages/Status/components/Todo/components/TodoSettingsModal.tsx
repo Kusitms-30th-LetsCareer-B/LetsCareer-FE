@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Date picker를 띄우는 컴포넌트와 훅
 import PopUpDatePicker from "../../../../../components/PopUpDatePicker";
@@ -13,22 +13,31 @@ interface TodoSettingsModalProps {
     // 제출하기
     onSubmit: (content: string, date: Date) => void; // 부모 컴포에서 받아오는 함수
     initialContent: string;
-    initialDate?: Date;
+    initialDate?: string;
 }
 
 export const TodoSettingsModal = ({ isOpen, onClose, onSubmit, initialContent, initialDate}: TodoSettingsModalProps) => {
     // 백엔드에 수정요청할 데이터 정보
-    const [content, setContent] = useState("");   // 자료 아카이빙하기 입력 필드 상태
-    const [date, setDate] = useState(new Date()); // 투두날짜 상태
+    const [content, setContent] = useState(initialContent);
 
     
     // 투두 관련 훅
     const {
         selectedDate,
+        setSelectedDate,
         handleOpenDatePicker,
         handleCloseDatePicker,
         handleDateSelected,
     } = useDatePicker();
+
+
+    // 컴포넌트가 처음 렌더링될 때 initialDate를 selectedDate로 초기화
+    useEffect(() => {
+        if (initialDate) {
+            setSelectedDate(new Date(initialDate));
+        }
+    }, [isOpen, initialDate]);
+
 
 
     // 모든 항목이 작성되어야 submit 버튼 활성화
@@ -62,7 +71,7 @@ export const TodoSettingsModal = ({ isOpen, onClose, onSubmit, initialContent, i
                         placeholder="내용을 입력하세요."
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="w-full border rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="w-full border rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary-90"
                     />
                 </div>
 
