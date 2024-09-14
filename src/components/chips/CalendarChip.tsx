@@ -190,7 +190,7 @@ export const ClickedDocumentChip = ({
         }}
     >
       {/* 왼쪽 영역 */}
-      <div className="flex h-full w-[4px] items-center justify-center bg-secondary-0" />
+      <div className="flex h-full w-[4px] items-center justify-center bg-secondary-30" />
 
       {/* 오른쪽 영역 */}
       <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-100 px-[6px]" style={{ width: `${buttonWidth}px` }}>
@@ -199,8 +199,8 @@ export const ClickedDocumentChip = ({
             {/* 네모 박스 */}
             <SquareBox
               filter={filter}
-              bg="bg-secondary-100"
-              txtColor="text-secondary-0"
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
             />
             {/* 기업명 */}
             <CompanyBox companyName={companyName} txtColor="text-secondary-0" />
@@ -213,8 +213,8 @@ export const ClickedDocumentChip = ({
             {/* 네모 박스 */}
             <SquareBox
               filter={filter}
-              bg="bg-secondary-100"
-              txtColor="text-secondary-0"
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
             />
           </>
         )}
@@ -290,7 +290,7 @@ export const ClickedInterviewChip = ({ companyName, onClick }: CompanyChipProps)
         }}
     >
       {/* 왼쪽 영역 */}
-      <div className="flex h-full w-[4px] items-center justify-center bg-primary-0" />
+      <div className="flex h-full w-[4px] items-center justify-center bg-primary-30" />
 
       {/* 오른쪽 영역 */}
       <div className="flex h-full items-center justify-start gap-[4px] bg-primary-100 px-[6px]" style={{ width: `${buttonWidth}px` }}>
@@ -376,7 +376,7 @@ export const ClickedOtherChip = ({ companyName, onClick }: CompanyChipProps) => 
         }}
     >
       {/* 왼쪽 영역 */}
-      <div className="flex h-full w-[4px] items-center justify-center bg-teritory-0" />
+      <div className="flex h-full w-[4px] items-center justify-center bg-teritory-light" />
 
       {/* 오른쪽 영역 */}
       <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-normal px-[6px]" style={{ width: `${buttonWidth}px` }}>
