@@ -19,7 +19,7 @@ interface TodoCheckBoxProps {
 export const TodoCheckBox = ({checked, content, onCheckChange, onOpenSettings, onDelete}: TodoCheckBoxProps) => {
 
     return (
-        <div className="flex justify-between py-3">
+        <div className="flex justify-between py-2">
             {/** 좌측 */}
             <div className="flex jusify-start items-center space-x-3">
                 {/** 체크 박스: 완료 여부 */}
@@ -58,7 +58,7 @@ export const TodoCheckBox = ({checked, content, onCheckChange, onOpenSettings, o
 export const RoutineCheckBox = ({checked, content, onCheckChange, onOpenSettings, onDelete}: TodoCheckBoxProps) => {
     
     return (
-        <div className="flex justify-between py-3">
+        <div className="flex justify-between py-2">
             {/** 좌측 */}
             <div className="flex jusify-start items-center space-x-3">
                 {/** 체크 박스: 완료 여부 */}

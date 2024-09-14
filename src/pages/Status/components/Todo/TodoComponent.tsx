@@ -151,7 +151,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
     // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-    const itemsPerPage = 6; // 한 페이지에 보여줄 아이템(CheckBox) 수
+    const itemsPerPage = 7; // 한 페이지에 보여줄 아이템(CheckBox) 수
     
     // 페이지네이션 계산
     const totalPages = Math.ceil(allItems.length / itemsPerPage); // 총 페이지 수
@@ -385,7 +385,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
     // 정상 상태 렌더링
     return (
         // 전체 보더 박스
-        <div className="h-[420px] w-[520px] rounded-md flex flex-col">
+        <div className="h-[423px] w-[520px] rounded-md flex flex-col">
           {/** 처음 */}
           <div className="w-[full]">
               {/** 헤더 */}
@@ -435,7 +435,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
 
           {/** 페이지 번호 네비게이션 */}
-          <div className="flex justify-center items-center my-4 space-x-2">
+          <div className="flex justify-center items-center my-3 space-x-2">
             {/**
               {Array.from({ length: totalPages }, (_, index) => ( */}
               {Array.from({ length: Math.ceil(allItems.length / itemsPerPage) }, (_, index) => (

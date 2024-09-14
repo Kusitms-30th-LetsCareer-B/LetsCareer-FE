@@ -117,7 +117,7 @@ const CompanyTodoListComponent = ({ userId }: CompanyTodoListComponentProps) => 
     // 정상 상태 렌더링
     return (
         /* 컴포넌트 전체 윤곽 컨테이너 스타일 */
-        <div className="mb-2">
+        <div className="mb-4">
             {/* 첫 번째 헤더 파트 */}
             <div className="flex justify-start items-center font-semibold text-neutral-30 text-lg py-7">
               오늘의 Todo List
@@ -128,7 +128,7 @@ const CompanyTodoListComponent = ({ userId }: CompanyTodoListComponentProps) => 
             <div>
               {/* 회사별 일정 리스트 */}     
               {companyTodoList.length > 0 ? (
-                companyTodoList.map((companyTodo) => (
+                companyTodoList.map((companyTodo, companyIndex) => (
                   <div key={companyTodo.companyName}>
 
                     {/** 기업 */}
@@ -163,15 +163,14 @@ const CompanyTodoListComponent = ({ userId }: CompanyTodoListComponentProps) => 
                             </div>
                             */}
                           </div>
-
-                          {/* 구분선 출력: 기업별로 분리, 단 맨 마지막 todo은 제외 */}
-                          {
-                            todo.todoId !== companyTodo.todos[companyTodo.todos.length-1].todoId?
-                            <hr className="mt-4 p-1" /> : ""
-                          }
-
                         </li>
                       ))}
+                      
+                      {/* 구분선 출력: 마지막 기업을 제외하고 기업별로 분리 */}
+                      {
+                        companyIndex != companyTodoList.length-1?
+                        <hr className="mt-4 p-1" /> : null
+                      }
                     </ul>
 
                   </div>
