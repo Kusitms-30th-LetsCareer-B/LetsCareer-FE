@@ -3,19 +3,23 @@ import { AxiosError } from 'axios';
 import { AxiosInstance, BASE_URL } from '../../../shared/api/axiosInstance.ts';
 
 // API 연동 타입
-import { StatusNum_URL, GetParamsStatusNumType } from "./careerStatusesNumType.ts"
+import { StatusNum_URL, GetStatusNumParamsType } from "./careerStatusesNumType.ts"
 
 
-/** 조회 */
-// GET 요청 및 응답받기 (백엔드와 API 연동)
-export const getStatusNumList = async ({ userId }: GetParamsStatusNumType) => {
+/** 백엔드와 API 연동 */
+// GET 요청 및 응답받기
+export const getStatusNumList = async ({ userId }: GetStatusNumParamsType) => {
   try {
-    const response = await AxiosInstance.get(`${BASE_URL}${StatusNum_URL}`, {
+    const response = await AxiosInstance.get(`${BASE_URL}${StatusNum_URL}`, 
       // 쿼리 파라미터 전달
-      params: { userId },
-    });
+      {
+        params: { 
+          userId
+        },
+      }
+    );
 
-    // 백엔드 서버로부터 API의 응답 데이터 받은 후 반환
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {

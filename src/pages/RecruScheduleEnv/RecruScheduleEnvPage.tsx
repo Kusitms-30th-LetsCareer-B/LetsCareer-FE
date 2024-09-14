@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useGoBack } from "../../shared/hooks/useGoBack"; // 이전 페이지로 전환하기 위한 훅
 
 // API 연동 모듈 임포트
-import { registerSchedule } from './api/recruScheduleApiService';
+import { postRecruSchedule } from './api/recruScheduleApiService';
+import { PostRecruScheduleParamsType, PostRecruScheduleRequestType } from './api/recruScheduleType';
 
 // Date picker를 띄우는 컴포넌트와 훅
 import PopUpDatePicker from "../../components/PopUpDatePicker";
 import useDatePicker from "../../shared/hooks/useDatePicker";
 
 // 아이콘 파일
-import prevButtonIcon from "../../shared/assets/calendar-prev.png";
 import favoriteStarIconEmpty from "../../shared/assets/favoriteStarEmpty.png";
 import favoriteStarIconFilled from "../../shared/assets/favoriteStarFilled.png";
 
@@ -17,8 +17,13 @@ import favoriteStarIconFilled from "../../shared/assets/favoriteStarFilled.png";
 import { getFormattedDate3 } from "../../shared/hooks/useDate"
 import { GoBackButton } from '../../components/Buttons/Button';
 
+// Props
+interface RecruScheduleEnvPageProps {
+  userId: number;
+}
+
 // 컴포넌트
-const ScheduleEnvPage = () => {
+const RecruScheduleEnvPage = ({userId}: RecruScheduleEnvPageProps) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -28,9 +33,7 @@ const ScheduleEnvPage = () => {
   const [announcementUrl, setAnnouncementUrl] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
   const [isRemind, setIsRemind] = useState(false);
-  const goBack = useGoBack(); // 뒤로 가기 핸들러
-
-  const userId = 1; // 예시 userId, 실제로는 로그인 정보 등을 통해 받아와야 함
+  const goBack = useGoBack(); // 뒤로 가기 
 
   // 시작일 관련 훅
   const {
@@ -57,7 +60,7 @@ const ScheduleEnvPage = () => {
       return;
     }
 
-    const scheduleData = {
+    const scheduleData: PostRecruScheduleRequestType = {
       companyName,
       isFavorite,
       task,
@@ -68,7 +71,7 @@ const ScheduleEnvPage = () => {
     };
 
     try {
-      const response = await registerSchedule(userId, scheduleData);
+      const response = await postRecruSchedule({userId}, scheduleData);
       alert(response.message); // 성공 메시지 출력
       goBack(); // 등록하기 버튼 클릭 후 자동으로 이전 페이지로 가기
       
@@ -197,4 +200,4 @@ const ScheduleEnvPage = () => {
   );
 };
 
-export default ScheduleEnvPage;
+export default RecruScheduleEnvPage;

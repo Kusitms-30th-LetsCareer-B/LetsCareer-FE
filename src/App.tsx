@@ -48,7 +48,7 @@ function App() {
               />
             }
           />
-          <Route path={PATHS.RECRU_SCHEDULE_ENV_PATH} element={<RecruScheduleEnvPage />} />
+          <Route path={PATHS.RECRU_SCHEDULE_ENV_PATH} element={<RecruScheduleEnvPage userId={testUser.userId} />} />
           <Route path={PATHS.STATUS_PATH} element={<StatusPage userId={testUser.userId}/>} />
           <Route path={PATHS.DETAIL_STATUS_PATH} element={<DetailStatusPage userId={testUser.userId} />} />
           <Route

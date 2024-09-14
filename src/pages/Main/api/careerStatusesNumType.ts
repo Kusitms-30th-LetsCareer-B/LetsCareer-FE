@@ -3,12 +3,12 @@ export const StatusNum_URL = "/statuses";
 
 /** API Type */
 // GET 파라미터
-export interface GetParamsStatusNumType {
+export interface GetStatusNumParamsType {
     userId: number;
 }
 
-// GET 요청
-export interface GetRequestStatusNumType {
+// GET 응답:  백엔드로부터 받을 데이터
+export interface GetStatusNumResponseType {
     total: number;
     progress: number;
     passed: number;

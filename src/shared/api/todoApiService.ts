@@ -19,7 +19,7 @@ import { Todos_URL, TodosCheck_URL,
 export const getTodosById = async ({ recruitmentId, date }: GetTodoByRecruitmentIdParamsType) => {
     try {
         const response = await AxiosInstance.get(`${BASE_URL}${Todos_URL}`,
-          // 쿼리 파라미터 설정:  recruitmentId, dste 전달
+          // 쿼리 파라미터 설정:  recruitmentId, date 전달
           {
             params: {
               recruitmentId,
@@ -27,8 +27,8 @@ export const getTodosById = async ({ recruitmentId, date }: GetTodoByRecruitment
             },
           }
         );
-      
-      // 백엔드 서버로부터 응답 데이터 반환
+    
+      // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
       return response.data;
   
     } catch (error) {
@@ -59,7 +59,6 @@ export const postTodo = async (
       }
     );
     
-    
     // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
@@ -85,7 +84,7 @@ export const deleteTodo = async ({ todoId }: DeleteTodoParamsType) => {
       }
     );
     
-    // 백엔드 서버로부터 응답 데이터 반환
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {
@@ -112,7 +111,8 @@ export const updateTodoContent = async ({ todoId, content, date }: UpdateTodoCon
         },
       }
     );
-    // 백엔드 서버로부터 응답 데이터 반환
+
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {
@@ -133,7 +133,8 @@ export const updateTodoCheck = async ({ todoId }: UpdateTodoCheckParamsType) => 
         },
       }
     );
-    // 백엔드 서버로부터 응답 데이터 반환
+
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {

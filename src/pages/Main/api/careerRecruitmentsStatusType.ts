@@ -4,13 +4,13 @@ export const RecruitmentStatus_URL = "/recruitments";
 
 /** API Type */
 // GET 파라미터
-export interface GetParamsRecruitmentStatusType {
+export interface GetRecruitmentStatusParamsType {
   userId: number;
   page: string;
 }
 
-// GET 요청
-export interface GetRequestRecruitmentStatusType {
+// GET 응답:  백엔드로부터 받을 데이터
+export interface GetRecruitmentStatusResponseType {
   recruitmentId: number;
   companyName: string;
   task: string;
