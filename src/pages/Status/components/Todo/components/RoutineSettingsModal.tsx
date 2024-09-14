@@ -92,12 +92,10 @@ export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent
                     <div className="relative">
                         <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-3 min-w-[248px]" onClick={handleOpenStartDatePicker}>
                             {/* 선택된 날짜 포매팅 후 출력 */}
-                            {selectedStartDate ? getFormattedDate3(selectedStartDate) : '시작일'}
+                            <span>{selectedStartDate ? getFormattedDate3(selectedStartDate) : "시작일"}</span>
                             
                             {/* 이미지 클릭 시 DatePicker 열기 */}
-                            <div className="z-50">
-                                <PopUpDatePicker onDateSelected={handleStartDateSelected}/>
-                            </div>
+                            <PopUpDatePicker onDateSelected={handleStartDateSelected}/>
                         </div>
                     </div>
                 </div>
@@ -108,12 +106,10 @@ export const RoutineSettingsModal = ({ isOpen, onClose, onSubmit, initialContent
                     <div className="relative">
                         <div className="flex justify-between text-start rounded-xs border border-neutral-80 font-regular text-xsmall16 text-neutral-45 p-3 min-w-[248px]" onClick={handleOpenEndDatePicker}>
                             {/* 선택된 날짜 포매팅 후 출력 */}
-                            {selectedEndDate ? getFormattedDate3(selectedEndDate) : '마감일'}
+                            <span>{selectedEndDate ? getFormattedDate3(selectedEndDate) : "마감일"}</span>
                             
                             {/* 이미지 클릭 시 DatePicker 열기 */}
-                            <div className="z-50">
-                                <PopUpDatePicker onDateSelected={handleEndDateSelected} />
-                            </div>
+                            <PopUpDatePicker onDateSelected={handleEndDateSelected} />
                         </div>
                     </div>
                 </div>

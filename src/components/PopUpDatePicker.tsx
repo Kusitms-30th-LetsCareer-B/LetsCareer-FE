@@ -38,7 +38,8 @@ const PopUpDatePicker = ({ onDateSelected }: PopUpDatePickerProps) => {
         {/* DatePicker 컴포넌트: 위에서 img 클릭시에 띄우기 */}
         {isDatePickerOpen && (
           // 데이터피커를 absolute 속성 주기:  절대적 위치(부모 컴포 바로 위)의 가운데에 독립적으로 띄우기
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-2 p-4 bg-static-100 ">
+          // DatePicker 컴포넌트: 위에서 img 클릭시에 띄우기
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-2 p-4 bg-static-100 z-50">
             <DatePicker
               onCancel={handleCloseDatePicker} // 닫기 버튼 클릭 시 핸들러
               onSelect={handleDateSelect} // 날짜 선택 시 핸들러
