@@ -998,9 +998,9 @@ export const CreateTodo = ({ companyName }: TodoProps) => {
                             <path
                               d="M7.49829 12H3.74829V15.75M10.4983 6H14.2483V2.25M3.43555 6.75255C3.85606 5.71175 4.56012 4.80978 5.4677 4.14917C6.37529 3.48856 7.45093 3.09564 8.57061 3.01538C9.69028 2.93512 10.8093 3.17055 11.8019 3.69496C12.7944 4.21937 13.6192 5.0119 14.1839 5.98209M14.5615 11.2478C14.1409 12.2886 13.4369 13.1906 12.5293 13.8512C11.6217 14.5118 10.5472 14.9042 9.42749 14.9845C8.30782 15.0647 7.18784 14.8293 6.19531 14.3049C5.20279 13.7805 4.37741 12.9881 3.81274 12.0179"
                               stroke="#1BC47D"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             />
                           </svg>
                         </div>
@@ -1159,9 +1159,9 @@ export const CreateRoutine = ({
             <path
               d="M17 7L7 17M7 7L17 17"
               stroke="#4C4F56"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </button>
