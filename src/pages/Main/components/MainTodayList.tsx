@@ -55,52 +55,61 @@ const SubTodoList = ({userId, userName, selectedDate, setSelectedDate} : Combine
     const [uncompletedTodayTodosCount, setUncompletedTodayTodosCount] = useState(0);
     
 
+    // 처음 렌더링시 호출
+    // userId, selectedDate, today가 바뀔 때마다 호출
+    // selectedDate: 캘린더에서 날짜 선택할 때마다 today todo list 값이 바뀌니깐
+    // today: 오늘 날짜가 바뀌면 상태 업데이트 필요
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // 백엔드에는 데이터를 YYYY-MM-DD 형식으로 전달해야 함.
-                setToday(getFormattedDate3(new Date()));
+        if(userId && selectedDate) {
+            fetchData();
+        }
 
-                // GET 호출
-                // 백엔드에서 데이터를 받아온다.
-                const response = await getTodoListDayGroupedByCompany({ userId, date: today });
-                // 확인
-                //console.log("📫 인애쨩~ todoDayGroupedByCompany 데이터 배송 완료! 메인홈에서 확인!!");
-                //console.log(response)
-
-
-                // 200 뜨면 파싱 처리
-                if (response.code === 200) {
-                    // 응답받은 부분 중 에러 처리 관련 항목(code, message) 외 data 항목만 갖고 놀기
-                    const data = response.data;
-
-                    // 오늘 전체 투두리스트 구하기
-                    const totalTodayTodos = data.flatMap((company: any) =>
-                        company.todos.filter((todo: Todo) => todo.date === today)
-                    );
-                    setTotalTodayTodos(totalTodayTodos)
-
-                    // 오늘 전체 투두리스트 개수 구하기
-                    setTotalTodayTodosCount(totalTodayTodos.length);
-
-
-                    // 오늘 미완료된 투두리스트 필터링
-                    const totalTodayUncompletedTodos = totalTodayTodos.filter((todo: Todo) => !todo.isCompleted);
-                    setUncompletedTodayTodos(totalTodayUncompletedTodos);
-
-                    // 오늘 미완료된 투두리스트 개수 구하기
-                    setUncompletedTodayTodosCount(totalTodayUncompletedTodos.length);
-                }
-            } catch (error) {
-                console.error("todoDayGroupedByCompany 데이터를 가져오는 중 오류가 발생했습니다.", error);
-            }
-        };
-
-        fetchData();
-
-    // userId, 선택된 날짜, 오늘 날짜가 바뀔 때마다 API 호출
-    // 캘린더에서 날짜 선택할 때마다 today todo list 값이 바뀌니깐
     }, [userId, selectedDate, today]);
+
+
+    // GET
+    // 데이터 가져오기
+    const fetchData = async () => {
+        try {
+            // 비동기라서 전역변수 today 말고 지역변수 date 하나 만들어서 사용하기
+            // 백엔드에는 데이터를 YYYY-MM-DD 형식으로 전달해야 함.
+            const date = getFormattedDate3(new Date()); // today
+            setToday(date);
+            
+            // GET 호출
+            // 백엔드에서 데이터를 받아온다.
+            const response = await getTodoListDayGroupedByCompany({ userId, date: date });
+            // 확인
+            console.log("📫 인애쨩~ todoDayGroupedByCompany 데이터 배송 완료! 메인홈에서 확인!!");
+            console.log(response)
+
+
+            // 200 뜨면 파싱 처리
+            if (response.code === 200) {
+                // 응답받은 부분 중 에러 처리 관련 항목(code, message) 외 data 항목만 갖고 놀기
+                const data = response.data;
+
+                // 오늘 전체 투두리스트 구하기
+                const totalTodayTodos = data.flatMap((company: any) =>
+                    company.todos.filter((todo: Todo) => todo.date === today)
+                );
+                setTotalTodayTodos(totalTodayTodos)
+
+                // 오늘 전체 투두리스트 개수 구하기
+                setTotalTodayTodosCount(totalTodayTodos.length);
+
+
+                // 오늘 미완료된 투두리스트 필터링
+                const totalTodayUncompletedTodos = totalTodayTodos.filter((todo: Todo) => !todo.isCompleted);
+                setUncompletedTodayTodos(totalTodayUncompletedTodos);
+
+                // 오늘 미완료된 투두리스트 개수 구하기
+                setUncompletedTodayTodosCount(totalTodayUncompletedTodos.length);
+            }
+        } catch (error) {
+            console.error("todoDayGroupedByCompany 데이터를 가져오는 중 오류가 발생했습니다.", error);
+        }
+    };
 
 
     /* 컴포넌트 렌더링 */

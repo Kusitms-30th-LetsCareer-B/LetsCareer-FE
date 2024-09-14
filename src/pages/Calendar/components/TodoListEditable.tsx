@@ -107,7 +107,7 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
     // 컴포넌트가 렌더링될 때 API 호출
     useEffect(() => {
       // userId가 있어야(로그인 상태여야) 작동되니깐 검증용으로
-      if (userId) {
+      if (userId && selectedDateString) {
         
         const fetchTodoList = async () => {
           try {
