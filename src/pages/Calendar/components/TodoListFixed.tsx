@@ -17,7 +17,6 @@ import { Todo } from "../api/todoDayGroupedByCompanyType.ts"
 
 
 // 아이콘 파일
-import addNeutral40Icon from "../../../shared/assets/add-neutral-40.png";
 //import checkRoundedSquareBlankedIcon from "../../../shared/assets/checkRoundedSquareBlanked.png";
 //import checkRoundedSquareCheckedIcon from "../../../shared/assets/checkRoundedSquareChecked.png";
 import checkRoundedSquareCheckedIcon from "../../../shared/assets/todo-check.png";
@@ -118,8 +117,7 @@ const CompanyTodoListComponent = ({ userId }: CompanyTodoListComponentProps) => 
     // 정상 상태 렌더링
     return (
         /* 컴포넌트 전체 윤곽 컨테이너 스타일 */
-        <div>
-        {/*<div className="font-sans rounded-lg border border-neutral-80 w-[247px]"> {/* width를 360px로 고정함. w-[360px] 삭제하면 반응형으로 됨 */}
+        <div className="mb-2">
             {/* 첫 번째 헤더 파트 */}
             <div className="flex justify-start items-center font-semibold text-neutral-30 text-lg py-7">
               오늘의 Todo List
