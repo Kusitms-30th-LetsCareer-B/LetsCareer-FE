@@ -18,7 +18,7 @@ import {
 // 백엔드에서 받는 진행 상태 Enum으로 관리
 enum ScheduleFilter {
   PROGRESS = "PROGRESS",
-  PASSES = "PASSES",
+  PASSED = "PASSED",
   FAILED = "FAILED",
 }
 enum StageFilter {
@@ -46,7 +46,7 @@ import {
  */
 /** stauts 종류
  * PROGRESS
- * PASSES
+ * PASSED
  * FAILED
  */
 // 각 Career 항목의 타입 정의
@@ -64,7 +64,7 @@ interface Career {
 stage_name: 서류, 면접, 기타(직무테스트 등)
 status:
 * PROGRESS
-* PASSES
+* PASSED
 * FAILED
 */
 // 상태 값에 따라 칩 컴포넌트를 반환하는 훅
@@ -74,32 +74,21 @@ const getChipComponent = (stageName: string, status: string) => {
       switch (status) {
         case ScheduleFilter.PROGRESS:
           return <PrepareDocumentChip />;
-        case ScheduleFilter.PASSES:
+        case ScheduleFilter.PASSED:
           return <PassDocumentChip />;
+        case ScheduleFilter.FAILED: // 불합격인 경우 null 반환하여 띄우지 않기
+          return null;
       }
     case StageFilter.INTERVIEW:
       switch (status) {
         case ScheduleFilter.PROGRESS:
           return <PrepareInterviewChip />;
-        case ScheduleFilter.PASSES:
+        case ScheduleFilter.PASSED:
           return <PassInterviewChip />;
+        case ScheduleFilter.FAILED: // 불합격인 경우 null 반환하여 띄우지 않기
+          return null;
       }
   }
-  /*
-  let contents = "";
-  contents += stageName;
-  switch (status) {
-    case ScheduleFilter.PROGRESS:
-      contents = contents + "준비중";
-    case ScheduleFilter.PASSES:
-      contents = contents + "합격";
-    case ScheduleFilter.FAILED:
-      contents = contents + "불합격";
-    default:
-      contents += status;
-  }
-  return <OtherStatusChip contents={contents} />;
-  */
  
   // 기타 상태일 때는 'stageName'에 코딩테스트 등 지원 종류가 나옴
   return <OtherStatusChip contents={stageName} />;
@@ -169,20 +158,24 @@ const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
       </div>
 
       {/* 테이블 데이터 출력 */}
-      {careerList.slice(0, visibleCareers).map((career) => (
-        <div
-          key={career.recruitmentId}
-          className="flex grid grid-cols-4 justify-center gap-2 py-2 text-xsmall14 text-neutral-30"
-        >
-          <div className="flex gap-2 px-2">
-            <Ddayh24Chip day={career.daysUntilEnd} /> {career.endDate}
+      {careerList
+        // getChipComponent가 null을 반환하면 메인보드에 띄우지 않고, visibleCareers+1 해주고 다음 career로 skip
+        .filter(career => getChipComponent(career.stageName, career.status) !== null) // getChipComponent가 null이 아닌 항목만 필터링
+        .slice(0, visibleCareers + 1) // visibleCareers에서 하나 더 표시
+        .map((career) => (
+          <div
+            key={career.recruitmentId}
+            className="flex grid grid-cols-4 justify-center gap-2 py-2 text-xsmall14 text-neutral-30"
+          >
+            <div className="flex gap-2 px-2">
+              <Ddayh24Chip day={career.daysUntilEnd} /> {career.endDate}
+            </div>
+            <div className="px-2">{career.companyName}</div>
+            <div className="px-2">{career.task}</div>
+            <div className="px-2">
+              {getChipComponent(career.stageName, career.status)}
+            </div>
           </div>
-          <div className="px-2">{career.companyName}</div>
-          <div className="px-2">{career.task}</div>
-          <div className="px-2">
-            {getChipComponent(career.stageName, career.status)}
-          </div>
-        </div>
       ))}
     </div>
   );
