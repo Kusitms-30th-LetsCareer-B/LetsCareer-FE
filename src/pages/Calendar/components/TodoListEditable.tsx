@@ -1,10 +1,6 @@
 /** 사용자가 수정 가능한 투두 설정창 */
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // 백엔드와 통신하기 위한 axios 임포트
-
-// 커스텀 훅 임포트
-import {useTodoList} from '../../../shared/hooks/useTodoList.ts';
 
 // ToDo 칩스 임포트
 import { CompanyNameChip, CompanyNameSelectionChip, DocumentScheduleChip,
@@ -19,14 +15,8 @@ import { updateTodoCheck } from '../../../shared/api/todoApiService.ts'
 
 
 // 아이콘 파일
-import addNeutral40Icon from "../../../shared/assets/add-neutral-40.png";
 import checkRoundedSquareCheckedIcon from "../../../shared/assets/todo-check.png";
 import checkRoundedSquareBlankedIcon from "../../../shared/assets/todo-no-check.png";
-
-
-/* 일정 추가 버튼 디자인 컴포넌트 */
-// 개인 스케줄 추가 버튼 임포트
-import { ScheduleAddButton } from "./ScheduleAddButton.tsx"
 
 
 /** Props */
@@ -80,17 +70,9 @@ interface CompanyTodo {
 
 // 기업별 TodoList 확인이 가능한 컴포넌트
 const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, selectedDate, setSelectedDate, selectedDateString }) => {
-    // 커스텀 훅에서 상태와 핸들러 가져오기
-    const { 
-        handlePrevDay, 
-        handleNextDay, 
-        useCompletedImage,
-    } = useTodoList({selectedDate, setSelectedDate});
-
 
     // company별로 Todo 데이터를 담은 list
     const [companyTodoList, setCompanyTodoList] = useState<CompanyTodo[]>([]);
-
 
     // 완료되지 않은 할 일 개수 계산하는 함수
     const incompleteTodosCount = companyTodoList.reduce((total, company) => {
@@ -102,53 +84,58 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
     const [error, setError] = useState<string | null>(null);
 
 
-    // GET 요청 함수 호출: '/todos/groupedByCompany'
-    // API 연동하여 기업별 투두리스트 가져오는 부분
-    // 컴포넌트가 렌더링될 때 API 호출
+    
+    // 컴포넌트가 처음 렌더링될 때 호출
+    // userId 또는 selectedDateString가 바뀌면 호출
     useEffect(() => {
-      // userId가 있어야(로그인 상태여야) 작동되니깐 검증용으로
-      if (userId && selectedDateString) {
-        
-        const fetchTodoList = async () => {
-          try {
-            // 상태 제어
-            setLoading(true); // 로딩 상태 시작
-            setError(null);   // 에러 초기화
+      fetchTodoList();
 
-            // 요청 및 응답받기
-            // date: 백엔드에서 지정한 매개변수명,  selectedDateString: 파라미터로 전달할 파라미터명
-            const response = await getTodoListDayGroupedByCompany({ userId, date: selectedDateString });
-
-            console.log("📫 투두쨩~");
-            // 백엔드로부터 받은 순수 DB 확인
-            console.log(response);
-
-
-            // 파싱: companyName별로 data(todoList)를 분리
-            // 서버 응답 데이터 중 "data" 필드만 가져오기
-            // 형태:  index, {companyName, todo[]}
-            const companyTodoList: CompanyTodo[] = response.data;
-
-            // 파싱한 DB 확인
-            //console.log(companyTodoList);
-            
-            // 저장
-            setCompanyTodoList(companyTodoList)
-            
-          } catch (error) {
-            console.error('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다:', error);
-            setError('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다.');
-
-          } finally {
-            // 상태 제어
-            setLoading(false); // 로딩 상태 종료
-          }
-        };
-        fetchTodoList();
-      }
-      // userId 또는 selectedDateString가 바뀌면 API 다시 호출
     }, [userId, selectedDateString]);
 
+    
+    
+    // GET 요청 함수 호출: '/todos/groupedByCompany'
+    // API 연동하여 기업별 투두리스트 가져오는 부분
+    const fetchTodoList = async () => {
+      
+      // userId가 있어야(로그인 상태여야) 작동
+      if (userId && selectedDateString) {
+
+        try {
+          // 상태 제어
+          setLoading(true); // 로딩 상태 시작
+          setError(null);   // 에러 초기화
+
+          // 요청 및 응답받기
+          // date: 백엔드에서 지정한 매개변수명,  selectedDateString: 파라미터로 전달할 파라미터명
+          const response = await getTodoListDayGroupedByCompany({ userId, date: selectedDateString });
+
+          console.log("📫 투두쨩~");
+          // 백엔드로부터 받은 순수 DB 확인
+          console.log(response);
+
+
+          // 파싱: companyName별로 data(todoList)를 분리
+          // 서버 응답 데이터 중 "data" 필드만 가져오기
+          // 형태:  index, {companyName, todo[]}
+          const companyTodoList: CompanyTodo[] = response.data;
+
+          // 파싱한 DB 확인
+          //console.log(companyTodoList);
+          
+          // 저장
+          setCompanyTodoList(companyTodoList)
+          
+        } catch (error) {
+          console.error('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다:', error);
+          setError('일별 기업 일정 투두 리스트를 불러오는 중 오류가 발생했습니다.');
+
+        } finally {
+          // 상태 제어
+          setLoading(false); // 로딩 상태 종료
+        }
+      }
+    };
 
     
     // PATCH 요청 함수 호출: '/todos/${todoId}/check'

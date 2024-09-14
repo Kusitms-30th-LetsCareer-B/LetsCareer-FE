@@ -45,7 +45,7 @@ import {
 
 
 /* Date 관련 hook 임포트 */
-import { getYearMonthDay, getStringYear, getStringMonth, getFormattedDate3, getFormattedDate2 } from "../shared/hooks/useDate.ts";
+import { getStringYear, getStringMonth, getFormattedDate3 } from "../shared/hooks/useDate.ts";
 
 
 /** 기업 채용 일정 API 연동 관련 이벤트 */
@@ -71,6 +71,11 @@ enum ScheduleFilter {
 interface CalendarComponentProps {
   userId: number;
 
+  // 캘린더가 여기 저기(메인홈, 캘린더 페이지)서 띄워지니깐
+  // 렌더링시 key값 중복 오류 발생
+  // 그래서 컴포넌트명을 key값에 쓰려고.
+  componentName: string;
+
   // 부모 컴포에게 전달할 변수/함수들
   // 1. selectedDate:  캘린더에 선택된 날짜
   // 2. recruitmentScheduleChips:  선택된 날짜에 대한 기업 채용 일정 칩스 (디자인: TodoListChip.tsx)
@@ -82,7 +87,7 @@ interface CalendarComponentProps {
 
 
 /** 캘린더 컴포넌트 */
-const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelected}) => {
+const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, componentName, onDateSelected}) => {
   /**---------------------------------------------------*/
   /** 디자인 관련 변수, 함수 */
   // 커스텀 캘린더 훅에서 상태와 핸들러 가져오기
@@ -288,10 +293,10 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
       // 서류 칩
       const documentStatus = recruitmentsData.filter === filterState.START? "시작":
                              recruitmentsData.filter === filterState.FINISH? "마감": "";
-
+      
       const documentScheduleChip =
         <DocumentScheduleChip
-          key={recruitmentsData.scheduleId}
+          key={`${componentName}-document-${recruitmentsData.scheduleId}`}
           companyName={recruitmentsData.companyName}
           status={documentStatus}
         />;
@@ -299,14 +304,14 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
       // 면접 칩
       const interviewScheduleChip =
         <InterviewScheduleChip
-          key={recruitmentsData.scheduleId}
+          key={`${componentName}-interview-${recruitmentsData.scheduleId}`}
           companyName={recruitmentsData.companyName}
         />;
       
       // 기타 칩
       const otherScheduleChip =
         <OtherScheduleChip
-          key={recruitmentsData.scheduleId}
+        key={`${componentName}-other-${recruitmentsData.scheduleId}`}
           companyName={recruitmentsData.companyName}
           contents=""
         />;
@@ -330,7 +335,9 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
       {console.log(personalScheduleData)}
       {console.log('믜야!!')}
       */}
-      <PersonalScheduleChip key={personalScheduleData.personalScheduleId} contents={personalScheduleData.content} />
+      <PersonalScheduleChip 
+        key={`${componentName}-personal-${personalScheduleData.personalScheduleId}`}
+        contents={personalScheduleData.content} />
       </>
     ));
 
@@ -340,52 +347,6 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
     onDateSelected(date, recruitmentScheduleChips, personalScheduleChips);
   };
   
-  // 현재 선택된 날짜에 대한 스케줄 정보를 Calendar Chips로 반환하는 함수
-  /* Method2. 캘린더 칩 반환 함수 */
-  /*
-  const handleDateSelect = (date: Date) => {
-    // 캘린더 기존 UI 훅 업뎃
-    handleDateClick(date);
-    const recruitmentsSchedulesForDate = getFilteredRecruitmentDataForDate(date);
-
-    const recruitmentScheduleChips = recruitmentsSchedulesForDate.map((recruitmentsData) => {
-      // 서류 칩스
-      const documentScheduleChip =
-        <DefaultDocumentChip
-          key={recruitmentsData.scheduleId}
-          companyName={recruitmentsData.companyName}
-          filter={recruitmentsData.filter}
-        />;
-      
-      // 면접 칩스
-      const interviewScheduleChip =
-        <DefaultInterviewChip
-          key={recruitmentsData.scheduleId}
-          companyName={recruitmentsData.companyName}
-        />;
-      
-      // 기타 칩스
-      const otherScheduleChip =
-        <DefaultOtherChip
-          key={recruitmentsData.scheduleId}
-          companyName={recruitmentsData.companyName}
-        />;
-      
-
-      // 일정 종류에 맞는 칩을 반환
-      return (
-        recruitmentsData.filter === filterState.INTERVIEW ? interviewScheduleChip :
-        recruitmentsData.filter === filterState.OTHER ? otherScheduleChip :
-        documentScheduleChip
-      );
-    });
-    
-    
-    // 부모 컴포넌트로 선택된 날짜와 그에 대한 일정 칩스를 전달하는 함수 호출
-    onDateSelected(date, recruitmentScheduleChips);
-  };
-  */
-
 
   /**---------------------------------------------------*/
   /** 상태 관련 변수, 함수 */
@@ -404,10 +365,11 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
     return <div>{error}</div>;
   }
 
+
   // 정상 상태 처리, rendering
   return (
-    /* 캘린더 전체 윤곽 컨테이너 스타일 */
-    /* 캘린더 칩스가 캘린더 date cell 밖으로 삐져나오지 않게 캘린더 min width 지정함 */
+    // 캘린더 전체 윤곽 컨테이너 스타일
+    // 캘린더 칩스가 캘린더 date cell 밖으로 삐져나오지 않게 캘린더 min width 지정함
     <div className="bg-neutral-100 p-4 font-sans shadow-none min-w-[900px]">
 
       {/* 달력 헤더 파트 */}
@@ -420,7 +382,6 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           </button>
           <h2 className="flex justify-center items-center text-small20 font-bold min-w-[125px]">
             {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월{" "}
-            {/**영문: {monthNames[currentDate.getMonth()]}*/}
           </h2>
           <button onClick={handleNextMonth} className="px-4">
             <img src={nextButtonIcon} alt="다음 달" />
@@ -479,7 +440,8 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
         {/**요일 컬럼*/}
         {daysOfWeek.map((day) => (
           <div
-            key={day} // SUN ~ SAT 고윳값 맞음
+            key={`${componentName}-daysOfWeek-${day}`}
+            //key={day} // SUN ~ SAT 고윳값 맞음
             className="bg-transparent p-2 text-center text-xsmall14 uppercase text-neutral-45"
           >
             {day}
@@ -557,14 +519,12 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
           const companySchedules = recruitmentsSchedulesForDate.map((recruitmentsData) => {
             // 고유한 기업채용일정 key 설정
-            const key = `company-${recruitmentsData.scheduleId}`;
-
             // 서류 칩스
             const documentScheduleChip = 
               // 셀 선택 상태
               isSelected ?
               <ClickedDocumentChip 
-                key={key}
+                key={`${componentName}-clickedDocChip-${recruitmentsData.scheduleId}`}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
@@ -573,7 +533,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               // 셀 호버 상태
               isHovered?
               <HoveredDocumentChip 
-                key={key}
+                key={`${componentName}-hoveredDocChip-${recruitmentsData.scheduleId}`}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName} 
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
@@ -581,7 +541,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               :
               // 셀 기본 상태
               <DefaultDocumentChip
-                key={key}
+                key={`${componentName}-defaultDocChip-${recruitmentsData.scheduleId}`}
                 filter={recruitmentsData.filter}
                 companyName={recruitmentsData.companyName}
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
@@ -592,7 +552,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               // 셀 선택 상태
               isSelected ?
               <ClickedInterviewChip 
-                key={key}
+                key={`${componentName}-clickedInterbiewChip-${recruitmentsData.scheduleId}`}
                 companyName={recruitmentsData.companyName}
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
@@ -600,14 +560,14 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               // 셀 호버 상태
               isHovered?
               <HoveredInterviewChip 
-                key={key}
+                key={`${componentName}-hoveredInterviewChip-${recruitmentsData.scheduleId}`}
                 companyName={recruitmentsData.companyName} 
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
               <DefaultInterviewChip
-                key={key}
+                key={`${componentName}-defaultInterviewChip-${recruitmentsData.scheduleId}`}
                 companyName={recruitmentsData.companyName}
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
@@ -617,7 +577,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               // 셀 선택 상태
               isSelected ?
               <ClickedOtherChip 
-                key={key}
+                key={`${componentName}-clickedOtherChip-${recruitmentsData.scheduleId}`}
                 companyName={recruitmentsData.companyName} 
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
@@ -625,14 +585,14 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
               // 셀 호버 상태
               isHovered?
               <HoveredOtherChip 
-                key={key}
+                key={`${componentName}-hoveredOtherChip-${recruitmentsData.scheduleId}`}
                 companyName={recruitmentsData.companyName} 
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               /> 
               :
               // 셀 기본 상태
               <DefaultOtherChip
-                key={key}
+                key={`${componentName}-defaultOtherChip-${recruitmentsData.scheduleId}`}
                 companyName={recruitmentsData.companyName}
                 onClick={() => navigateByRecruitmentId(recruitmentsData.recruitmentId)}
               />
@@ -668,28 +628,26 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           {/** 각 칩스에 대한 데이터 셀에 띄울 디자인 적용하는 부분 */}
           {/** CalendarChips를 셀에 추가:  API 연동받은 정보를 참고하여 선택된 날짜에 대해 기업 일정 칩스 추가 */}
           const personalSchedules = personalSchedulesForDate.map((personalScheduleForDate) => {
-            // 고유한 개인일정 key 설정
-            const key = `personal-${personalScheduleForDate.personalScheduleId}`;
 
             // 개인 일정칩스
             const personalScheduleChip = 
               // 셀 선택 상태
               isSelected ?
               <ClickedPersonalChip
-                key={key}
+                key={`${componentName}-clickedPersonalChip-${personalScheduleForDate.personalScheduleId}`}
                 personalSchedule={personalScheduleForDate.content}
               />
               :
               // 셀 호버 상태
               isHovered?
               <HoveredPersonalChip
-                key={key}
+                key={`${componentName}-hoveredPersonalChip-${personalScheduleForDate.personalScheduleId}`}
                 personalSchedule={personalScheduleForDate.content}
               /> 
               :
               // 셀 기본 상태
               <DefaultPersonalChip
-                key={key}
+                key={`${componentName}-defaultPersonalChip-${personalScheduleForDate.personalScheduleId}`}
                 personalSchedule={personalScheduleForDate.content}
               />
 
@@ -723,10 +681,12 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
 
           {
             /** 달력 셀에 출력 내용 + 이벤트*/
+            // 고유한 key 생성: 날짜 데이터, index는 date (1일, 2일, ...이라 달이 중첩되면 중복값됨)
           }
+          const key = date ? `${componentName}-dateCell-${getFormattedDate3(date)}`: `${componentName}-dateCell-${index}`;
           return (
             <div
-              key={date ? `${getFormattedDate3(date)}`: index} // 고유한 key 생성: 날짜 데이터, index는 date (1일, 2일, ...이라 달이 중첩되면 중복값됨)
+              key={key} 
               className={calendarCellClassName}
               onClick={() => handleDateSelect(date)}
               onMouseOver={() => handleDateMouseOver(date)}

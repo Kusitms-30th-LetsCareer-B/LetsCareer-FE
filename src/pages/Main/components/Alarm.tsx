@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // API 관련
-import { GetAlarmParamsType, GetAlarmsResponseType, Alert } from "../api/alarmType";
+import { GetAlarmParamsType, Alert } from "../api/alarmType";
 import { getAlarms } from "../api/alarmApiService";
 
 // Date 관련
@@ -16,29 +16,35 @@ const Alarm = ({userId, alertsCount}: AlarmProps) => {
     // 알림 변수
     const [alerts, setAlerts] = useState<Alert[]>([]);
 
-    // 알림 API 호출
+
+    // 처음 렌더링될 때 호출
+    // 알림 값이 바뀌면 호출
     useEffect(() => {
-        // API 호출 함수
-        const fetchAlerts = async () => {
-        try {
-            // 응답받기
-            const response = await getAlarms({userId});
-            setAlerts(response.data.alerts); // 알림 목록 저장
-            console.log("📫 알림 배송 완료");
-            console.log(response);
-
-            setLoading(false);
-            setError(null);
-
-        } catch (error) {
-            setError('알림 목록을 불러오는 중 오류가 발생했습니다.');
-            setLoading(false);
-        }
-        };
-
         fetchAlerts();
-    }, []);
 
+    }, [alerts]);
+
+    
+    // 알림 데이터 가져오기 API 호출 함수
+    const fetchAlerts = async () => {
+        // userId가 있어야 API 호출 가능
+        if(userId) {
+            try {
+                // 응답받기
+                const response = await getAlarms({userId});
+                setAlerts(response.data.alerts); // 알림 목록 저장
+                console.log("📫 알림 배송 완료");
+                console.log(response);
+
+                setLoading(false);
+                setError(null);
+
+            } catch (error) {
+                setError('알림 목록을 불러오는 중 오류가 발생했습니다.');
+                setLoading(false);
+            }
+        }
+    };
 
     // 상태 변수
     const [loading, setLoading] = useState<boolean>(true);
