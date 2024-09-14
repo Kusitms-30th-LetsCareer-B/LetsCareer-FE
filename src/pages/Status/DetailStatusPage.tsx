@@ -260,11 +260,13 @@ function DetailStatusPage({userId}: DetailStatusPageProps) {
         </div>
       </div>
       <div className="flex items-center gap-[20px] self-stretch">
-        <div className="flex w-full flex-col items-start rounded-md border border-neutral-80 p-[45px]">
+        
+        <div className="flex w-full flex-col items-start rounded-md border border-neutral-80 p-[24px]">
           <TodoComponent userId={userId} recruitmentId={Number(recruitmentId)} companyName={company}/>
         </div>
-        <div className="flex flex-col items-start rounded-md border border-neutral-80 ">
-          <div className="mb-[18px] flex items-center justify-between self-stretch p-[24px]">
+
+        <div className="flex flex-col items-start rounded-md border border-neutral-80 p-[24px]">
+          <div className="mb-[18px] flex items-center justify-between self-stretch">
             <span className="text-small18 font-semibold tracking-[-0.022px] text-neutral-30">
               아카이빙
             </span>

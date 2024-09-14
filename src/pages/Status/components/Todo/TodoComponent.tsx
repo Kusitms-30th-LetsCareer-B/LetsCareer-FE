@@ -12,7 +12,7 @@ import { getRoutineById, postRoutine, deleteRoutineById, updateRoutineById } fro
 import { postTodo, deleteTodo, updateTodoContent, updateTodoCheck } from "../../../../shared/api/todoApiService"
 // GET은 해당 기업의 전체 투두를 가져오는 아래 API를 사용해야 함
 import { getTodoListDayGroupedByCompany } from "../../../Calendar/api/todoDayGroupedByCompanyApiService"
-import { Todo, GetTodoListDayGroupedByCompanyResponseType } from "../../../Calendar/api/todoDayGroupedByCompanyType"
+import { Todo } from "../../../Calendar/api/todoDayGroupedByCompanyType"
 
 
 // Todo 추가 버튼
@@ -58,6 +58,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
     // 선택한 아이템 정보를 관리하기 위한 상태 변수
     const [selectedItem, setSelectedItem] = useState<Todo | null>(null); // 선택한 아이템 정보
+    
     // 선택한 루틴 정보를 관리하기 위한 상태 변수
     const [selectedRoutineStartDate, setSelectedRoutineStartDate] = useState<string>(null);
     const [selectedRoutineEndDate, setSelectedRoutineEndDate] = useState<string>(null);
@@ -150,8 +151,8 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
 
     // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-    const itemsPerPage = 5; // 한 페이지에 보여줄 아이템(CheckBox) 수
-
+    const itemsPerPage = 6; // 한 페이지에 보여줄 아이템(CheckBox) 수
+    
     // 페이지네이션 계산
     const totalPages = Math.ceil(allItems.length / itemsPerPage); // 총 페이지 수
     const currentItems = allItems.slice(
@@ -170,7 +171,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
     // 그 외 추가, 수정, 삭제 할 땐 fetchData를 직접 호출하면 됨
     useEffect(() => {
       fetchData();
-    }, [recruitmentId, selectedDate]);
+    }, [recruitmentId, selectedDate, companyName]);
 
     
     
@@ -314,7 +315,6 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
     // Routine 내용 업데이트 함수
     const updateRoutine = async (todoId: number, routineId: number, content: string, startDate: Date, endDate: Date) => {
       try {
-        console.log(selectedItem.content+" 너 누가야2 "+content+"몸 "+todoId);
         const routineResponse = await updateRoutineById(
             { 
               // 선택한 루틴 ID
@@ -385,7 +385,7 @@ const TodoComponent = ({ userId, recruitmentId, companyName }: TodoComponentProp
     // 정상 상태 렌더링
     return (
         // 전체 보더 박스
-        <div className="h-[380px] min-w-[520px] w-[520px] rounded-md flex flex-col">
+        <div className="h-[420px] w-[520px] rounded-md flex flex-col">
           {/** 처음 */}
           <div className="w-[full]">
               {/** 헤더 */}
