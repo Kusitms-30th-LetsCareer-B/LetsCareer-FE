@@ -527,7 +527,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
             // 현재달
             // 이전달
             `
-            justify-start items-end text-left border-r border-b border-neutral-80 cursor-pointer bg-white h-[120px] p-2
+            justify-start items-end text-left border-r border-b border-neutral-80 cursor-pointer bg-white h-[120px] w-[123px] p-2
             ${isSunday ? "text-system-error" : ""}
             ${isNextMonth ? "text-neutral-70" : ""}
             ${isCurrentMonth ? "text-neutral-45" : "text-neutral-70"}
