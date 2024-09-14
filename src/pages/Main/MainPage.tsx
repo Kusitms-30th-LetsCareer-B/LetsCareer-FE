@@ -9,19 +9,9 @@ import PopUpAlarmButton from "./components/PopUpAlarm.tsx"
 import TodoListFixedComponent from "../Calendar/components/TodoListFixed.tsx"
 import TodoListFixedComponent_20240909_날짜별 from "../Calendar/components/TodoListFixed_20240909_날짜별.tsx"
 
-// Date 관련 hook 임포트
-import { getYearMonthDay, getYear, getMonth, getFormattedDate3 } from "../../shared/hooks/useDate.ts";
-
-
 /* Props */
 // 로그인 정보 받기
 import {userInfo} from "../../shared/api/loginInstance.ts"
-
-/**실험중
- * 
-      <TodoComponent/>
- */
-import TodoComponent from "../Status/components/Todo/TodoComponent";
 
 
 function MainPage({userId, userName} : userInfo) {

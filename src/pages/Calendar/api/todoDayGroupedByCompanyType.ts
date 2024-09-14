@@ -31,5 +31,6 @@ export interface Todo {
     isRoutine: boolean;
     recruitmentId: number;
     todoId: number;
+    routineId: number; // routine이 아닐 경우 null값으로 들어옴
   }
   

@@ -186,6 +186,8 @@ const ScheduleEnvPage = () => {
           />
         </div>
       </div>
+      
+      {/** 등록 버튼 */}
       <div className='flex justify-end'>
         <button className="px-[20px] py-[12px] min-w-[300px] mt-[40px] mb-[40px] mr-[130px] bg-primary-100 text-white rounded-md" onClick={handleSubmit}>
             등록하기

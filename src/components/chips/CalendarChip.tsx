@@ -64,8 +64,7 @@ const SquareBox = ({ filter, bg, txtColor }) => (
 // 기본/호버 상태 : text-secondary-100
 // 클릭 상태      : text-secondary-0
 const CompanyBox = ({ companyName, txtColor }) => (
-  //<div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ">
-  <div className={`mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ${txtColor}`}>
+  <div className={`flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7px] ${txtColor}`}>
     <span>
       {getSplittedText(companyName, limit)}
     </span>
@@ -89,9 +88,10 @@ export const DefaultDocumentChip = ({
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
-        {filter !== filterState.FINISH ? (
-          <>
+      <div className="flex h-full">
+        {filter !== filterState.FINISH ? (    
+          // 시작 칩, 서류 칩      
+          <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ width: `${buttonWidth}px` }}>
             {/* 네모 박스 */}
             <SquareBox
               filter={filter}
@@ -103,10 +103,11 @@ export const DefaultDocumentChip = ({
               companyName={companyName}
               txtColor="text-secondary-100"
             />
-          </>
+          </div>
+          
         ) : (
-          // 종료칩스의 경우 두 컴포의 위치가 바뀜
-          <>
+          // 종료 칩의 경우 두 컴포의 위치가 바뀜, '끝' 네모 박스가 맨 뒤로 오게
+          <div className="flex h-full items-center justify-between gap-[4px] bg-secondary-10 px-[6px]" style={{ width: `${buttonWidth}px` }}>
             {/* 기업명 */}
             <CompanyBox
               companyName={companyName}
@@ -118,7 +119,7 @@ export const DefaultDocumentChip = ({
               bg="bg-secondary-0"
               txtColor="text-secondary-100"
             />
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -141,9 +142,9 @@ export const HoveredDocumentChip = ({
       <div className="flex h-full w-[4px] items-center justify-center bg-secondary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full">
         {filter !== filterState.FINISH ? (
-          <>
+          <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-10 px-[6px]" style={{ width: `${buttonWidth}px` }}>
             {/* 네모 박스 */}
             <SquareBox
               filter={filter}
@@ -155,10 +156,10 @@ export const HoveredDocumentChip = ({
               companyName={companyName}
               txtColor="text-secondary-100"
             />
-          </>
+          </div>
         ) : (
-          // 종료칩스의 경우 두 컴포의 위치가 바뀜
-          <>
+          // 종료 칩의 경우 두 컴포의 위치가 바뀜, '끝' 네모 박스가 맨 뒤로 오게
+          <div className="flex h-full items-center justify-between gap-[4px] bg-secondary-10 px-[6px]" style={{ width: `${buttonWidth}px` }}>
             {/* 기업명 */}
             <CompanyBox
               companyName={companyName}
@@ -170,7 +171,7 @@ export const HoveredDocumentChip = ({
               bg="bg-secondary-0"
               txtColor="text-secondary-100"
             />
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -190,33 +191,34 @@ export const ClickedDocumentChip = ({
         }}
     >
       {/* 왼쪽 영역 */}
-      <div className="flex h-full w-[4px] items-center justify-center bg-secondary-0" />
+      <div className="flex h-full w-[4px] items-center justify-center bg-secondary-30" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-100 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full">
         {filter !== filterState.FINISH ? (
-          <>
+          <div className="flex h-full items-center justify-start gap-[4px] bg-secondary-100 px-[6px]" style={{ width: `${buttonWidth}px` }}>
             {/* 네모 박스 */}
             <SquareBox
               filter={filter}
-              bg="bg-secondary-100"
-              txtColor="text-secondary-0"
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
             />
             {/* 기업명 */}
             <CompanyBox companyName={companyName} txtColor="text-secondary-0" />
-          </>
+          </div>
+
         ) : (
-          // 종료칩스의 경우 두 컴포의 위치가 바뀜
-          <>
+          // 종료 칩의 경우 두 컴포의 위치가 바뀜, '끝' 네모 박스가 맨 뒤로 오게
+          <div className="flex h-full items-center justify-between gap-[4px] bg-secondary-100 px-[6px]" style={{ width: `${buttonWidth}px` }}>
             {/* 기업명 */}
             <CompanyBox companyName={companyName} txtColor="text-secondary-0" />
             {/* 네모 박스 */}
             <SquareBox
               filter={filter}
-              bg="bg-secondary-100"
-              txtColor="text-secondary-0"
+              bg="bg-secondary-0"
+              txtColor="text-secondary-100"
             />
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -236,13 +238,13 @@ export const DefaultInterviewChip = ({ companyName, onClick }: CompanyChipProps)
       <div className="flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ width: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 font-semibold text-primary-0">
           면
         </div>
         {/* 기업명 */}
-        <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-100">
+        <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold text-primary-100">
           <span>
             {getSplittedText(companyName, limit)}
           </span>
@@ -265,13 +267,13 @@ export const HoveredInterviewChip = ({ companyName, onClick }: CompanyChipProps)
       <div className="px flex h-full w-[4px] items-center justify-center bg-primary-100" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-10 px-[6px]" style={{ width: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-100 text-xxsmall11 font-semibold text-primary-0">
           면
         </div>
         {/* 기업명 */}
-        <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-100">
+        <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-100">
           <span>
             {getSplittedText(companyName, limit)}
           </span>
@@ -290,16 +292,16 @@ export const ClickedInterviewChip = ({ companyName, onClick }: CompanyChipProps)
         }}
     >
       {/* 왼쪽 영역 */}
-      <div className="flex h-full w-[4px] items-center justify-center bg-primary-0" />
+      <div className="flex h-full w-[4px] items-center justify-center bg-primary-30" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-100 px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-primary-100 px-[6px]" style={{ width: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-primary-0 text-xxsmall11 font-semibold text-primary-100">
           면
         </div>
         {/* 기업명 */}
-        <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-0">
+        <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-primary-0">
           <span>
             {getSplittedText(companyName, limit)}
           </span>
@@ -322,13 +324,13 @@ export const DefaultOtherChip = ({ companyName, onClick }: CompanyChipProps) => 
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ width: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 font-semibold text-teritory-0">
           기
         </div>
         {/* 기업명 */}
-        <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-normal">
+        <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-normal">
           <span>
             {getSplittedText(companyName, limit)}
           </span>
@@ -351,13 +353,13 @@ export const HoveredOtherChip = ({ companyName, onClick }: CompanyChipProps) => 
       <div className="flex h-full w-[4px] items-center justify-center bg-teritory-normal" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-light px-[6px]" style={{ width: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-normal text-xxsmall11 font-semibold text-teritory-0">
           기
         </div>
         {/* 기업명 */}
-        <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-normal">
+        <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-normal">
           <span>
             {getSplittedText(companyName, limit)}
           </span>
@@ -376,16 +378,16 @@ export const ClickedOtherChip = ({ companyName, onClick }: CompanyChipProps) => 
         }}
     >
       {/* 왼쪽 영역 */}
-      <div className="flex h-full w-[4px] items-center justify-center bg-teritory-0" />
+      <div className="flex h-full w-[4px] items-center justify-center bg-teritory-light" />
 
       {/* 오른쪽 영역 */}
-      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-normal px-[6px]" style={{ minWidth: `${buttonWidth}px` }}>
+      <div className="flex h-full items-center justify-start gap-[4px] bg-teritory-normal px-[6px]" style={{ width: `${buttonWidth}px` }}>
         {/* 네모 박스 */}
         <div className="mr-[1px] flex h-[16px] w-[16px] items-center justify-center rounded-xxs bg-teritory-0 text-xxsmall11 font-semibold text-teritory-normal">
           기
         </div>
         {/* 기업명 */}
-        <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-0">
+        <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-teritory-0">
           <span>
             {getSplittedText(companyName, limit)}
           </span>
@@ -400,7 +402,7 @@ export const DefaultPersonalChip = ({
   personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className="flex h-[24px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
+    <div className="flex h-[24px] items-center justify-start rounded-xxs bg-neutral-90 px-[4px]" style={{ width: `${buttonWidth}px` }}
         onClick={(e) => {
           e.stopPropagation(); // 이벤트 전파 중지
           onClick();
@@ -410,7 +412,7 @@ export const DefaultPersonalChip = ({
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-neutral-45" />
 
       {/* 개인일정 내용 */}
-      <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45">
+      <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45">
         <span>
             {getSplittedText(personalSchedule, limit)}
         </span>
@@ -424,7 +426,7 @@ export const HoveredPersonalChip = ({
 }: PersonalChipProps) => {
   return (
     /* border 추가 */
-    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
+    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs border-2 border-neutral-45 bg-neutral-90 px-[4px]" style={{ width: `${buttonWidth}px` }}
         onClick={(e) => {
           e.stopPropagation(); // 이벤트 전파 중지
           onClick();
@@ -434,7 +436,7 @@ export const HoveredPersonalChip = ({
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-neutral-45" />
 
       {/* 개인일정 내용 */}
-      <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45">
+      <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-neutral-45">
         <span>
           {getSplittedText(personalSchedule, limit)}
         </span>
@@ -447,7 +449,7 @@ export const ClickedPersonalChip = ({
   personalSchedule, onClick
 }: PersonalChipProps) => {
   return (
-    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]" style={{ minWidth: `${buttonWidth}px` }}
+    <div className="inline-flex h-[24px] items-center justify-start rounded-xxs bg-neutral-45 px-[4px]" style={{ width: `${buttonWidth}px` }}
         onClick={(e) => {
           e.stopPropagation(); // 이벤트 전파 중지
           onClick();
@@ -457,7 +459,7 @@ export const ClickedPersonalChip = ({
       <div className="mr-[4px] flex h-[8px] w-[8px] items-center justify-start rounded-full bg-static-100" />
 
       {/* 개인일정 내용 */}
-      <div className="mr-[12px] flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-static-100">
+      <div className="flex items-center justify-center whitespace-nowrap text-xxsmall11 font-semibold tracking-[-0.7`px] text-static-100">
         <span>
           {getSplittedText(personalSchedule, limit)}
         </span>

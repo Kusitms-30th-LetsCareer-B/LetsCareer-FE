@@ -37,9 +37,9 @@ export const CareerQuestion = ({
                 <path
                   d="M5 10H10M10 10H15M10 10V15M10 10V5"
                   stroke="#4D55F5"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.66667"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
               <span

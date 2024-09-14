@@ -822,9 +822,9 @@ export const CreateRoutine = ({ onClose }: { onClose: () => void }) => {
             <path
               d="M17 7L7 17M7 7L17 17"
               stroke="#4C4F56"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </button>

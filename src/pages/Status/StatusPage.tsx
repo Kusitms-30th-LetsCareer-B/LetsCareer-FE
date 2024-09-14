@@ -32,7 +32,11 @@ interface Recruitment {
   isFinal: boolean;
 }
 
-function StatusPage() {
+interface StatusPageProps {
+  userId: number;
+}
+
+function StatusPage({userId}: StatusPageProps) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -64,10 +68,10 @@ function StatusPage() {
   const [filteredItemCount, setFilteredItemCount] = useState(0);
 
   // Fetch recruitments
-  const fetchRecruitments = async (type: string, pageId: number) => {
+  const fetchRecruitments = async (type: string, userId: number, pageId: number) => {
     try {
       const response = await axios.get(
-        `${BASE_URL}/recruitments/status?type=${type}&userId=1&page=${pageId}`,
+        `${BASE_URL}/recruitments/status?type=${type}&userId=${userId}&page=${pageId}`,
       );
       const { recruitments: newRecruitments, totalElementsCount, totalPages } =
         response.data.data;
@@ -128,7 +132,7 @@ const toggleFavorite = async (recruitmentId: number) => {
     );
 
     for (let i = pageStart; i <= pageEnd; i++) {
-      await fetchRecruitments(type, i);
+      await fetchRecruitments(type, userId, i);
     }
   };
 
@@ -136,8 +140,8 @@ const toggleFavorite = async (recruitmentId: number) => {
     const type = activeTab === "prepare" ? "progress" : "consequence";
 
     // 첫 페이지와 마지막 페이지를 우선적으로 불러오기
-    fetchRecruitments(type, 1);
-    fetchRecruitments(type, totalPages);
+    fetchRecruitments(type, userId, 1);
+    fetchRecruitments(type, userId, totalPages);
 
     // 현재 페이지를 기준으로 필요한 페이지들 불러오기
     loadSurroundingPages(type);
@@ -148,9 +152,9 @@ const toggleFavorite = async (recruitmentId: number) => {
   };
 
   useEffect(() => {
-    const fetchStatusCounts = async () => {
+    const fetchStatusCounts = async (userId: number) => {
       try {
-        const response = await axios.get(`${BASE_URL}/statuses?userId=1`);
+        const response = await axios.get(`${BASE_URL}/statuses?userId=${userId}`);
         const { total, progress, passed, failed } = response.data.data;
         setStatusCounts({ total, progress, passed, failed });
       } catch (error) {
@@ -158,7 +162,7 @@ const toggleFavorite = async (recruitmentId: number) => {
       }
     };
 
-    fetchStatusCounts();
+    fetchStatusCounts(userId);
   }, [recruitments]);
 
   const handleDeleteClick = (recruitment: Recruitment) => {
