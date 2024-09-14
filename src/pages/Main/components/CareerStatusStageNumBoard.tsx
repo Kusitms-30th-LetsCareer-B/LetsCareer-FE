@@ -3,14 +3,14 @@
 
 import { useState, useEffect } from 'react';
 
-import { GetParamsStatusStageNumType, GetRequestStatusStageNumType } from "../api/careerStatusesStageNumType.ts"
+import { GetStatusStageNumParamsType, GetStatusStageNumResponseType } from "../api/careerStatusesStageNumType.ts"
 import { getStatusStageNumList } from "../api/careerStatusesStageNumApiService.ts"; // API 함수 임포트
 
 
 // GET 응답
-const CareerStatusNumBoard = ({userId}: GetParamsStatusStageNumType) => {
+const CareerStatusNumBoard = ({userId}: GetStatusStageNumParamsType) => {
     // API 연동할 변수, 함수
-    const [statusData, setStatusData] = useState<GetRequestStatusStageNumType | null>(null);
+    const [statusData, setStatusData] = useState<GetStatusStageNumResponseType | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 

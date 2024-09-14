@@ -3,6 +3,22 @@ export const Routines_URL = "/routines";
 
 
 /** API Types */
+
+/** 특정 루틴 조회 */
+// GET 파라미터
+export interface GetRoutineByIdParamsType {
+    routineId: number;  // 루틴 ID
+}
+
+// GET 응답:  백엔드로부터 받을 데이터
+export interface GetRoutineByIdResponseType {
+    content: string;
+    startDate: string;
+    endDate: string;
+}
+
+
+/** 루틴 생성 */
 // POST 파라미터
 export interface PostRoutineParamsType {
     userId: number;
@@ -19,19 +35,6 @@ export interface PostRoutineRequestType {
 
 // POST 응답:  null 값을 응답받음
 
-
-/** 특정 루틴 조회 */
-// GET 파라미터
-export interface GetRoutineByIdParamsType {
-    routineId: number;  // 루틴 ID
-}
-
-// GET 응답:  백엔드로부터 받을 데이터
-export interface GetRoutineByIdResponseType {
-    content: string;
-    startDate: string;
-    endDate: string;
-}
 
 
 /** 특정 루틴 삭제 */

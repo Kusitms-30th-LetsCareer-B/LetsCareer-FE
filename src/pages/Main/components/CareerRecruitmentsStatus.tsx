@@ -32,8 +32,7 @@ enum StageFilter {
 
 // API 연동 타입
 import {
-  GetParamsRecruitmentStatusType,
-  GetRequestRecruitmentStatusType,
+  GetRecruitmentStatusParamsType,
 } from "../api/careerRecruitmentsStatusType.ts";
 
 /** 더미
@@ -65,7 +64,7 @@ interface Career {
 
 
 /* 컴포넌트 */
-const CareerStatus = ({ userId, page }: GetParamsRecruitmentStatusType) => {
+const CareerStatus = ({ userId, page }: GetRecruitmentStatusParamsType) => {
   const [careerList, setCareerList] = useState<Career[]>([]); // 채용 일정 상태 저장
   const [visibleCareers, setVisibleCareers] = useState(6); // 표시할 최대 줄 수
   const navigate = useNavigate(); // 페이지 전환 함수

@@ -20,17 +20,17 @@ import { PersonalSchedule_URL, PersonalDateSchedule_URL,
 export const getPersonalMonthSchedule= async ({ userId, year, month }: GetPersonalScheduleParamsType) => {
     try {
       const response = await AxiosInstance.get(`${BASE_URL}${PersonalSchedule_URL}`,
-      // 쿼리 파라미터 전달
-      {
-        params: {
-          userId,
-          year,
-          month
-        },
-      }
-      );
-      
-      // 백엔드 서버로부터 응답 데이터 반환
+        // 쿼리 파라미터 전달
+        {
+          params: {
+            userId,
+            year,
+            month
+          },
+        }
+      );      
+    
+      // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
       return response.data;
   
     } catch (error) {
@@ -43,16 +43,16 @@ export const getPersonalMonthSchedule= async ({ userId, year, month }: GetPerson
 export const getPersonalDateSchedule = async ({ userId, date }: GetPersonalDateScheduleParamsType) => {
     try {
       const response = await AxiosInstance.get(`${BASE_URL}${PersonalDateSchedule_URL}`,
-      // 쿼리 파라미터 전달
-      {
-        params: {
-          userId,
-          date
-        },
-      }
+        // 쿼리 파라미터 전달
+        {
+          params: {
+            userId,
+            date
+          },
+        }
       );
-      
-      // 백엔드 서버로부터 응답 데이터 반환
+    
+      // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
       return response.data;
   
     } catch (error) {
@@ -100,14 +100,14 @@ export const postPersonalSchedule = async (
 export const deletePersonalSchedule= async ({ personalScheduleId }: DeletePersonalScheduleParamsType) => {
   try {
     const response = await AxiosInstance.delete(`${BASE_URL}${PersonalSchedule_URL}/${personalScheduleId}`,
-    {
+      {
         params: {
             personalScheduleId
         },
-    }
+      }
     );
     
-    // 백엔드 서버로부터 응답 데이터 반환
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {
@@ -134,8 +134,8 @@ export const updatePersonalSchedule = async ({ personalScheduleId, content }: Up
         },
       }
     );
-
-    // 백엔드 서버로부터 응답 데이터 반환
+    
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {

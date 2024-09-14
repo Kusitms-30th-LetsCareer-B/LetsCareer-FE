@@ -2,13 +2,15 @@
 export const TodoDayGroupedByCompany_URL = "/todos/groupedByCompany";
 
 /** API Type */
+
+/* 전체 투두 목록 가져오기 */
 // GET 파라미터
 export interface GetTodoListDayGroupedByCompanyParamsType {
     userId: number;
     date: string;  // YYYY-MM-DD 형식으로 request 보내야 함. Date -> string 형식으로 바꿈
 };
 
-// GET 응답
+// GET 응답:  백엔드로부터 받을 데이터
 export interface GetTodoListDayGroupedByCompanyResponseType {
     companyName: string;
     todos: [];

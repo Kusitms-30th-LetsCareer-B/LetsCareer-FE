@@ -49,13 +49,13 @@ import { getYearMonthDay, getStringYear, getStringMonth, getFormattedDate3, getF
 
 
 /** 기업 채용 일정 API 연동 관련 이벤트 */
-import { getResponseCalendarMonthRecruitmentsList } from '../pages/Calendar/api/calendarMonthRecruitmentsApiService.ts';
-import { GetRequestCalendarMonthRecruitmentsType } from '../pages/Calendar/api/calendarMonthRecruitmentsType.ts';
+import { getCalendarMonthRecruitmentsList } from '../pages/Calendar/api/calendarMonthRecruitmentsApiService.ts';
+import { GetCalendarMonthRecruitmentsResponseType } from '../pages/Calendar/api/calendarMonthRecruitmentsType.ts';
 
 
 /** 개인 일정 API 연동 관련 이벤트 */
-import { getResponseCalendarMonthPersonalWorksList } from '../pages/Calendar/api/calendarMonthPersonalWorksApiService.ts';
-import { GetRequestCalendarMonthPersonalWorksType } from '../pages/Calendar/api/calendarMonthPersonalWorksType.ts';
+import { getCalendarMonthPersonalWorksList } from '../pages/Calendar/api/calendarMonthPersonalWorksApiService.ts';
+import { GetCalendarMonthPersonalWorksResponseType } from '../pages/Calendar/api/calendarMonthPersonalWorksType.ts';
 
 
 // 캘린더에 띄울 스케줄 칩스 필터 Enum 정의
@@ -121,7 +121,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
 
   
   // 기업 채용 일정 필터링 함수: 선택된 체크박스(전체/서류/면접/기타)에 대한 일정만 가져오기
-  const getFilteredRecruitmentDataByStageType = (recruitmentsData: GetRequestCalendarMonthRecruitmentsType[]) => {
+  const getFilteredRecruitmentDataByStageType = (recruitmentsData: GetCalendarMonthRecruitmentsResponseType[]) => {
     switch (scheduleStage) {
       case ScheduleFilter.DOCUMENT:
         return recruitmentsData.filter((item) => item.filter === filterState.START || item.filter === filterState.FINISH || item.filter === filterState.WRITTEN);
@@ -141,7 +141,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   /**---------------------------------------------------*/
   /** API 연동 데이터 관련 변수, 함수 */
   // 기업 채용 일정 원본 데이터
-  const [recruitmentsDataList, setRecruitmentsDataList] = useState<GetRequestCalendarMonthRecruitmentsType[]>([]);
+  const [recruitmentsDataList, setRecruitmentsDataList] = useState<GetCalendarMonthRecruitmentsResponseType[]>([]);
 
   // 기업 채용 일정 파싱 데이터:  필터별 개수 상태
   const [documentCount, setDocumentCount] = useState(0); // 서류
@@ -173,7 +173,7 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
   
   
   // 개인 일정 원본 데이터
-  const [personalWorksDataList, setPersonalWorksDataList] = useState<GetRequestCalendarMonthPersonalWorksType[]>([]);
+  const [personalWorksDataList, setPersonalWorksDataList] = useState<GetCalendarMonthPersonalWorksResponseType[]>([]);
   
   /** 💗 개인 일정 연동 
    *  특정 날짜의 개인 일정 데이터를 가져오는 함수 */
@@ -209,13 +209,13 @@ const CustomCalendar:  React.FC<CalendarComponentProps> = ({userId, onDateSelect
           setError(null);   // 에러 초기화
 
           // 기업 채용 일정 요청 및 응답받기
-          const responseRecruitments = await getResponseCalendarMonthRecruitmentsList({ userId, year, month });
+          const responseRecruitments = await getCalendarMonthRecruitmentsList({ userId, year, month });
           console.log("📫 캘린더쨩 기업 채용 일정 샤랄라~");
           console.log(responseRecruitments); // 백엔드로부터 응답받은 DB 확인
           setRecruitmentsDataList(responseRecruitments.data);  // 원본 DB 저장
 
           // 개인 일정 요청 및 응답받기
-          const responsePersonalWorks = await getResponseCalendarMonthPersonalWorksList({ userId, year, month });
+          const responsePersonalWorks = await getCalendarMonthPersonalWorksList({ userId, year, month });
           console.log("📫 캘린더쨩 개인 일정 샤랄라~");
           console.log(responsePersonalWorks); // 백엔드로부터 응답받은 DB 확인
           setPersonalWorksDataList(responsePersonalWorks.data);  // 원본 DB 저장

@@ -10,10 +10,12 @@ import { TodoDayGroupedByCompany_URL, GetTodoListDayGroupedByCompanyParamsType }
 // GET 요청 및 응답받기 (백엔드와 API 연동)
 export const getTodoListDayGroupedByCompany = async ({ userId, date }: GetTodoListDayGroupedByCompanyParamsType) => {
   try {
-    const response = await AxiosInstance.get(`${BASE_URL}${TodoDayGroupedByCompany_URL}`, {
+    const response = await AxiosInstance.get(`${BASE_URL}${TodoDayGroupedByCompany_URL}`, 
       // 쿼리 파라미터로 userId, date 전달
-      params: { userId, date },
-    });
+      {
+        params: { userId, date },
+      }
+    );
     
     // 백엔드 서버로부터 API의 응답 데이터 받은 후 반환
     return response.data;

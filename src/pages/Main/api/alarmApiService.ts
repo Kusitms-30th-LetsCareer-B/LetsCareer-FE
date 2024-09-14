@@ -11,12 +11,16 @@ import { Alarm_URL,
 // GET 요청 및 응답받기
 export const getAlarms = async ({ userId }: GetAlarmParamsType) => {
   try {
-    const response = await AxiosInstance.get(`${BASE_URL}${Alarm_URL}`, {
+    const response = await AxiosInstance.get(`${BASE_URL}${Alarm_URL}`, 
       // 쿼리 파라미터 전달
-      params: { userId },
-    });
+      {
+        params: { 
+          userId
+        },
+      }
+    );
     
-    // 백엔드 서버로부터 응답 데이터 반환
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {

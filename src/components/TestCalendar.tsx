@@ -1,7 +1,7 @@
 // CalendarComponent.tsx
 import React, { useEffect, useState } from "react";
-import { getResponseCalendarMonthRecruitmentsList } from "../pages/Calendar/api/calendarMonthRecruitmentsApiService.ts";
-import { GetRequestCalendarMonthRecruitmentsType } from "../pages/Calendar/api/calendarMonthRecruitmentsType.ts";
+import { getCalendarMonthRecruitmentsList } from "../pages/Calendar/api/calendarMonthRecruitmentsApiService.ts";
+import { GetCalendarMonthRecruitmentsResponseType } from "../pages/Calendar/api/calendarMonthRecruitmentsType.ts";
 
 interface CalendarComponentProps {
   userId: number;
@@ -12,7 +12,7 @@ interface CalendarComponentProps {
 
 // Company 별로 채용 일정 데이터를 객체 형태로 관리하려고 만든 인터페이스
 interface GroupedByCompany {
-  [companyName: string]: GetRequestCalendarMonthRecruitmentsType[];
+  [companyName: string]: GetCalendarMonthRecruitmentsResponseType[];
 }
 
 const CalendarComponent: React.FC<CalendarComponentProps> = ({
@@ -42,7 +42,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
           setError(null); // 에러 초기화
 
           // 요청 및 응답받기
-          const response = await getResponseCalendarMonthRecruitmentsList({
+          const response = await getCalendarMonthRecruitmentsList({
             userId,
             year,
             month,
@@ -56,7 +56,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
           // 파싱1. selectedDate에 속한 채용 일정 데이터만 필터링
           // DB가 Data Frame 형태라고 했을 때 각 row를 뽑아옴.
           const selectedItems = response.data.filter(
-            (data: GetRequestCalendarMonthRecruitmentsType) => {
+            (data: GetCalendarMonthRecruitmentsResponseType) => {
               // 현재 row에서 date 열의 값을 뽑아옴.
               const date = String(data.date);
               //console.log(`미미쨩? ${date}와 ${selectedDate}가 같나요~? ${date === selectedDate}`)   // [확인완료]
@@ -69,11 +69,11 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
           console.log(selectedItems); // 확인
 
           // 파싱2. response.data를 companyName별로 그룹화
-          //const groupedByCompany = response.data.reduce((acc: GroupedByCompany, schedule: GetRequestCalendarMonthRecruitmentsType) => {
+          //const groupedByCompany = response.data.reduce((acc: GroupedByCompany, schedule: GetCalendarMonthRecruitmentsResponseType) => {
           const groupedByCompany = selectedItems.reduce(
             (
               acc: GroupedByCompany,
-              schedule: GetRequestCalendarMonthRecruitmentsType,
+              schedule: GetCalendarMonthRecruitmentsResponseType,
             ) => {
               const { companyName } = schedule;
               if (!acc[companyName]) {
@@ -128,7 +128,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
               <ul>
                 {String(companyDataFrame)}
                 {companyDataFrame.map(
-                  (companyData: GetRequestCalendarMonthRecruitmentsType) => (
+                  (companyData: GetCalendarMonthRecruitmentsResponseType) => (
                     <li key={companyData.scheduleId}>
                       {String(companyData.companyName)}
                       {String(companyData.date)}

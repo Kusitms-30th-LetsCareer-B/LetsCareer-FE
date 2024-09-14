@@ -3,19 +3,20 @@ import { AxiosError } from 'axios';
 import { AxiosInstance, BASE_URL } from '../../../shared/api/axiosInstance.ts';
 
 // API 연동 타입
-import { CalendarMonthRecruitments_URL, GetParamsCalendarMonthRecruitmentsType } from "./calendarMonthRecruitmentsType.ts"
-
+import { CalendarMonthRecruitments_URL, GetCalendarMonthRecruitmentsParamsType } from "./calendarMonthRecruitmentsType.ts"
 
 /** 조회 */
 // GET 요청 및 응답받기 (백엔드와 API 연동)
-export const getResponseCalendarMonthRecruitmentsList = async ({ userId, year, month }: GetParamsCalendarMonthRecruitmentsType) => {
+export const getCalendarMonthRecruitmentsList = async ({ userId, year, month }: GetCalendarMonthRecruitmentsParamsType) => {
   try {
-    const response = await AxiosInstance.get(`${BASE_URL}${CalendarMonthRecruitments_URL}`, {
+    const response = await AxiosInstance.get(`${BASE_URL}${CalendarMonthRecruitments_URL}`, 
       // 쿼리 파라미터로 userId, year, month 전달
-      params: { userId, year, month },
-    });
+      {
+        params: { userId, year, month },
+      }
+    );
     
-    // 백엔드 서버로부터 API의 응답 데이터 받은 후 반환
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {

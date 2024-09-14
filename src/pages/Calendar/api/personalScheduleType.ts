@@ -40,7 +40,6 @@ export interface PostPersonalScheduleParamsType {
     userId: number;
 };
 
-// 개인 일정 생성
 // POST 요청:  백엔드에 추가할 데이터
 export interface PostPersonalScheduleRequestType {
     date: string;

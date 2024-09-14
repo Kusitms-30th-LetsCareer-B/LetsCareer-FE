@@ -14,6 +14,29 @@ import { Routines_URL,
 
 /** 백엔드와 API 연동 */
 
+// 조회
+// GET 요청 및 응답받기
+export const getRoutineById = async ({ routineId }: GetRoutineByIdParamsType) => {
+  try {
+    const response = await AxiosInstance.get(`${BASE_URL}${Routines_URL}/${routineId}`,
+      // 쿼리 파라미터 설정:  routineId 전달
+      {
+        params: {
+          routineId
+        },
+      }
+    );
+    
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
+    return response.data;
+
+  } catch (error) {
+    console.error(`루틴 ID ${routineId}를 조회하는 중 오류 발생:`, error);
+    throw error;
+  }
+};
+
+
 // 추가
 // POST 요청 및 응답받기
 export const postRoutine = async (
@@ -46,29 +69,20 @@ export const postRoutine = async (
 };
 
 
-// 조회
-// GET 요청 및 응답받기
-export const getRoutineById = async ({ routineId }: GetRoutineByIdParamsType) => {
-  try {
-    const response = await AxiosInstance.get(`${BASE_URL}${Routines_URL}/${routineId}`);
-    
-    // 백엔드 서버로부터 응답 데이터 반환
-    return response.data;
-
-  } catch (error) {
-    console.error(`루틴 ID ${routineId}를 조회하는 중 오류 발생:`, error);
-    throw error;
-  }
-};
-
-
 // 삭제
 // DELETE 요청 및 응답받기: 특정 루틴 삭제
 export const deleteRoutineById = async ({ routineId }: DeleteRoutineByIdParamsType) => {
   try {
-    const response = await AxiosInstance.delete(`${BASE_URL}${Routines_URL}/${routineId}`);
+    const response = await AxiosInstance.delete(`${BASE_URL}${Routines_URL}/${routineId}`,
+      // 쿼리 파라미터 설정:  routineId 전달
+      {
+        params: {
+          routineId
+        },
+      }
+    );
     
-    // 백엔드 서버로부터 응답 데이터 반환
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {
@@ -97,7 +111,7 @@ export const updateRoutineById = async ({ routineId, content, startDate, endDate
       }
     );
 
-    // 백엔드 서버로부터 응답 데이터 반환
+    // 백엔드 서버로부터 API의 응답 데이터 받은 후 리턴
     return response.data;
 
   } catch (error) {
