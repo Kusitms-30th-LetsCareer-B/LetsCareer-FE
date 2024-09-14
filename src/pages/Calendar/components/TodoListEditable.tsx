@@ -205,7 +205,7 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
 
               {/* 회사별 일정 리스트 */}
               {companyTodoList.length > 0 ? (
-                companyTodoList.map((companyTodo) => (
+                companyTodoList.map((companyTodo, companyIndex) => (
                   <div key={companyTodo.companyName} className="py-1">
 
                     {/** 기업 */}
@@ -234,12 +234,14 @@ const CompanyTodoListComponent: React.FC<CalendarComponentProps> = ({ userId, se
                               {todo.content}
                             </div>
                           </div>
-
-                          {/* 구분선 출력: 기업별로 분리
-                          <hr className="mt-4 p-1" />
-                           */}
                         </li>
                       ))}
+                      
+                      {/* 구분선 출력: 마지막 기업을 제외하고 기업별로 분리 */}
+                      {
+                        companyIndex != companyTodoList.length-1?
+                        <hr className="mt-4 p-1" /> : null
+                      }
                     </ul>
                   </div>
           ))
