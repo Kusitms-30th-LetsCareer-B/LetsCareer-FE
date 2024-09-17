@@ -100,21 +100,26 @@ https://youtu.be/6Pw6TpnJlIs
 
 ### 🌟 캘린더
 - 월별 일정 모아보기
-- 기업 채용 일정 추가
 - 개인 일정 추가, 수정, 삭제
 - 기업별 투두 상태 관리
 ![image](https://github.com/user-attachments/assets/1cba8bbc-5796-4c83-af3b-205d0f87a13f)
+
+- 기업 채용 일정 추가
 ![image](https://github.com/user-attachments/assets/2f0681f5-6006-4fd8-9124-f260008bf261)
 
 <br>
 
 ### 🌟 내 지원현황 보기
 - 전체 기업 채용 일정 관리
-- 진행 중 기업의 전형, 투두, 아카이브 관리
-- 마감 기업의 복기노트 관리
 ![image](https://github.com/user-attachments/assets/a2e05102-d9dd-46a3-a6d7-0098e9ef9c0c)
+
+- 진행 중 기업의 전형, 투두 관리
 ![image](https://github.com/user-attachments/assets/9b98b636-4481-414c-bbf5-f16202fce275)
+
+- 진행 중 기업의 아카이브 관리
 ![image](https://github.com/user-attachments/assets/2405ef1b-8a9c-4ca6-a7f1-2020e392de80)
+
+- 마감 기업의 복기노트 관리
 ![image](https://github.com/user-attachments/assets/7f4040de-dad5-4cc8-a0e5-a6a7c756916b)
 
 <br>
